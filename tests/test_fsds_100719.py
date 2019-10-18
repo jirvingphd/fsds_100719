@@ -6,7 +6,7 @@
 
 import unittest
 
-from fsds_100719 import fsds_100719
+from fsds_100719 import *#fsds_100719
 
 
 class TestFsds_100719(unittest.TestCase):
