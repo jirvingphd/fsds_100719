@@ -1,3 +1,4 @@
+__version__ = '0.1.0'
 def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,markdown=True,file_location=False):
     """Call on any module or functon to display the object's
     help command printout AND/OR soruce code displayed as Markdown
