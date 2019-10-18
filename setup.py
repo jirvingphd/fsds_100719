@@ -19,7 +19,7 @@ test_requirements = [ ]
 
 setup(
     author="James Irving",
-    author_email='james.irving@flatironschool.com',
+    author_email='james.irving.phd@outlook.com',
     python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
