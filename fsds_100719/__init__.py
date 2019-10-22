@@ -9,9 +9,13 @@ def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,mark
     """Call on any module or functon to display the object's
     help command printout AND/OR soruce code displayed as Markdown
     using Python-syntax"""
-
     import inspect
-    from IPython.display import display, Markdown
+    
+    try:
+        from IPython import display, Markdown
+    except:
+        print('[!] IPython was not found.')
+        
     page_header = '---'*28
     footer = '---'*28+'\n'
     if show_help:
