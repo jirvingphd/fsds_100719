@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 import seaborn as sns
 import scipy.stats as sts
-from IPython.display import display
+# from IPython.display import display
 from sklearn.model_selection._split import _BaseKFold
 class BlockTimeSeriesSplit(_BaseKFold): #sklearn.model_selection.TimeSeriesSplit):
     """A variant of sklearn.model_selection.TimeSeriesSplit that keeps train_size and test_size
@@ -1523,7 +1523,7 @@ def inspect_df(df, n_rows=3, verbose=True):
     from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
     from bs_ds.prettypandas import display_side_by_side
     import pandas as pd
-
+    from IPython.display import display
     with pd.option_context("display.max_columns", None ,'display.precision',4):
         display(df.info()) #, display(df.describe())
 

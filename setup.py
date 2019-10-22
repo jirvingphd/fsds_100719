@@ -12,12 +12,13 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = ['numpy', 'pandas', 'seaborn', 'matplotlib', 'scikit-learn', 
-'scipy','IPython','pprint','plotly==3.10.0', 'cufflinks==0.16','pyperclip']
+'scipy','IPython','ipywidgets','pprint','plotly==3.10.0', 'cufflinks==0.16','pyperclip']
 
 #'pytz','tzlocal','gensim','openpyxl','beautifulsoup4',
-setup_requirements = [ ]
+setup_requirements = [ 'IPython']
 
-test_requirements = [ ]
+test_requirements = ['IPython' ,'ipywidgets']
+test_requirements.extend(requirements)
 
 setup(
     author="James Irving",
