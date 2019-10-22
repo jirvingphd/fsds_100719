@@ -1,4 +1,4 @@
-__version__ = '0.2.3'
+__version__ = '0.3.0'
 from .imports import *
 
 print(f"fsds_1007219  v{__version__} loaded.  Read the docs: https://fsds.readthedocs.io/en/latest/ ")
