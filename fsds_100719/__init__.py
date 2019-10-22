@@ -1,4 +1,10 @@
 __version__ = '0.2.2'
+from .imports import *
+
+print(f"fsds_1007219  v{__version__} loaded.  Read the docs: https://fsds.readthedocs.io/en/latest/ ")
+print(f"> For convenient loading of standard modules use: `>> from fsds_100719.imports import *`\n")
+
+
 def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,markdown=True,file_location=False):
     """Call on any module or functon to display the object's
     help command printout AND/OR soruce code displayed as Markdown
@@ -250,7 +256,7 @@ def list2df(list, index_col=None, set_caption=None, return_df=True,df_kwds=None)
 #         raise Exception('One of the output options must be true: `as_qgrid`,`as_df`,`as_interactive_df`')
 
 def inspect_variables(local_vars = None,sort_col='size',exclude_funcs_mods=True, top_n=10,return_df=False,always_display=True,
-show_how_to_delete=True,print_names=False):
+show_how_to_delete=False,print_names=False):
     """Displays a dataframe of all variables and their size in memory, with the
     largest variables at the top."""
     import sys
@@ -335,6 +341,11 @@ show_how_to_delete=True,print_names=False):
         print('Variable Names:\n')
         print_me = [f"{str(x)}" for x in var_df.index]
         print(print_me)
+    
+        
+    if show_del_me_code == False:
+        print("[i] set `show_del_me_code=True prints copy/paste var deletion code.")
+        
 
     if return_df:
         return var_df

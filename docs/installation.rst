@@ -12,7 +12,12 @@ To install fsds_100719, run this command in your terminal:
 
 .. code-block:: console
 
-    $ pip install fsds_100719
+    # In terminal:
+    $ pip install -U fsds_100719
+
+    # In Jupyter Notebook / Learn.co
+    $ !pip install -U fsds_100719
+
 
 This is the preferred method to install fsds_100719, as it will always install the most recent stable release.
 

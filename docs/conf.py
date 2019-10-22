@@ -32,6 +32,16 @@ import fsds_100719
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode','sphinx.ext.apidoc','sphinx.ext.napoleon']
+napoleon_numpy_docstring = True
+napoleon_google_docstring = True
+napoleon_include_private_with_doc = False
+napoleon_include_init_with_doc = True
+# Add any paths that contain templates here, relative to this directory.
+templates_path = ['_templates']
+
+# Add any Sphinx extension module names here, as strings. They can be
+# extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
 
 # Add any paths that contain templates here, relative to this directory.
@@ -48,8 +58,8 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'fsds_100719'
-copyright = u"2019, James Irving"
-author = u"James Irving"
+copyright = u"2019, Flatiron Data Science Bootcamp, online-ds-ft/pt-100719 cohorts. Maintained by James Irving"
+author = u"online-ds-ft-100719,online-ds-pt-100719, James Irving"
 
 # The version info for the project you're documenting, acts as replacement
 # for |version| and |release|, also used in various other places throughout
@@ -161,3 +171,14 @@ texinfo_documents = [
 
 
 
+def run_apidoc(_):
+	from sphinx.ext.apidoc import main
+	import os
+	import sys
+	sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+	cur_dir = os.path.abspath(os.path.dirname(__file__))
+	module = os.path.join(cur_dir,"..","bs_ds")
+	main(['-o', cur_dir, module,'-M','--force'])
+
+def setup(app):
+	app.connect('builder-inited', run_apidoc)
