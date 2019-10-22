@@ -1,3 +1,4 @@
+
 absl-py==0.8.1
 alabaster==0.7.12
 appnope==0.1.0
@@ -89,9 +90,9 @@ matplotlib==3.0.2
 mccabe==0.6.1
 missingno==0.4.2
 mistune==0.8.4
-mkl-fft==1.0.14
-mkl-random==1.1.0
-mkl-service==2.3.0
+# mkl-fft==1.0.14
+# mkl-random==1.1.0
+# mkl-service==2.3.0
 more-itertools==7.2.0
 nb-conda==2.2.1
 nb-conda-kernels==2.2.2
@@ -126,7 +127,7 @@ py==1.8.0
 py4j==0.10.7
 pycodestyle==2.5.0
 pycparser==2.18
-pydotplus==2.0.2
+# pydotplus==2.0.2
 pyflakes==2.1.1
 Pygments==2.2.0
 pyOpenSSL==18.0.0
