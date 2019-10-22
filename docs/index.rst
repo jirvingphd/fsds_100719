@@ -6,9 +6,10 @@ Welcome to fsds_100719's documentation!
    :caption: Contents:
 
    installation
+    modules
+    
    contributing
    usage
-   modules
    authors
    history
 
