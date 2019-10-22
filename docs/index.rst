@@ -5,14 +5,11 @@ Welcome to fsds_100719's documentation!
    :maxdepth: 3
    :caption: Contents:
 
-   readme
    installation
-   usage
-    modules
-
    contributing
+   usage
+   modules
    authors
-
    history
 
 Indices and tables

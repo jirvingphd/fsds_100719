@@ -1,6 +1,6 @@
 .. include:: ../CONTRIBUTING.rst
 
-To contribute:
+To contribute::
 -------------
 
 1) Fork the project repo to your github account and clone it to your computer.
