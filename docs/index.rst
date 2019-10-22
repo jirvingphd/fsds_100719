@@ -2,15 +2,17 @@ Welcome to fsds_100719's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    readme
    installation
    usage
-   modules
+    modules
+
    contributing
    authors
+
    history
 
 Indices and tables
