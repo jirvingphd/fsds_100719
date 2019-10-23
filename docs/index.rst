@@ -1,18 +1,14 @@
 Welcome to fsds_100719's documentation!
 ======================================
+.. include:: ../installation.rst
+.. include: ../usage.rst
+
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
-
-   installation
-   contributing
-   usage
+   :caption: Modules:
    fsds_100719
-
-   modules
-   .. automodule::
-    :members:
+   contributing
    authors
    history
    ...
