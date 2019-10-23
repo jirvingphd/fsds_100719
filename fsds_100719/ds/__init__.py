@@ -96,185 +96,185 @@ def list2df(list, index_col=None, set_caption=None, return_df=True,df_kwds=None)
         display(dfs)
     return df_list
 
+# def ihelp_menu(function_list, json_file='ihelp_output.txt',to_embed=False):
+#     """Accepts a list of string names for loaded modules/functions to save the `help` output and 
+#     inspect.getsource() outputs to dictionary for later reference and display"""
+#     ## One way using sys to write txt file
+#     import pandas as pd
+#     import sys
+#     import inspect
+#     from io import StringIO
+#     notebook_output = sys.stdout
+#     result = StringIO()
+#     sys.stdout=result
+    
+#     ## Turn single input into a list
+#     if isinstance(function_list,list)==False:
+#         function_list = [function_list]
+    
+#     ## Make a dictionary of{function_name : function_object}
+#     functions_dict = dict()
+#     for fun in function_list:
+        
+#         ## if input is a string, save string as key, and eval(function) as value
+#         if isinstance(fun, str):
+#             functions_dict[fun] = eval(fun)
+
+#         ## if input is a function, get the name of function using inspect and make key, function as value
+#         elif inspect.isfunction(fun):
+
+#             members= inspect.getmembers(fun)
+#             member_df = pd.DataFrame(members,columns=['param','values']).set_index('param')
+
+#             fun_name = member_df.loc['__name__'].values[0]
+#             functions_dict[fun_name] = fun
+            
+            
+#     ## Create an output dict to store results for functions
+#     output_dict = {}
+
+#     for fun_name, real_func in functions_dict.items():
+        
+#         output_dict[fun_name] = {}
+                
+#         ## First save help
+#         help(real_func)
+#         output_dict[fun_name]['help'] = result.getvalue()
+        
+#         ## Clear contents of io stream
+#         result.truncate(0)
+        
+#         try:
+#             ## Next save source
+#             print(inspect.getsource(real_func)) #eval(fun)))###f"{eval(fun)}"))
+#         except:
+#             print("Source code for object was not found")
+#         output_dict[fun_name]['source'] = result.getvalue()
+        
+#         ## clear contents of io stream
+#         result.truncate(0)
+        
+        
+#         ## Get file location
+#         try:
+#             file_loc = inspect.getfile(real_func)
+#             print(file_loc)
+#         except:
+#             print("File location not found")
+            
+#         output_dict[fun_name]['file_location'] =result.getvalue()
+        
+        
+#         ## clear contents of io stream
+#         result.truncate(0)        
+                
+        
+#     ## Reset display back to notebook
+#     sys.stdout = notebook_output    
+
+    
+#     with open(json_file,'w') as f:
+#         import json
+#         json.dump(output_dict,f)
+
+    
+#     ## CREATE INTERACTIVE MENU
+#     from ipywidgets import interact, interactive, interactive_output
+#     import ipywidgets as widgets
+#     from IPython.display import display
+#     # from functions_combined_BEST import ihelp
+#     # import functions_combined_BEST as jis
+
+#     ## Check boxes
+#     check_help = widgets.Checkbox(description="Show 'help(func)'",value=True)
+#     check_source = widgets.Checkbox(description="Show source code",value=True)
+#     check_fileloc=widgets.Checkbox(description="Show source filepath",value=False)
+#     check_boxes = widgets.HBox(children=[check_help,check_source,check_fileloc])
+
+#     ## dropdown menu (dropdown, label, button)
+#     dropdown = widgets.Dropdown(options=list(output_dict.keys()))
+#     label = widgets.Label('Function Menu')
+#     button = widgets.ToggleButton(description='Show/hide',value=False)
+    
+#     ## Putting it all together
+#     title = widgets.Label('iHelp Menu: View Help and/or Source Code')
+#     menu = widgets.HBox(children=[label,dropdown,button])
+#     titled_menu = widgets.VBox(children=[title,menu])
+#     full_layout = widgets.GridBox(children=[titled_menu,check_boxes],box_style='warning')
+    
+    
+    
+#     ## Define output manager
+#     # show_output = widgets.Output()
+
+#     def dropdown_event(change): 
+#         new_key = change.new
+#         output_display = output_dict[new_key]
+#     dropdown.observe(dropdown_event,names='values')
+
+    
+#     def show_ihelp(display_help=button.value,function=dropdown.value,
+#                    show_help=check_help.value,show_code=check_source.value, show_file=check_fileloc.value):#,
+#                    #ouput_dict=output_dict):
+
+#         from IPython.display import Markdown
+#         # import functions_combined_BEST as ji
+#         from IPython.display import display        
+#         page_header = '---'*28
+#         import json
+#         with open(json_file,'r') as f:
+#             output_dict = json.load(f)
+        
+        
+#         func_dict = output_dict[function]
+
+#         if display_help:
+#             if show_help:
+# #                 display(print(func_dict['help']))
+#                 print(page_header)
+#                 banner = ''.join(["---"*2,' HELP ',"---"*24,'\n'])
+#                 print(banner)
+#                 print(func_dict['help'])
+
+#             if show_code:
+#                 print(page_header)
+
+#                 banner = ''.join(["---"*2,' SOURCE -',"---"*23])
+#                 print(banner)
+#                 source_code = "```python\n"
+#                 source_code += func_dict['source']
+#                 source_code += "```"
+#                 display(Markdown(source_code))
+            
+            
+#             if show_file:
+#                 print(page_header)
+#                 banner = ''.join(["---"*2,' FILE LOCATION ',"---"*21])
+#                 print(banner)
+                
+#                 file_loc = func_dict['file_location']
+#                 print(file_loc)
+                
+#             if show_help==False & show_code==False & show_file==False:
+#                 display('Check at least one "Show" checkbox for output.')
+                
+#         else:
+#             display('Press "Show/hide" for display')
+            
+#     ## Fully integrated output
+#     output = widgets.interactive_output(show_ihelp,{'display_help':button,
+#                                                    'function':dropdown,
+#                                                    'show_help':check_help,
+#                                                    'show_code':check_source,
+#                                                    'show_file':check_fileloc})
+
+#     if to_embed:
+#         return full_layout, output
+#     else:
+#         display(full_layout, output)
+
+
 def ihelp_menu(function_list, json_file='ihelp_output.txt',to_embed=False):
-    """Accepts a list of string names for loaded modules/functions to save the `help` output and 
-    inspect.getsource() outputs to dictionary for later reference and display"""
-    ## One way using sys to write txt file
-    import pandas as pd
-    import sys
-    import inspect
-    from io import StringIO
-    notebook_output = sys.stdout
-    result = StringIO()
-    sys.stdout=result
-    
-    ## Turn single input into a list
-    if isinstance(function_list,list)==False:
-        function_list = [function_list]
-    
-    ## Make a dictionary of{function_name : function_object}
-    functions_dict = dict()
-    for fun in function_list:
-        
-        ## if input is a string, save string as key, and eval(function) as value
-        if isinstance(fun, str):
-            functions_dict[fun] = eval(fun)
-
-        ## if input is a function, get the name of function using inspect and make key, function as value
-        elif inspect.isfunction(fun):
-
-            members= inspect.getmembers(fun)
-            member_df = pd.DataFrame(members,columns=['param','values']).set_index('param')
-
-            fun_name = member_df.loc['__name__'].values[0]
-            functions_dict[fun_name] = fun
-            
-            
-    ## Create an output dict to store results for functions
-    output_dict = {}
-
-    for fun_name, real_func in functions_dict.items():
-        
-        output_dict[fun_name] = {}
-                
-        ## First save help
-        help(real_func)
-        output_dict[fun_name]['help'] = result.getvalue()
-        
-        ## Clear contents of io stream
-        result.truncate(0)
-        
-        try:
-            ## Next save source
-            print(inspect.getsource(real_func)) #eval(fun)))###f"{eval(fun)}"))
-        except:
-            print("Source code for object was not found")
-        output_dict[fun_name]['source'] = result.getvalue()
-        
-        ## clear contents of io stream
-        result.truncate(0)
-        
-        
-        ## Get file location
-        try:
-            file_loc = inspect.getfile(real_func)
-            print(file_loc)
-        except:
-            print("File location not found")
-            
-        output_dict[fun_name]['file_location'] =result.getvalue()
-        
-        
-        ## clear contents of io stream
-        result.truncate(0)        
-                
-        
-    ## Reset display back to notebook
-    sys.stdout = notebook_output    
-
-    
-    with open(json_file,'w') as f:
-        import json
-        json.dump(output_dict,f)
-
-    
-    ## CREATE INTERACTIVE MENU
-    from ipywidgets import interact, interactive, interactive_output
-    import ipywidgets as widgets
-    from IPython.display import display
-    # from functions_combined_BEST import ihelp
-    # import functions_combined_BEST as jis
-
-    ## Check boxes
-    check_help = widgets.Checkbox(description="Show 'help(func)'",value=True)
-    check_source = widgets.Checkbox(description="Show source code",value=True)
-    check_fileloc=widgets.Checkbox(description="Show source filepath",value=False)
-    check_boxes = widgets.HBox(children=[check_help,check_source,check_fileloc])
-
-    ## dropdown menu (dropdown, label, button)
-    dropdown = widgets.Dropdown(options=list(output_dict.keys()))
-    label = widgets.Label('Function Menu')
-    button = widgets.ToggleButton(description='Show/hide',value=False)
-    
-    ## Putting it all together
-    title = widgets.Label('iHelp Menu: View Help and/or Source Code')
-    menu = widgets.HBox(children=[label,dropdown,button])
-    titled_menu = widgets.VBox(children=[title,menu])
-    full_layout = widgets.GridBox(children=[titled_menu,check_boxes],box_style='warning')
-    
-    
-    
-    ## Define output manager
-    # show_output = widgets.Output()
-
-    def dropdown_event(change): 
-        new_key = change.new
-        output_display = output_dict[new_key]
-    dropdown.observe(dropdown_event,names='values')
-
-    
-    def show_ihelp(display_help=button.value,function=dropdown.value,
-                   show_help=check_help.value,show_code=check_source.value, show_file=check_fileloc.value):#,
-                   #ouput_dict=output_dict):
-
-        from IPython.display import Markdown
-        # import functions_combined_BEST as ji
-        from IPython.display import display        
-        page_header = '---'*28
-        import json
-        with open(json_file,'r') as f:
-            output_dict = json.load(f)
-        
-        
-        func_dict = output_dict[function]
-
-        if display_help:
-            if show_help:
-#                 display(print(func_dict['help']))
-                print(page_header)
-                banner = ''.join(["---"*2,' HELP ',"---"*24,'\n'])
-                print(banner)
-                print(func_dict['help'])
-
-            if show_code:
-                print(page_header)
-
-                banner = ''.join(["---"*2,' SOURCE -',"---"*23])
-                print(banner)
-                source_code = "```python\n"
-                source_code += func_dict['source']
-                source_code += "```"
-                display(Markdown(source_code))
-            
-            
-            if show_file:
-                print(page_header)
-                banner = ''.join(["---"*2,' FILE LOCATION ',"---"*21])
-                print(banner)
-                
-                file_loc = func_dict['file_location']
-                print(file_loc)
-                
-            if show_help==False & show_code==False & show_file==False:
-                display('Check at least one "Show" checkbox for output.')
-                
-        else:
-            display('Press "Show/hide" for display')
-            
-    ## Fully integrated output
-    output = widgets.interactive_output(show_ihelp,{'display_help':button,
-                                                   'function':dropdown,
-                                                   'show_help':check_help,
-                                                   'show_code':check_source,
-                                                   'show_file':check_fileloc})
-
-    if to_embed:
-        return full_layout, output
-    else:
-        display(full_layout, output)
-
-
-def ihelp_menu2(function_list, json_file='ihelp_output.txt',to_embed=False):
     """Accepts a list of string names for loaded modules/functions to save the `help` output and 
     inspect.getsource() outputs to dictionary for later reference and display"""
     ## One way using sys to write txt file
@@ -455,8 +455,32 @@ def ihelp_menu2(function_list, json_file='ihelp_output.txt',to_embed=False):
         
 def inspect_variables(local_vars = None,sort_col='size',exclude_funcs_mods=True, top_n=10,return_df=False,always_display=True,
 show_how_to_delete=False,print_names=False):
-    """Displays a dataframe of all variables and their size in memory, with the
-    largest variables at the top."""
+    """
+    Displays a dataframe of all variables and their size in memory,
+    with the largest variables at the top. 
+    
+    Args:
+        local_vars (locals(): Must call locals()  as first argument.
+        sort_col (str, optional): column to sort by. Defaults to 'size'.
+        top_n (int, optional): how many vars to show. Defaults to 10.
+        return_df (bool, optional): If True, return df instead of just showing df.Defaults to False.
+        always_display (bool, optional): Display df even if returned. Defaults to True.
+        show_how_to_delete (bool, optional): Prints out code to copy-paste into cell to del vars. Defaults to False.
+        print_names (bool, optional): [description]. Defaults to False.
+    
+    Raises:
+        Exception: if locals() not passed as first arg
+    
+    
+    Example Usage:
+    # Must pass in local variables
+    >> inspect_variables(locals())
+    # To see command to delete list of vars"
+    >> inspect_variables(locals(),show_how_to_delete=True)
+    """
+    
+    
+
     import sys
     import inspect
     import pandas as pd

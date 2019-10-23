@@ -37,6 +37,10 @@
 # df_imported= pd.DataFrame(imports_list,columns=['Package','Handle','Description'])
 # display(df_imported.sort_values('Package').style.hide_index().set_caption('Loaded Packages and Handles'))
 
+def clear():
+    """Helper function to clear notebook display"""
+    import IPython.display as dp
+    return dp.clear_output()
 
 def import_packages(import_list_of_tuples = None,  display_table=True): #append_to_default_list=True, imports_have_description = True):
     """Uses the exec function to load in a list of tuples with:
@@ -47,6 +51,7 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
     ('matplotlib',  'mpl',  "Matplotlib's base OOP module with formatting artists"),
     ('matplotlib.pyplot',   'plt',  "Matplotlib's matlab-like plotting module"),
     ('seaborn',     'sns',  "High-level data visualization library based on matplotlib"),
+    ('IPython.display','dp','Display modules with helpful display and clearing commands.')
     ('fsds_10072019','fs','Custom data science bootcamp student package')]
     """
 
@@ -62,6 +67,7 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
         ('matplotlib.pyplot','plt',"Matplotlib's matlab-like plotting module"),
         ('seaborn','sns',"High-level data visualization library based on matplotlib"),
         ('fsds_100719','fs','Custom data science bootcamp student package'),
+        ('IPython.display','dp','Display modules with helpful display and clearing commands.'),
         ('cufflinks','cf','Adds df.iplot() interactive Plotly figs. To use, run >> cf.go_offline()')]
 
     # if using own list, rename to 'import_list'
