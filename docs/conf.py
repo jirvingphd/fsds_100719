@@ -183,7 +183,7 @@ def run_apidoc(_):
 	sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 	cur_dir = os.path.abspath(os.path.dirname(__file__))
 	module = os.path.join(cur_dir,"..","fsds_100719")
-	main(['-o', cur_dir, module,'-E ','--force']) # removed '-M'
+	main(['-o', cur_dir, module,'--force']) # removed '-M'
 
 def setup(app):
 	app.connect('builder-inited', run_apidoc)
