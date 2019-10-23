@@ -2114,3 +2114,226 @@ class Clock(object):
         dfs = df_lap_times.style.hide_index().set_caption('Summary Table of Clocked Processes').set_properties(subset=['Start Time','Duration'],**{'width':'140px'})
         display(dfs.set_table_styles([dict(selector='table, th', props=[('text-align', 'center')])]))
 
+
+
+
+
+
+def plot_confusion_matrix(conf_matrix, classes = None, normalize=False,
+                          title='Confusion Matrix', cmap=None,
+                          print_raw_matrix=False,fig_size=(5,5), show_help=False):
+    """Check if Normalization Option is Set to True. If so, normalize the raw confusion matrix before visualizing
+    #Other code should be equivalent to your previous function.
+    Note: Taken from bs_ds and modified"""
+    import itertools
+    import numpy as np
+    import matplotlib.pyplot as plt
+
+    cm = conf_matrix
+    ## Set plot style properties
+    if cmap==None:
+        cmap = plt.get_cmap("Blues")
+
+    ## Text Properties
+    fmt = '.2f' if normalize else 'd'
+
+    fontDict = {
+        'title':{
+            'fontsize':16,
+            'fontweight':'semibold',
+            'ha':'center',
+            },
+        'xlabel':{
+            'fontsize':14,
+            'fontweight':'normal',
+            },
+        'ylabel':{
+            'fontsize':14,
+            'fontweight':'normal',
+            },
+        'xtick_labels':{
+            'fontsize':10,
+            'fontweight':'normal',
+            'rotation':45,
+            'ha':'right',
+            },
+        'ytick_labels':{
+            'fontsize':10,
+            'fontweight':'normal',
+            'rotation':0,
+            'ha':'right',
+            },
+        'data_labels':{
+            'ha':'center',
+            'fontweight':'semibold',
+
+        }
+    }
+
+
+    ## Normalize data
+    if normalize:
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+    # Create plot
+    fig,ax = plt.subplots(figsize=fig_size)
+
+    plt.imshow(cm, interpolation='nearest', cmap=cmap)
+    plt.title(title,**fontDict['title'])
+    plt.colorbar()
+
+    if classes is None:
+        classes = ['negative','positive']
+
+    tick_marks = np.arange(len(classes))
+
+
+    plt.xticks(tick_marks, classes, **fontDict['xtick_labels'])
+    plt.yticks(tick_marks, classes,**fontDict['ytick_labels'])
+
+
+    # Determine threshold for b/w text
+    thresh = cm.max() / 2.
+
+    # fig,ax = plt.subplots()
+    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+        plt.text(j, i, format(cm[i, j], fmt), color='darkgray',**fontDict['data_labels'])#color="white" if cm[i, j] > thresh else "black"
+
+    plt.tight_layout()
+    plt.ylabel('True label',**fontDict['ylabel'])
+    plt.xlabel('Predicted label',**fontDict['xlabel'])
+    fig = plt.gcf()
+    plt.show()
+
+    if print_raw_matrix:
+        print_title = 'Raw Confusion Matrix Counts:'
+        print('\n',print_title)
+        print(conf_matrix)
+
+    if show_help:
+        print('''For binary classifications:
+        [[0,0(true_neg),  0,1(false_pos)]
+        [1,0(false_neg), 1,1(true_pos)] ]
+
+        to get vals as vars:
+        >>  tn,fp,fn,tp=confusion_matrix(y_test,y_hat_test).ravel()
+                ''')
+
+    return fig
+
+
+
+
+
+def evaluate_regression(y_true, y_pred, metrics=None, show_results=False, display_thiels_u_info=False):
+    """Calculates and displays any of the following evaluation metrics: (passed as strings in metrics param)
+    r2, MAE,MSE,RMSE,U
+    if metrics=None:
+        metrics=['r2','RMSE','U']
+    """
+    from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
+    import numpy as np
+    from bs_ds import list2df
+    import inspect
+
+    idx_true_null = find_null_idx(y_true)
+    idx_pred_null = find_null_idx(y_pred)
+    if all(idx_true_null == idx_pred_null):
+        y_true.dropna(inplace=True)
+        y_pred.dropna(inplace=True)
+    else:
+        raise Exception('There are non-overlapping null values in y_true and y_pred')
+
+    results=[['Metric','Value']]
+    metric_list = []
+    if metrics is None:
+        metrics=['r2','rmse','u']
+
+    else:
+        for metric in metrics:
+            if isinstance(metric,str):
+                metric_list.append(metric.lower())
+            elif inspect.isfunction(metric):
+                custom_res = metric(y_true,y_pred)
+                results.append([metric.__name__,custom_res])
+                metric_list.append(metric.__name__)
+        metrics=metric_list
+
+    # metrics = [m.lower() for m in metrics]
+
+    if any(m in metrics for m in ('r2','r squared','R_squared')): #'r2' in metrics: #any(m in metrics for m in ('r2','r squared','R_squared'))
+        r2 = r2_score(y_true, y_pred)
+        results.append(['R Squared',r2])##f'R\N{SUPERSCRIPT TWO}',r2])
+
+    if any(m in metrics for m in ('RMSE','rmse','root_mean_squared_error','root mean squared error')): #'RMSE' in metrics:
+        RMSE = np.sqrt(mean_squared_error(y_true,y_pred))
+        results.append(['Root Mean Squared Error',RMSE])
+
+    if any(m in metrics for m in ('MSE','mse','mean_squared_error','mean squared error')):
+        MSE = mean_squared_error(y_true,y_pred)
+        results.append(['Mean Squared Error',MSE])
+
+    if any(m in metrics for m in ('MAE','mae','mean_absolute_error','mean absolute error')):#'MAE' in metrics or 'mean_absolute_error' in metrics:
+        MAE = mean_absolute_error(y_true,y_pred)
+        results.append(['Mean Absolute Error',MAE])
+
+
+    if any(m in metrics for m in ('u',"thiel's u")):# in metrics:
+        if display_thiels_u_info is True:
+            show_eqn=True
+            show_table=True
+        else:
+            show_eqn=False
+            show_table=False
+
+        U = thiels_U(y_true, y_pred,display_equation=show_eqn,display_table=show_table )
+        results.append(["Thiel's U", U])
+
+    results_df = list2df(results)#, index_col='Metric')
+    results_df.set_index('Metric', inplace=True)
+    if show_results:
+        from IPython.display import display
+        dfs = results_df.round(3).reset_index().style.hide_index().set_caption('Evaluation Metrics')
+        display(dfs)
+    return results_df.round(4)
+
+
+def thiels_U(ys_true=None, ys_pred=None,display_equation=True,display_table=True):
+    """Calculate's Thiel's U metric for forecasting accuracy.
+    Accepts true values and predicted values.
+    Returns Thiel's U"""
+
+
+    from IPython.display import Markdown, Latex, display
+    import numpy as np
+    display(Markdown(""))
+    eqn=" $$U = \\sqrt{\\frac{ \\sum_{t=1 }^{n-1}\\left(\\frac{\\bar{Y}_{t+1} - Y_{t+1}}{Y_t}\\right)^2}{\\sum_{t=1 }^{n-1}\\left(\\frac{Y_{t+1} - Y_{t}}{Y_t}\\right)^2}}$$"
+
+    # url="['Explanation'](https://docs.oracle.com/cd/E57185_01/CBREG/ch06s02s03s04.html)"
+    markdown_explanation ="|Thiel's U Value | Interpretation |\n\
+    | --- | --- |\n\
+    | <1 | Forecasting is better than guessing| \n\
+    | 1 | Forecasting is about as good as guessing| \n\
+    |>1 | Forecasting is worse than guessing| \n"
+
+
+    if display_equation and display_table:
+        display(Latex(eqn),Markdown(markdown_explanation))#, Latex(eqn))
+    elif display_equation:
+        display(Latex(eqn))
+    elif display_table:
+        display(Markdown(markdown_explanation))
+
+    if ys_true is None and ys_pred is None:
+        return
+
+    # sum_list = []
+    num_list=[]
+    denom_list=[]
+    for t in range(len(ys_true)-1):
+        num_exp = (ys_pred[t+1] - ys_true[t+1])/ys_true[t]
+        num_list.append([num_exp**2])
+        denom_exp = (ys_true[t+1] - ys_true[t])/ys_true[t]
+        denom_list.append([denom_exp**2])
+    U = np.sqrt( np.sum(num_list) / np.sum(denom_list))
+    return U

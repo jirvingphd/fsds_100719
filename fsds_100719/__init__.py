@@ -102,164 +102,363 @@ def list2df(list, index_col=None, set_caption=None, return_df=True,df_kwds=None)
         display(dfs)
     return df_list
 
-# def column_report(df,index_col='iloc', sort_column='iloc', ascending=True,name_for_notes_col = 'Notes',notes_by_dtype=False,
-#  decision_map=None, format_dict=None,   as_qgrid=True, qgrid_options=None, qgrid_column_options=None,qgrid_col_defs=None, qgrid_callback=None,
-#  as_df = False, as_interactive_df=False, show_and_return=True):
-
-#     """
-#     Returns a datafarme summary of the columns, their dtype,  a summary dataframe with the column name, column dtypes, and a `decision_map` dictionary of
-#     datatype.
-#     [!] Please note if qgrid does not display properly, enter this into your terminal and restart your temrinal.
-#         'jupyter nbextension enable --py --sys-prefix qgrid'# required for qgrid
-#         'jupyter nbextension enable --py --sys-prefix widgetsnbextension' # only required if you have not enabled the ipywidgets nbextension yet
+def ihelp_menu(function_list, json_file='ihelp_output.txt',to_embed=False):
+    """Accepts a list of string names for loaded modules/functions to save the `help` output and 
+    inspect.getsource() outputs to dictionary for later reference and display"""
+    ## One way using sys to write txt file
+    import pandas as pd
+    import sys
+    import inspect
+    from io import StringIO
+    notebook_output = sys.stdout
+    result = StringIO()
+    sys.stdout=result
     
-#     Default qgrid options:
-#        default_grid_options={
-#         # SlickGrid options
-#         'fullWidthRows': True,
-#         'syncColumnCellResize': True,
-#         'forceFitColumns': True,
-#         'defaultColumnWidth': 50,
-#         'rowHeight': 25,
-#         'enableColumnReorder': True,
-#         'enableTextSelectionOnCells': True,
-#         'editable': True,
-#         'autoEdit': False,
-#         'explicitInitialization': True,
+    ## Turn single input into a list
+    if isinstance(function_list,list)==False:
+        function_list = [function_list]
+    
+    ## Make a dictionary of{function_name : function_object}
+    functions_dict = dict()
+    for fun in function_list:
+        
+        ## if input is a string, save string as key, and eval(function) as value
+        if isinstance(fun, str):
+            functions_dict[fun] = eval(fun)
 
-#         # Qgrid options
-#         'maxVisibleRows': 30,
-#         'minVisibleRows': 8,
-#         'sortable': True,
-#         'filterable': True,
-#         'highlightSelectedCell': True,
-#         'highlightSelectedRow': True
-#     }
-#     """
-#     from ipywidgets import interact
-#     import pandas as pd
-#     from IPython.display import display
-#     import qgrid
-#     small_col_width = 20
+        ## if input is a function, get the name of function using inspect and make key, function as value
+        elif inspect.isfunction(fun):
 
-#     # default_col_options={'width':20}
+            members= inspect.getmembers(fun)
+            member_df = pd.DataFrame(members,columns=['param','values']).set_index('param')
 
-#     default_column_definitions={'column name':{'width':60}, '.iloc[:,i]':{'width':small_col_width}, 'dtypes':{'width':30}, '# zeros':{'width':small_col_width},
-#                     '# null':{'width':small_col_width},'% null':{'width':small_col_width}, name_for_notes_col:{'width':100}}
+            fun_name = member_df.loc['__name__'].values[0]
+            functions_dict[fun_name] = fun
+            
+            
+    ## Create an output dict to store results for functions
+    output_dict = {}
 
-#     default_grid_options={
-#         # SlickGrid options
-#         'fullWidthRows': True,
-#         'syncColumnCellResize': True,
-#         'forceFitColumns': True,
-#         'defaultColumnWidth': 50,
-#         'rowHeight': 25,
-#         'enableColumnReorder': True,
-#         'enableTextSelectionOnCells': True,
-#         'editable': True,
-#         'autoEdit': False,
-#         'explicitInitialization': True,
+    for fun_name, real_func in functions_dict.items():
+        
+        output_dict[fun_name] = {}
+                
+        ## First save help
+        help(real_func)
+        output_dict[fun_name]['help'] = result.getvalue()
+        
+        ## Clear contents of io stream
+        result.truncate(0)
+        
+        try:
+            ## Next save source
+            print(inspect.getsource(real_func)) #eval(fun)))###f"{eval(fun)}"))
+        except:
+            print("Source code for object was not found")
+        output_dict[fun_name]['source'] = result.getvalue()
+        
+        ## clear contents of io stream
+        result.truncate(0)
+        
+        
+        ## Get file location
+        try:
+            file_loc = inspect.getfile(real_func)
+            print(file_loc)
+        except:
+            print("File location not found")
+            
+        output_dict[fun_name]['file_location'] =result.getvalue()
+        
+        
+        ## clear contents of io stream
+        result.truncate(0)        
+                
+        
+    ## Reset display back to notebook
+    sys.stdout = notebook_output    
 
-#         # Qgrid options
-#         'maxVisibleRows': 30,
-#         'minVisibleRows': 8,
-#         'sortable': True,
-#         'filterable': True,
-#         'highlightSelectedCell': True,
-#         'highlightSelectedRow': True
-#     }
+    
+    with open(json_file,'w') as f:
+        import json
+        json.dump(output_dict,f)
 
-#     ## Set the params to defaults, to then be overriden
-#     column_definitions = default_column_definitions
-#     grid_options=default_grid_options
-#     # column_options = default_col_options
+    
+    ## CREATE INTERACTIVE MENU
+    from ipywidgets import interact, interactive, interactive_output
+    import ipywidgets as widgets
+    from IPython.display import display
+    from functions_combined_BEST import ihelp
+    import functions_combined_BEST as ji
 
-#     if qgrid_options is not None:
-#         for k,v in qgrid_options.items():
-#             grid_options[k]=v
+    ## Check boxes
+    check_help = widgets.Checkbox(description="Show 'help(func)'",value=True)
+    check_source = widgets.Checkbox(description="Show source code",value=True)
+    check_fileloc=widgets.Checkbox(description="Show source filepath",value=False)
+    check_boxes = widgets.HBox(children=[check_help,check_source,check_fileloc])
 
-#     if qgrid_col_defs is not None:
-#         for k,v in qgrid_col_defs.items():
-#             column_definitions[k]=v
-#     else:
-#         column_definitions = default_column_definitions
+    ## dropdown menu (dropdown, label, button)
+    dropdown = widgets.Dropdown(options=list(output_dict.keys()))
+    label = widgets.Label('Function Menu')
+    button = widgets.ToggleButton(description='Show/hide',value=False)
+    
+    ## Putting it all together
+    title = widgets.Label('iHelp Menu: View Help and/or Source Code')
+    menu = widgets.HBox(children=[label,dropdown,button])
+    titled_menu = widgets.VBox(children=[title,menu])
+    full_layout = widgets.GridBox(children=[titled_menu,check_boxes],box_style='warning')
+    
+    
+    
+    ## Define output manager
+    # show_output = widgets.Output()
+
+    def dropdown_event(change): 
+        new_key = change.new
+        output_display = output_dict[new_key]
+    dropdown.observe(dropdown_event,names='values')
+
+    
+    def show_ihelp(display_help=button.value,function=dropdown.value,
+                   show_help=check_help.value,show_code=check_source.value, show_file=check_fileloc.value):#,
+                   #ouput_dict=output_dict):
+
+        from IPython.display import Markdown
+        import functions_combined_BEST as ji
+        from IPython.display import display        
+        page_header = '---'*28
+        import json
+        with open(json_file,'r') as f:
+            output_dict = json.load(f)
+        
+        
+        func_dict = output_dict[function]
+
+        if display_help:
+            if show_help:
+#                 display(print(func_dict['help']))
+                print(page_header)
+                banner = ''.join(["---"*2,' HELP ',"---"*24,'\n'])
+                print(banner)
+                print(func_dict['help'])
+
+            if show_code:
+                print(page_header)
+
+                banner = ''.join(["---"*2,' SOURCE -',"---"*23])
+                print(banner)
+                source_code = "```python\n"
+                source_code += func_dict['source']
+                source_code += "```"
+                display(Markdown(source_code))
+            
+            
+            if show_file:
+                print(page_header)
+                banner = ''.join(["---"*2,' FILE LOCATION ',"---"*21])
+                print(banner)
+                
+                file_loc = func_dict['file_location']
+                print(file_loc)
+                
+            if show_help==False & show_code==False & show_file==False:
+                display('Check at least one "Show" checkbox for output.')
+                
+        else:
+            display('Press "Show/hide" for display')
+            
+    ## Fully integrated output
+    output = widgets.interactive_output(show_ihelp,{'display_help':button,
+                                                   'function':dropdown,
+                                                   'show_help':check_help,
+                                                   'show_code':check_source,
+                                                   'show_file':check_fileloc})
+
+    if to_embed:
+        return full_layout, output
+    else:
+        display(full_layout, output)
 
 
-#     # format_dict = {'sum':'${0:,.0f}', 'date': '{:%m-%Y}', 'pct_of_total': '{:.2%}'}
-#     # monthly_sales.style.format(format_dict).hide_index()
-#     def count_col_zeros(df, columns=None):
-#         import pandas as pd
-#         import numpy as np
-#         # Make a list of keys for every column  (for series index)
-#         zeros = pd.Series(index=df.columns)
-#         # use all cols by default
-#         if columns is None:
-#             columns=df.columns
+def ihelp_menu2(function_list, json_file='ihelp_output.txt',to_embed=False):
+    """Accepts a list of string names for loaded modules/functions to save the `help` output and 
+    inspect.getsource() outputs to dictionary for later reference and display"""
+    ## One way using sys to write txt file
+    import pandas as pd
+    import sys
+    import inspect
+    from io import StringIO
+    notebook_output = sys.stdout
+    result = StringIO()
+    sys.stdout=result
+    
+    ## Turn single input into a list
+    if isinstance(function_list,list)==False:
+        function_list = [function_list]
+    
+    ## Make a dictionary of{function_name : function_object}
+    functions_dict = dict()
+    for fun in function_list:
+        
+        ## if input is a string, save string as key, and eval(function) as value
+        if isinstance(fun, str):
+            functions_dict[fun] = eval(fun)
 
-#         # get sum of zero values for each column
-#         for col in columns:
-#             zeros[col] = np.sum( df[col].values == 0)
-#         return zeros
+        ## if input is a function, get the name of function using inspect and make key, function as value
+        elif inspect.isfunction(fun):
 
+            members= inspect.getmembers(fun)
+            member_df = pd.DataFrame(members,columns=['param','values']).set_index('param')
 
-#     ##
-#     df_report = pd.DataFrame({'.iloc[:,i]': range(len(df.columns)),
-#                             'column name':df.columns,
-#                             'dtypes':df.dtypes.astype('str'),
-#                             '# zeros': count_col_zeros(df),
-#                             '# null': df.isna().sum(),
-#                             '% null':df.isna().sum().divide(df.shape[0]).mul(100).round(2)})
-#     ## Sort by index_col
-#     if 'iloc' in index_col:
-#         index_col = '.iloc[:,i]'
+            fun_name = member_df.loc['__name__'].values[0]
+            functions_dict[fun_name] = fun
+            
+            
+    ## Create an output dict to store results for functions
+    output_dict = {}
 
-#     df_report.set_index(index_col ,inplace=True)
+    for fun_name, real_func in functions_dict.items():
+        
+        output_dict[fun_name] = {}
+                
+        ## First save help
+        help(real_func)
+        output_dict[fun_name]['help'] = result.getvalue()
+        
+        ## Clear contents of io stream
+        result.truncate(0)
+        
+        try:
+            ## Next save source
+            print(inspect.getsource(real_func)) #eval(fun)))###f"{eval(fun)}"))
+        except:
+            print("Source code for object was not found")
+        output_dict[fun_name]['source'] = result.getvalue()
+        
+        ## clear contents of io stream
+        result.truncate(0)
+        
+        
+        ## Get file location
+        try:
+            file_loc = inspect.getfile(real_func)
+            print(file_loc)
+        except:
+            print("File location not found")
+            
+        output_dict[fun_name]['file_location'] =result.getvalue()
+        
+        
+        ## clear contents of io stream
+        result.truncate(0)        
+                
+        
+    ## Reset display back to notebook
+    sys.stdout = notebook_output    
 
-#     ## Add additonal column with notes
-#     # decision_map_keys = ['by_name', 'by_dtype','by_iloc']
-#     if decision_map is None:
-#         decision_map ={}
-#         decision_map['by_dtype'] = {'object':'Check if should be one hot coded',
-#                         'int64':'May be  class object, or count of a ',
-#                         'bool':'one hot',
-#                         'float64':'drop and recalculate'}
+    
+    with open(json_file,'w') as f:
+        import json
+        json.dump(output_dict,f)
 
-#     if notes_by_dtype:
-#         df_report[name_for_notes_col] = df_report['dtypes'].map(decision_map['by_dtype'])#column_list
-#     else:
-#         df_report[name_for_notes_col] = ''
-# #     df_report.style.set_caption('DF Columns, Dtypes, and Course of Action')
+    
+    ## CREATE INTERACTIVE MENU
+    from ipywidgets import interact, interactive, interactive_output
+    import ipywidgets as widgets
+    from IPython.display import display
+    from functions_combined_BEST import ihelp
+    import functions_combined_BEST as ji
 
-#     ##  Sort column
-#     if sort_column is None:
-#         sort_column = '.iloc[:,i]'
+    ## Check boxes
+    check_help = widgets.Checkbox(description="Show 'help(func)'",value=True)
+    check_source = widgets.Checkbox(description="Show source code",value=True)
+    check_fileloc=widgets.Checkbox(description="Show source filepath",value=False)
+    check_boxes = widgets.HBox(children=[check_help,check_source,check_fileloc])
 
+    ## dropdown menu (dropdown, label, button)
+    dropdown = widgets.Dropdown(options=list(output_dict.keys()))
+    label = widgets.Label('Function Menu')
+    button = widgets.ToggleButton(description='Show/hide',value=False)
+    
+    ## Putting it all together
+    title = widgets.Label('iHelp Menu: View Help and/or Source Code')
+    menu = widgets.HBox(children=[label,dropdown,button])
+    titled_menu = widgets.VBox(children=[title,menu])
+    full_layout = widgets.GridBox(children=[titled_menu,check_boxes],box_style='warning')
+    
+    
+    
+    ## Define output manager
+    # show_output = widgets.Output()
 
-#     if 'iloc' in sort_column:
-#         sort_column = '.iloc[:,i]'
+    def dropdown_event(change): 
+        new_key = change.new
+        output_display = output_dict[new_key]
+    dropdown.observe(dropdown_event,names='values')
 
-#     df_report.sort_values(by =sort_column,ascending=ascending, axis=0, inplace=True)
+    
+    def show_ihelp(display_help=button.value,function=dropdown.value,
+                   show_help=check_help.value,show_code=check_source.value, show_file=check_fileloc.value):#,
+                   #ouput_dict=output_dict):
 
-#     if as_df:
-#         if show_and_return:
-#             display(df_report)
-#         return df_report
+        from IPython.display import Markdown
+        import functions_combined_BEST as ji
+        from IPython.display import display        
+        page_header = '---'*28
+        import json
+        with open(json_file,'r') as f:
+            output_dict = json.load(f)
+        
+        
+        func_dict = output_dict[function]
 
-#     elif as_qgrid:
-#         print('[i] qgrid returned. Use gqrid.get_changed_df() to get edited df back.')
-#         qdf = qgrid.show_grid(df_report,grid_options=grid_options, column_options=qgrid_column_options, column_definitions=column_definitions,row_edit_callback=qgrid_callback  )
-#         if show_and_return:
-#             display(qdf)
-#         return qdf
+        if display_help:
+            if show_help:
+#                 display(print(func_dict['help']))
+                print(page_header)
+                banner = ''.join(["---"*2,' HELP ',"---"*24,'\n'])
+                print(banner)
+                print(func_dict['help'])
 
-#     elif as_interactive_df:
+            if show_code:
+                print(page_header)
 
-#         @interact(column= df_report.columns,direction={'ascending':True,'descending':False})
-#         def sort_df(column, direction):
-#             return df_report.sort_values(by=column,axis=0,ascending=direction)
-#     else:
-#         raise Exception('One of the output options must be true: `as_qgrid`,`as_df`,`as_interactive_df`')
+                banner = ''.join(["---"*2,' SOURCE -',"---"*23])
+                print(banner)
+                source_code = "```python\n"
+                source_code += func_dict['source']
+                source_code += "```"
+                display(Markdown(source_code))
+            
+            
+            if show_file:
+                print(page_header)
+                banner = ''.join(["---"*2,' FILE LOCATION ',"---"*21])
+                print(banner)
+                
+                file_loc = func_dict['file_location']
+                print(file_loc)
+                
+            if show_help==False & show_code==False & show_file==False:
+                display('Check at least one "Show" checkbox for output.')
+                
+        else:
+            display('Press "Show/hide" for display')
+            
+    ## Fully integrated output
+    output = widgets.interactive_output(show_ihelp,{'display_help':button,
+                                                   'function':dropdown,
+                                                   'show_help':check_help,
+                                                   'show_code':check_source,
+                                                   'show_file':check_fileloc})
 
+    if to_embed:
+        return full_layout, output
+    else:
+        display(full_layout, output)
+        
+        
+        
 def inspect_variables(local_vars = None,sort_col='size',exclude_funcs_mods=True, top_n=10,return_df=False,always_display=True,
 show_how_to_delete=False,print_names=False):
     """Displays a dataframe of all variables and their size in memory, with the
@@ -399,3 +598,75 @@ def reload(mod):
         return  reload(mod)
     
     
+def save_ihelp_to_file(function,save_help=False,save_code=True, 
+                        as_md=False,as_txt=True,
+                        folder='readme_resources/ihelp_outputs/',
+                        filename=None,file_mode='w'):
+    """Saves the string representation of the ihelp source code as markdown. 
+    Filename should NOT have an extension. .txt or .md will be added based on
+    as_md/as_txt.
+    If filename is None, function name is used."""
+
+    if as_md & as_txt:
+        raise Exception('Only one of as_md / as_txt may be true.')
+
+    import sys
+    from io import StringIO
+    ## save original output to restore
+    orig_output = sys.stdout
+    ## instantiate io stream to capture output
+    io_out = StringIO()
+    ## Redirect output to output stream
+    sys.stdout = io_out
+    
+    if save_code:
+        print('### SOURCE:')
+        help_md = get_source_code_markdown(function)
+        ## print output to io_stream
+        print(help_md)
+        
+    if save_help:
+        print('### HELP:')
+        help(function)
+        
+    ## Get printed text from io stream
+    text_to_save = io_out.getvalue()
+    
+
+    ## MAKE FULL FILENAME
+    if filename is None:
+
+        ## Find the name of the function
+        import re
+        func_names_exp = re.compile('def (\w*)\(')
+        func_name = func_names_exp.findall(text_to_save)[0]    
+        print(f'Found code for {func_name}')
+
+        save_filename = folder+func_name#+'.txt'
+    else:
+        save_filename = folder+filename
+
+    if as_md:
+        ext = '.md'
+    elif as_txt:
+        ext='.txt'
+
+    full_filename = save_filename + ext
+    
+    with open(full_filename,file_mode) as f:
+        f.write(text_to_save)
+        
+    print(f'Output saved as {full_filename}')
+    
+    sys.stdout = orig_output
+
+
+
+def get_source_code_markdown(function):
+    """Retrieves the source code as a string and appends the markdown
+    python syntax notation"""
+    import inspect
+    from IPython.display import display, Markdown
+    source_DF = inspect.getsource(function)            
+    output = "```python" +'\n'+source_DF+'\n'+"```"
+    return output
