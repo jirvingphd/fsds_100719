@@ -6,9 +6,9 @@ Welcome to fsds_100719's documentation!
    :caption: Contents:
 
    installation
-    contributing
-    usage
-    fsds_100719
+   contributing
+   usage
+   fsds_100719
 
    modules
    .. automodule::
