@@ -1,4 +1,3 @@
-=====
 Usage
 =====
 
@@ -11,6 +10,7 @@ e.g. pandas as pd, numpy as np,etc.::
 
     from fsds_100719.imports import *
 
+
 Functions worth importing by name::
     
     # To easily inspect help and source code
@@ -21,6 +21,7 @@ Functions worth importing by name::
 
 
 You can load just your cohort or your own module as fs::
+
     import fsds_100719.ft.jirvingphd as fs
     # or
     import fsds_100719.ft as fs

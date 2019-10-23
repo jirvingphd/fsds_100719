@@ -1,8 +1,9 @@
 
-To contribute::
+TO CONTRIBUTE::
 ==============
 
 1) Fork the project repo to your github account and clone it to your computer.
+ https://github.com/jirvingphd/fsds_100719
 
 2) To add your own submodule with your code, 
 navigate to the `ft` or `pt` folders (full or part time).
