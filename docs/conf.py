@@ -181,11 +181,11 @@ texinfo_documents = [
 def run_apidoc(_):
 	from sphinx.ext.apidoc import main
 	import os
-	import sys
+	import sys 
 	sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 	cur_dir = os.path.abspath(os.path.dirname(__file__))
 	module = os.path.join(cur_dir,"..","fsds_100719")
-	main(['-o', cur_dir, module,'--force']) # removed '-M'
+	main(['-o', cur_dir, module,'-M','--force']) # removed '-M'
 
 def setup(app):
 	app.connect('builder-inited', run_apidoc)
