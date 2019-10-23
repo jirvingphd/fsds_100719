@@ -4,3 +4,6 @@ james.irving@flatironschool.com
 """
 from ..imports import *
 
+
+def placeholder():
+    pass

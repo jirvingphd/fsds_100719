@@ -1,0 +1,36 @@
+fsds_100719 package
+===================
+:ref:`installation`
+:ref:`contributing`
+:ref:`usage`
+
+main module (fsds_100719/*)
+---------------------------
+
+.. automodule:: fsds_100719
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+imports module
+--------------------
+
+.. automodule:: fsds_100719.imports
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+sub-packages
+============
+.. automodule:: fsds_100719/jmi
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+
+
+
+
+

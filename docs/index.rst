@@ -2,12 +2,13 @@ Welcome to fsds_100719's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 2
    :caption: Contents:
 
    installation
     contributing
     usage
+    fsds_100719
 
    modules
    .. automodule::
