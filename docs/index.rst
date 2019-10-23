@@ -7,12 +7,12 @@ Welcome to fsds_100719's documentation!
 
 .. toctree::
 :maxdepth: 2
-   :caption: Modules:
-   fsds_100719
-   contributing
-   authors
-   history
-   ...
+:caption: Modules:
+fsds_100719
+contributing
+authors
+history
+...
 
 Indices and tables
 ==================
