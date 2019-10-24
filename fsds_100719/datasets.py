@@ -1,6 +1,6 @@
 """A collection of convenient csv urls for dataframe loading"""
 """A collection of convenient csv urls for dataframe loading"""
-def load(dataset, verbose=False, read_csv_kwds=None):
+def load_data(dataset, verbose=False, read_csv_kwds=None):
     """
     Loads a DataFrame of the requested dataset from Learn.co lessons
     or from sklearn.datasets. (see args for options) 
