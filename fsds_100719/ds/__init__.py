@@ -690,16 +690,18 @@ def get_source_code_markdown(function):
     return output
 
 
-def quick_ref(topic='student_resource_folder'):
-    """Displays quick reference url links and info.
-    Args:
-        topic (str): selects which reference info to show.
-            - `student_resource_folder` : data science gdrive url
-            - `fsds` :documentaion url"""
+
+
+# def quick_ref(topic='student_resource_folder'):
+#     """Displays quick reference url links and info.
+#     Args:
+#         topic (str): selects which reference info to show.
+#             - `student_resource_folder` : data science gdrive url
+#             - `fsds` :documentaion url"""
             
-    if 'student_resource_folder' in topic:
-        print('Data Science Student Resources:')
-        print('https://flatiron.online/StudentResourcesGdrive')
+#     if 'student_resource_folder' in topic:
+#         print('Data Science Student Resources:')
+#         print('https://flatiron.online/StudentResourcesGdrive')
         
-    if 'fsds' in topic:
-        print('fsds_100719 Package Documentation:')
+#     if 'fsds' in topic:
+#         print('fsds_100719 Package Documentation:')

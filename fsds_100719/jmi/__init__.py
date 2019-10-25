@@ -1503,43 +1503,44 @@ def check_column(panda_obj, columns=None,nlargest='all'):
 
 
 
-    ## DataFrame Creation, Inspection, and Exporting
-def inspect_df(df, n_rows=3, verbose=True):
-    """ EDA:
-    Show all pandas inspection tables.
-    Displays df.head(), df.info(), df.describe().
-    By default also runs check_null and check_numeric to inspect
-    columns for null values and to check string columns to detect
-    numeric values. (If verbose==True)
-    Parameters:
-        df(dataframe):
-            dataframe to inspect
-        n_rows:
-            number of header rows to show (Default=3).
-        verbose:
-            If verbose==True (default), check_null and check_numeric.
-    Ex: inspect_df(df,n_rows=4)
-    """
-    from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
-    from bs_ds.prettypandas import display_side_by_side
-    import pandas as pd
-    from IPython.display import display
-    with pd.option_context("display.max_columns", None ,'display.precision',4):
-        display(df.info()) #, display(df.describe())
+#     ## DataFrame Creation, Inspection, and Exporting
+# def inspect_df(df, n_rows=3, verbose=True):
+#     """ EDA:
+#     Show all pandas inspection tables.
+#     Displays df.head(), df.info(), df.describe().
+#     By default also runs check_null and check_numeric to inspect
+#     columns for null values and to check string columns to detect
+#     numeric values. (If verbose==True)
+#     Parameters:
+#         df(dataframe):
+#             dataframe to inspect
+#         n_rows:
+#             number of header rows to show (Default=3).
+#         verbose:
+#             If verbose==True (default), check_null and check_numeric.
+#     Ex: inspect_df(df,n_rows=4)
+#     """
+#     from ..
+#     # from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
+#     # from bs_ds.prettypandas import display_side_by_side
+#     import pandas as pd
+#     from IPython.display import display
+#     with pd.option_context("display.max_columns", None ,'display.precision',4):
+#         display(df.info()) #, display(df.describe())
 
-        if verbose == True:
+#         if verbose == True:
 
-            df_num = check_numeric(df,unique_check=False, show_df=False)
-            # sdf_num = df_num.style.set_caption('Detected Numeric Values')
+#             df_num = check_numeric(df,unique_check=False, show_df=False)
+#             # sdf_num = df_num.style.set_caption('Detected Numeric Values')
 
-            df_null = check_null(df, show_df=False)
-            # sdf_null = df_null.style.set_caption('Detected Null values')
+#             df_null = check_null(df, show_df=False)
+#             # sdf_null = df_null.style.set_caption('Detected Null values')
 
-            display_side_by_side(df_null, df_num,df.describe())
-        else:
-            display(df.describe())
+#             display_side_by_side(df_null, df_num,df.describe())
+#         else:
+#             display(df.describe())
 
-        display(df.head(n_rows))
+#         display(df.head(n_rows))
 
 
 
@@ -2038,7 +2039,7 @@ class Clock(object):
         from datetime import datetime
         from pytz import timezone
         from tzlocal import get_localzone
-        from bs_ds import list2df
+        from fsds_100719.ds import list2df
         if label is None:
             label='--'
 
@@ -2105,7 +2106,7 @@ class Clock(object):
 
     def summary(self):
         """Display dataframe summary table of Clock laps"""
-        from bs_ds import list2df
+        from fsds_100719.ds import list2df
         import pandas as pd
         from IPython.display import display
         df_lap_times = list2df(self._lap_times_list_)#,index_col='Lap #')
@@ -2233,7 +2234,6 @@ def evaluate_regression(y_true, y_pred, metrics=None, show_results=False, displa
     """
     from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
     import numpy as np
-    from bs_ds import list2df
     import inspect
 
     idx_true_null = find_null_idx(y_true)
@@ -2288,7 +2288,7 @@ def evaluate_regression(y_true, y_pred, metrics=None, show_results=False, displa
 
         U = thiels_U(y_true, y_pred,display_equation=show_eqn,display_table=show_table )
         results.append(["Thiel's U", U])
-
+    from fsds_100719.ds import list2df
     results_df = list2df(results)#, index_col='Metric')
     results_df.set_index('Metric', inplace=True)
     if show_results:
