@@ -67,8 +67,8 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
         ('matplotlib.pyplot','plt',"Matplotlib's matlab-like plotting module"),
         ('seaborn','sns',"High-level data visualization library based on matplotlib"),
         ('fsds_100719','fs','Custom data science bootcamp student package'),
-        ('IPython.display','dp','Display modules with helpful display and clearing commands.'),
-        ('cufflinks','cf','Adds df.iplot() interactive Plotly figs. To use, run >> cf.go_offline()')]
+        ('IPython.display','dp','Display modules with helpful display and clearing commands.')]#,
+        # ('cufflinks','cf','Adds df.iplot() interactive Plotly figs. To use, run >> cf.go_offline()')]
 
     # if using own list, rename to 'import_list'
     else:
