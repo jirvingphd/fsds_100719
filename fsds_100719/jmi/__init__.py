@@ -1,3 +1,4 @@
+from ..ds import *
 # import pandas as pd
 # import numpy as np
 # import matplotlib.pyplot as plt
@@ -391,7 +392,7 @@ def print_docstring_template(style='google',object_type='function',show_url=Fals
     The name of each parameter is required. The type and description of each
     parameter is optional, but should be included if not obvious.
 
-    If \*args or \*\*kwargs are accepted,
+    If *args or **kwargs are accepted,
     they should be listed as ``*args`` and ``**kwargs``.
 
     The format for a parameter is::
@@ -1581,7 +1582,7 @@ def drop_cols(df, list_of_strings_or_regexp,verbose=0):#,axis=1):
 def add_filtered_col_to_df(df_source, df_to_add_to, list_of_exps, return_filtered_col_names =False):
     """Takes a dataframe source with columns to copy using df.filter(regexp=(list_of_exps)),
     with list_of_exps being a list of text expressions to find inside column names."""
-    import bs_ds as bs
+    # import bs_ds as bs
     import pandas as pd
     filtered_col_list = {}
     for exp in list_of_exps:
@@ -1640,78 +1641,78 @@ def multiplot(df,annot=True,fig_size=None):
 
 
 
-def save_ihelp_to_file(function,save_help=False,save_code=True, 
-                        as_md=False,as_txt=True,
-                        folder='readme_resources/ihelp_outputs/',
-                        filename=None,file_mode='w'):
-    """Saves the string representation of the ihelp source code as markdown. 
-    Filename should NOT have an extension. .txt or .md will be added based on
-    as_md/as_txt.
-    If filename is None, function name is used."""
+# def save_ihelp_to_file(function,save_help=False,save_code=True, 
+#                         as_md=False,as_txt=True,
+#                         folder='readme_resources/ihelp_outputs/',
+#                         filename=None,file_mode='w'):
+#     """Saves the string representation of the ihelp source code as markdown. 
+#     Filename should NOT have an extension. .txt or .md will be added based on
+#     as_md/as_txt.
+#     If filename is None, function name is used."""
 
-    if as_md & as_txt:
-        raise Exception('Only one of as_md / as_txt may be true.')
+#     if as_md & as_txt:
+#         raise Exception('Only one of as_md / as_txt may be true.')
 
-    import sys
-    from io import StringIO
-    ## save original output to restore
-    orig_output = sys.stdout
-    ## instantiate io stream to capture output
-    io_out = StringIO()
-    ## Redirect output to output stream
-    sys.stdout = io_out
+#     import sys
+#     from io import StringIO
+#     ## save original output to restore
+#     orig_output = sys.stdout
+#     ## instantiate io stream to capture output
+#     io_out = StringIO()
+#     ## Redirect output to output stream
+#     sys.stdout = io_out
     
-    if save_code:
-        print('### SOURCE:')
-        help_md = get_source_code_markdown(function)
-        ## print output to io_stream
-        print(help_md)
+#     if save_code:
+#         print('### SOURCE:')
+#         help_md = get_source_code_markdown(function)
+#         ## print output to io_stream
+#         print(help_md)
         
-    if save_help:
-        print('### HELP:')
-        help(function)
+#     if save_help:
+#         print('### HELP:')
+#         help(function)
         
-    ## Get printed text from io stream
-    text_to_save = io_out.getvalue()
+#     ## Get printed text from io stream
+#     text_to_save = io_out.getvalue()
     
 
-    ## MAKE FULL FILENAME
-    if filename is None:
+#     ## MAKE FULL FILENAME
+#     if filename is None:
 
-        ## Find the name of the function
-        import re
-        func_names_exp = re.compile('def (\w*)\(')
-        func_name = func_names_exp.findall(text_to_save)[0]    
-        print(f'Found code for {func_name}')
+#         ## Find the name of the function
+#         import re
+#         func_names_exp = re.compile('def (\w*)\(')
+#         func_name = func_names_exp.findall(text_to_save)[0]    
+#         print(f'Found code for {func_name}')
 
-        save_filename = folder+func_name#+'.txt'
-    else:
-        save_filename = folder+filename
+#         save_filename = folder+func_name#+'.txt'
+#     else:
+#         save_filename = folder+filename
 
-    if as_md:
-        ext = '.md'
-    elif as_txt:
-        ext='.txt'
+#     if as_md:
+#         ext = '.md'
+#     elif as_txt:
+#         ext='.txt'
 
-    full_filename = save_filename + ext
+#     full_filename = save_filename + ext
     
-    with open(full_filename,file_mode) as f:
-        f.write(text_to_save)
+#     with open(full_filename,file_mode) as f:
+#         f.write(text_to_save)
         
-    print(f'Output saved as {full_filename}')
+#     print(f'Output saved as {full_filename}')
     
-    sys.stdout = orig_output
+#     sys.stdout = orig_output
 
 
 
-def get_source_code_markdown(function):
-    """Retrieves the source code as a string and appends the markdown
-    python syntax notation"""
-    import inspect
-    from IPython.display import display, Markdown
-    source_DF = inspect.getsource(function)            
-    output = "```python" +'\n'+source_DF+'\n'+"```"
-    return output
+# def get_source_code_markdown(function):
+#     """Retrieves the source code as a string and appends the markdown
+#     python syntax notation"""
+#     import inspect
+#     from IPython.display import display, Markdown
+#     source_DF = inspect.getsource(function)            
+#     output = "```python" +'\n'+source_DF+'\n'+"```"
+#     return output
 
 def save_ihelp_menu_to_file(function_list, filename,save_help=False,save_code=True, 
     folder='readme_resources/ihelp_outputs/',as_md=True, as_txt=False,verbose=1):
@@ -1954,7 +1955,8 @@ class Clock(object):
     from datetime import datetime
     from pytz import timezone
     from tzlocal import get_localzone
-    from bs_ds import list2df
+    # from bs_ds import list2df
+
     # from bs_ds import list2df
 
     def get_time(self,local=True):
