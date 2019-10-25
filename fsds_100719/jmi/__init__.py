@@ -1,100 +1,100 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib as mpl
-import seaborn as sns
-import scipy.stats as sts
+# import pandas as pd
+# import numpy as np
+# import matplotlib.pyplot as plt
+# import matplotlib as mpl
+# import seaborn as sns
+# import scipy.stats as sts
 # from IPython.display import display
-from sklearn.model_selection._split import _BaseKFold
-class BlockTimeSeriesSplit(_BaseKFold): #sklearn.model_selection.TimeSeriesSplit):
-    """A variant of sklearn.model_selection.TimeSeriesSplit that keeps train_size and test_size
-    constant across folds.
-    Requires n_splits,train_size,test_size. train_size/test_size can be integer indices or float ratios """
-    def __init__(self, n_splits=5,train_size=None, test_size=None, step_size=None, method='sliding'):
-        super().__init__(n_splits, shuffle=False, random_state=None)
-        self.train_size = train_size
-        self.test_size = test_size
-        self.step_size = step_size
-        if 'sliding' in method or 'normal' in method:
-            self.method = method
-        else:
-            raise  Exception("Method may only be 'normal' or 'sliding'")
+# from sklearn.model_selection._split import _BaseKFold
+# class BlockTimeSeriesSplit(_BaseKFold): #sklearn.model_selection.TimeSeriesSplit):
+#     """A variant of sklearn.model_selection.TimeSeriesSplit that keeps train_size and test_size
+#     constant across folds.
+#     Requires n_splits,train_size,test_size. train_size/test_size can be integer indices or float ratios """
+#     def __init__(self, n_splits=5,train_size=None, test_size=None, step_size=None, method='sliding'):
+#         super().__init__(n_splits, shuffle=False, random_state=None)
+#         self.train_size = train_size
+#         self.test_size = test_size
+#         self.step_size = step_size
+#         if 'sliding' in method or 'normal' in method:
+#             self.method = method
+#         else:
+#             raise  Exception("Method may only be 'normal' or 'sliding'")
 
-    def split(self,X,y=None, groups=None):
-        import numpy as np
-        import math
-        method = self.method
-        ## Get n_samples, trian_size, test_size, step_size
-        n_samples = len(X)
-        test_size = self.test_size
-        train_size =self.train_size
-
-
-        ## If train size and test sze are ratios, calculate number of indices
-        if train_size<1.0:
-            train_size = math.floor(n_samples*train_size)
-
-        if test_size <1.0:
-            test_size = math.floor(n_samples*test_size)
-
-        ## Save the sizes (all in integer form)
-        self._train_size = train_size
-        self._test_size = test_size
-
-        ## calcualte and save k_fold_size
-        k_fold_size = self._test_size + self._train_size
-        self._k_fold_size = k_fold_size
+#     def split(self,X,y=None, groups=None):
+#         import numpy as np
+#         import math
+#         method = self.method
+#         ## Get n_samples, trian_size, test_size, step_size
+#         n_samples = len(X)
+#         test_size = self.test_size
+#         train_size =self.train_size
 
 
+#         ## If train size and test sze are ratios, calculate number of indices
+#         if train_size<1.0:
+#             train_size = math.floor(n_samples*train_size)
 
-        indices = np.arange(n_samples)
+#         if test_size <1.0:
+#             test_size = math.floor(n_samples*test_size)
 
-        ## Verify there is enough data to have non-overlapping k_folds
-        if method=='normal':
-            import warnings
-            if n_samples // self._k_fold_size <self.n_splits:
-                warnings.warn('The train and test sizes are too big for n_splits using method="normal"\n\
-                switching to method="sliding"')
-                method='sliding'
-                self.method='sliding'
+#         ## Save the sizes (all in integer form)
+#         self._train_size = train_size
+#         self._test_size = test_size
+
+#         ## calcualte and save k_fold_size
+#         k_fold_size = self._test_size + self._train_size
+#         self._k_fold_size = k_fold_size
 
 
 
-        if method=='normal':
+#         indices = np.arange(n_samples)
 
-            margin = 0
-            for i in range(self.n_splits):
-
-                start = i * k_fold_size
-                stop = start+k_fold_size
-
-                ## change mid to match my own needs
-                mid = int(start+self._train_size)
-                yield indices[start: mid], indices[mid + margin: stop]
-
-
-        elif method=='sliding':
-
-            step_size = self.step_size
-            if step_size is None: ## if no step_size, calculate one
-                ## DETERMINE STEP_SIZE
-                last_possible_start = n_samples-self._k_fold_size #index[-1]-k_fold_size)\
-                step_range =  range(last_possible_start)
-                step_size = len(step_range)//self.n_splits
-            self._step_size = step_size
+#         ## Verify there is enough data to have non-overlapping k_folds
+#         if method=='normal':
+#             import warnings
+#             if n_samples // self._k_fold_size <self.n_splits:
+#                 warnings.warn('The train and test sizes are too big for n_splits using method="normal"\n\
+#                 switching to method="sliding"')
+#                 method='sliding'
+#                 self.method='sliding'
 
 
-            for i in range(self.n_splits):
-                if i==0:
-                    start = 0
-                else:
-                    start = self._prior_start+self._step_size #(i * step_size)
 
-                stop =  start+k_fold_size
-                ## change mid to match my own needs
-                mid = int(start+self._train_size)
-                prior_start = start
-                yield indices[start: mid], indices[mid: stop]
+#         if method=='normal':
+
+#             margin = 0
+#             for i in range(self.n_splits):
+
+#                 start = i * k_fold_size
+#                 stop = start+k_fold_size
+
+#                 ## change mid to match my own needs
+#                 mid = int(start+self._train_size)
+#                 yield indices[start: mid], indices[mid + margin: stop]
+
+
+#         elif method=='sliding':
+
+#             step_size = self.step_size
+#             if step_size is None: ## if no step_size, calculate one
+#                 ## DETERMINE STEP_SIZE
+#                 last_possible_start = n_samples-self._k_fold_size #index[-1]-k_fold_size)\
+#                 step_range =  range(last_possible_start)
+#                 step_size = len(step_range)//self.n_splits
+#             self._step_size = step_size
+
+
+#             for i in range(self.n_splits):
+#                 if i==0:
+#                     start = 0
+#                 else:
+#                     start = self._prior_start+self._step_size #(i * step_size)
+
+#                 stop =  start+k_fold_size
+#                 ## change mid to match my own needs
+#                 mid = int(start+self._train_size)
+#                 self._prior_start = start
+#                 yield indices[start: mid], indices[mid: stop]
 
 
 
@@ -902,110 +902,112 @@ def make_CSS(show=False):
 """A collection of function to change the aesthetics of Pandas DataFrames using CSS, html, and pandas styling."""
 # from IPython.display import HTML
 # import pandas as pd
-def hover(hover_color="gold"):
-    """DataFrame Styler: Called by highlight to highlight row below cursor.
-        Changes html background color.
-
-        Parameters:
-
-        hover_Color
-    """
-    from IPython.display import HTML
-    return dict(selector="tr:hover",
-                props=[("background-color", "%s" % hover_color)])
 
 
-def highlight(df,hover_color="gold"):
-    """DataFrame Styler:
-        Highlight row when hovering.
-        Accept and valid CSS colorname as hover_color.
-    """
-    styles = [
-        hover(hover_color),
-        dict(selector="th", props=[("font-size", "115%"),
-                                   ("text-align", "center")]),
-        dict(selector="caption", props=[("caption-side", "bottom")])
-    ]
-    html = (df.style.set_table_styles(styles)
-              .set_caption("Hover to highlight."))
-    return html
+# def hover(hover_color="gold"):
+#     """DataFrame Styler: Called by highlight to highlight row below cursor.
+#         Changes html background color.
+
+#         Parameters:
+
+#         hover_Color
+#     """
+#     from IPython.display import HTML
+#     return dict(selector="tr:hover",
+#                 props=[("background-color", "%s" % hover_color)])
 
 
-def color_true_green(val):
-    """DataFrame Styler:
-    Changes text color to green if value is True
-    Ex: style_df = df.style.applymap(color_true_green)
-        style_df #to display"""
-    color='green' if val==True else 'black'
-    return f'color: {color}'
+# def highlight(df,hover_color="gold"):
+#     """DataFrame Styler:
+#         Highlight row when hovering.
+#         Accept and valid CSS colorname as hover_color.
+#     """
+#     styles = [
+#         hover(hover_color),
+#         dict(selector="th", props=[("font-size", "115%"),
+#                                    ("text-align", "center")]),
+#         dict(selector="caption", props=[("caption-side", "bottom")])
+#     ]
+#     html = (df.style.set_table_styles(styles)
+#               .set_caption("Hover to highlight."))
+#     return html
 
-# Style dataframe for easy visualization
+
+# def color_true_green(val):
+#     """DataFrame Styler:
+#     Changes text color to green if value is True
+#     Ex: style_df = df.style.applymap(color_true_green)
+#         style_df #to display"""
+#     color='green' if val==True else 'black'
+#     return f'color: {color}'
+
+# # Style dataframe for easy visualization
 
 
-def color_scale_columns(df,matplotlib_cmap = "Greens",subset=None,):
-    """DataFrame Styler:
-    Takes a df, any valid matplotlib colormap column names
-    (matplotlib.org/tutorials/colors/colormaps.html) and
-    returns a dataframe with a gradient colormap applied to column values.
+# def color_scale_columns(df,matplotlib_cmap = "Greens",subset=None,):
+#     """DataFrame Styler:
+#     Takes a df, any valid matplotlib colormap column names
+#     (matplotlib.org/tutorials/colors/colormaps.html) and
+#     returns a dataframe with a gradient colormap applied to column values.
 
-    Example:
-    df_styled = color_scale_columns(df,cmap = "YlGn",subset=['Columns','to','color'])
+#     Example:
+#     df_styled = color_scale_columns(df,cmap = "YlGn",subset=['Columns','to','color'])
 
-    Parameters:
-    -----------
-        df:
-            DataFrame containing columns to style.
-    subset:
-         Names of columns to color-code.
-    cmap:
-        Any matplotlib colormap.
-        https://matplotlib.org/tutorials/colors/colormaps.html
+#     Parameters:
+#     -----------
+#         df:
+#             DataFrame containing columns to style.
+#     subset:
+#          Names of columns to color-code.
+#     cmap:
+#         Any matplotlib colormap.
+#         https://matplotlib.org/tutorials/colors/colormaps.html
 
-    Returns:
-    ----------
-        df_style:
-            styled dataframe.
+#     Returns:
+#     ----------
+#         df_style:
+#             styled dataframe.
 
-    """
-    from IPython.display import display
-    import seaborn as sns
-    cm = matplotlib_cmap
-    #     cm = sns.light_palette("green", as_cmap=True)
-    df_style = df.style.background_gradient(cmap=cm,subset=subset)#,low=results.min(),high=results.max())
-    # Display styled dataframe
-#     display(df_style)
-    return df_style
+#     """
+#     from IPython.display import display
+#     import seaborn as sns
+#     cm = matplotlib_cmap
+#     #     cm = sns.light_palette("green", as_cmap=True)
+#     df_style = df.style.background_gradient(cmap=cm,subset=subset)#,low=results.min(),high=results.max())
+#     # Display styled dataframe
+# #     display(df_style)
+#     return df_style
 
-def make_CSS(show=False):
-    CSS="""
-        table td{
-        text-align: center;
-        }
-        table th{
-        background-color: black;
-        color: white;
-        font-family:serif;
-        font-size:1.2em;
-        }
-        table td{
-        font-size:1.05em;
-        font-weight:75;
-        }
-        table td, th{
-        text-align: center;
-        }
-        table caption{
-        text-align: center;
-        font-size:1.2em;
-        color: black;
-        font-weight: bold;
-        font-style: italic
-        }
-    """
-    if show==True:
-        from pprint import pprint
-        pprint(CSS)
-    return CSS
+# def make_CSS(show=False):
+#     CSS="""
+#         table td{
+#         text-align: center;
+#         }
+#         table th{
+#         background-color: black;
+#         color: white;
+#         font-family:serif;
+#         font-size:1.2em;
+#         }
+#         table td{
+#         font-size:1.05em;
+#         font-weight:75;
+#         }
+#         table td, th{
+#         text-align: center;
+#         }
+#         table caption{
+#         text-align: center;
+#         font-size:1.2em;
+#         color: black;
+#         font-weight: bold;
+#         font-style: italic
+#         }
+#     """
+#     if show==True:
+#         from pprint import pprint
+#         pprint(CSS)
+#     return CSS
 
 
 # CSS="""
@@ -1188,8 +1190,9 @@ def detect_outliers(df, n, features):
     df.loc[Outliers_to_drop] # Show the outliers rows
     data= data.drop(Outliers_to_drop, axis = 0).reset_index(drop=True)
 """
-# import numpy as n
-# Drop outliers
+    import numpy as np
+    import pandas as pd
+    # Drop outliers
 
     outlier_indices = []
     # iterate over features(columns)
@@ -1444,6 +1447,7 @@ def big_pandas(user_options=None,verbose=0):
 
 def reset_pandas():
     """Resets all pandas options back to default state."""
+    import pandas as pd
     return pd.reset_option('all')
 
 
@@ -1471,6 +1475,8 @@ def check_column(panda_obj, columns=None,nlargest='all'):
     Returns: None
         prints values only
     """
+    import numpy as np
+    import pandas as pd
     # Check for DF vs Series
     if type(panda_obj)==pd.core.series.Series:
         series=panda_obj
@@ -2120,107 +2126,107 @@ class Clock(object):
 
 
 
-def plot_confusion_matrix(conf_matrix, classes = None, normalize=False,
-                          title='Confusion Matrix', cmap=None,
-                          print_raw_matrix=False,fig_size=(5,5), show_help=False):
-    """Check if Normalization Option is Set to True. If so, normalize the raw confusion matrix before visualizing
-    #Other code should be equivalent to your previous function.
-    Note: Taken from bs_ds and modified"""
-    import itertools
-    import numpy as np
-    import matplotlib.pyplot as plt
+# def plot_confusion_matrix(conf_matrix, classes = None, normalize=False,
+#                           title='Confusion Matrix', cmap=None,
+#                           print_raw_matrix=False,fig_size=(5,5), show_help=False):
+#     """Check if Normalization Option is Set to True. If so, normalize the raw confusion matrix before visualizing
+#     #Other code should be equivalent to your previous function.
+#     Note: Taken from bs_ds and modified"""
+#     import itertools
+#     import numpy as np
+#     import matplotlib.pyplot as plt
 
-    cm = conf_matrix
-    ## Set plot style properties
-    if cmap==None:
-        cmap = plt.get_cmap("Blues")
+#     cm = conf_matrix
+#     ## Set plot style properties
+#     if cmap==None:
+#         cmap = plt.get_cmap("Blues")
 
-    ## Text Properties
-    fmt = '.2f' if normalize else 'd'
+#     ## Text Properties
+#     fmt = '.2f' if normalize else 'd'
 
-    fontDict = {
-        'title':{
-            'fontsize':16,
-            'fontweight':'semibold',
-            'ha':'center',
-            },
-        'xlabel':{
-            'fontsize':14,
-            'fontweight':'normal',
-            },
-        'ylabel':{
-            'fontsize':14,
-            'fontweight':'normal',
-            },
-        'xtick_labels':{
-            'fontsize':10,
-            'fontweight':'normal',
-            'rotation':45,
-            'ha':'right',
-            },
-        'ytick_labels':{
-            'fontsize':10,
-            'fontweight':'normal',
-            'rotation':0,
-            'ha':'right',
-            },
-        'data_labels':{
-            'ha':'center',
-            'fontweight':'semibold',
+#     fontDict = {
+#         'title':{
+#             'fontsize':16,
+#             'fontweight':'semibold',
+#             'ha':'center',
+#             },
+#         'xlabel':{
+#             'fontsize':14,
+#             'fontweight':'normal',
+#             },
+#         'ylabel':{
+#             'fontsize':14,
+#             'fontweight':'normal',
+#             },
+#         'xtick_labels':{
+#             'fontsize':10,
+#             'fontweight':'normal',
+#             'rotation':45,
+#             'ha':'right',
+#             },
+#         'ytick_labels':{
+#             'fontsize':10,
+#             'fontweight':'normal',
+#             'rotation':0,
+#             'ha':'right',
+#             },
+#         'data_labels':{
+#             'ha':'center',
+#             'fontweight':'semibold',
 
-        }
-    }
-
-
-    ## Normalize data
-    if normalize:
-        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-
-    # Create plot
-    fig,ax = plt.subplots(figsize=fig_size)
-
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title,**fontDict['title'])
-    plt.colorbar()
-
-    if classes is None:
-        classes = ['negative','positive']
-
-    tick_marks = np.arange(len(classes))
+#         }
+#     }
 
 
-    plt.xticks(tick_marks, classes, **fontDict['xtick_labels'])
-    plt.yticks(tick_marks, classes,**fontDict['ytick_labels'])
+#     ## Normalize data
+#     if normalize:
+#         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+
+#     # Create plot
+#     fig,ax = plt.subplots(figsize=fig_size)
+
+#     plt.imshow(cm, interpolation='nearest', cmap=cmap)
+#     plt.title(title,**fontDict['title'])
+#     plt.colorbar()
+
+#     if classes is None:
+#         classes = ['negative','positive']
+
+#     tick_marks = np.arange(len(classes))
 
 
-    # Determine threshold for b/w text
-    thresh = cm.max() / 2.
+#     plt.xticks(tick_marks, classes, **fontDict['xtick_labels'])
+#     plt.yticks(tick_marks, classes,**fontDict['ytick_labels'])
 
-    # fig,ax = plt.subplots()
-    for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt), color='darkgray',**fontDict['data_labels'])#color="white" if cm[i, j] > thresh else "black"
 
-    plt.tight_layout()
-    plt.ylabel('True label',**fontDict['ylabel'])
-    plt.xlabel('Predicted label',**fontDict['xlabel'])
-    fig = plt.gcf()
-    plt.show()
+#     # Determine threshold for b/w text
+#     thresh = cm.max() / 2.
 
-    if print_raw_matrix:
-        print_title = 'Raw Confusion Matrix Counts:'
-        print('\n',print_title)
-        print(conf_matrix)
+#     # fig,ax = plt.subplots()
+#     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+#         plt.text(j, i, format(cm[i, j], fmt), color='darkgray',**fontDict['data_labels'])#color="white" if cm[i, j] > thresh else "black"
 
-    if show_help:
-        print('''For binary classifications:
-        [[0,0(true_neg),  0,1(false_pos)]
-        [1,0(false_neg), 1,1(true_pos)] ]
+#     plt.tight_layout()
+#     plt.ylabel('True label',**fontDict['ylabel'])
+#     plt.xlabel('Predicted label',**fontDict['xlabel'])
+#     fig = plt.gcf()
+#     plt.show()
 
-        to get vals as vars:
-        >>  tn,fp,fn,tp=confusion_matrix(y_test,y_hat_test).ravel()
-                ''')
+#     if print_raw_matrix:
+#         print_title = 'Raw Confusion Matrix Counts:'
+#         print('\n',print_title)
+#         print(conf_matrix)
 
-    return fig
+#     if show_help:
+#         print('''For binary classifications:
+#         [[0,0(true_neg),  0,1(false_pos)]
+#         [1,0(false_neg), 1,1(true_pos)] ]
+
+#         to get vals as vars:
+#         >>  tn,fp,fn,tp=confusion_matrix(y_test,y_hat_test).ravel()
+#                 ''')
+
+#     return fig
 
 
 

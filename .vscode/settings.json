@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "/anaconda3/envs/learn-env/bin/python"
+    "python.pythonPath": "/anaconda3/envs/learn-env/bin/python",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

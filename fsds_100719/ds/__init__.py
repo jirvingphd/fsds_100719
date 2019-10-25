@@ -7,12 +7,12 @@ def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,mark
     import inspect
     
     try:
-        from IPython import display, Markdown
+        from IPython.display import display, Markdown
     except:
         print('[!] IPython was not found.')
         
     page_header = '---'*28
-    footer = '---'*28+'\n'
+    # footer = '---'*28+'\n'
     if show_help:
         print(page_header)
         banner = ''.join(["---"*2,' HELP ',"---"*24,'\n'])
@@ -58,7 +58,7 @@ def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,mark
         return source_DF
 
 
-def list2df(list, index_col=None, set_caption=None, return_df=True,df_kwds=None): #, sort_values='index'):
+def list2df(list, index_col=None, caption=None, return_df=True,df_kwds=None): #, sort_values='index'):
     
     """ Quick turn an appened list with a header (row[0]) into a pretty dataframe.
 
@@ -91,8 +91,8 @@ def list2df(list, index_col=None, set_caption=None, return_df=True,df_kwds=None)
         df_list.reset_index(inplace=True)
         df_list.set_index(index_col, inplace=True)
         
-    if set_caption is not None:
-        dfs = df_list.style.set_caption()
+    if caption is not None:
+        dfs = df_list.style.set_caption(caption)
         display(dfs)
     return df_list
 
