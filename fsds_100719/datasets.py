@@ -25,35 +25,35 @@ def read_csv_from_url(url,verbose=False,read_csv_kwds=None):
 
 def load_heroes_info(verbose=False,read_csv_kwds=None):
     url = 'https://raw.githubusercontent.com/jirvingphd/dsc-data-cleaning-project-online-ds-ft-100719/master/heroes_information.csv'
-    return  read_csv_from_url(url, verbose=verbose,**read_csv_kwds)
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
     
 
 def load_heroes_powers(verbose=False,read_csv_kwds=None):
     url = "https://raw.githubusercontent.com/learn-co-students/dsc-data-cleaning-project-online-ds-ft-100719/master/super_hero_powers.csv"
-    return  read_csv_from_url(url, verbose=verbose,**read_csv_kwds)
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 def load_titanic(verbose=False,read_csv_kwds=None):
     url ="https://raw.githubusercontent.com/jirvingphd/dsc-dealing-missing-data-lab-online-ds-ft-100719/master/titanic.csv"
-    return  read_csv_from_url(url, verbose=verbose,**read_csv_kwds)
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 
 def load_mod1_proj(verbose=False,read_csv_kwds=None):
     url = "https://raw.githubusercontent.com/learn-co-students/dsc-v2-mod1-final-project-online-ds-ft-100719/master/kc_house_data.csv"
-    return  read_csv_from_url(url, verbose=verbose,**read_csv_kwds)
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
         
 
 def load_population(verbose=False,read_csv_kwds=None):
     url = "https://raw.githubusercontent.com/learn-co-students/dsc-subplots-and-enumeration-lab-online-ds-ft-100719/master/population.csv"
-    return  read_csv_from_url(url, verbose=verbose,**read_csv_kwds)
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 def load_autompg(verbose=False,read_csv_kwds=None):
     url = 'https://raw.githubusercontent.com/jirvingphd/dsc-dealing-with-categorical-variables-online-ds-ft-100719/master/auto-mpg.csv'
-    return  read_csv_from_url(url, verbose=verbose,**read_csv_kwds)
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 
 
 
-def load_boston(verbose=False,read_csv_kwds=None):
+def load_boston(verbose=False):
     
     ## Load Sklearn Datasets
     from sklearn import datasets
@@ -75,7 +75,7 @@ def load_boston(verbose=False,read_csv_kwds=None):
     
     return df 
 
-def load_iris(verbose=False,read_csv_kwds=None):
+def load_iris(verbose=False):
     from sklearn import datasets
     import pandas as pd
     if verbose:
@@ -100,29 +100,29 @@ def load_iris(verbose=False,read_csv_kwds=None):
 
 
 # def load_data(dataset, verbose=False, read_csv_kwds=None):
-    # """
-    # Loads a DataFrame of the requested dataset from Learn.co lessons
-    # or from sklearn.datasets. (see args for options) 
+    """
+    Loads a DataFrame of the requested dataset from Learn.co lessons
+    or from sklearn.datasets. (see args for options) 
     
-    # Args:
-    #     dataset (str): Name of dataset to load.
-    #         Options are: 
-    #             # FROM LESSONS
-    #             - 'heroes_info'
-    #             - 'heroes_powers'
-    #             - 'titanic'
-    #             - 'mod1_kc_housing'
-    #             - 'population'
+    Args:
+        dataset (str): Name of dataset to load.
+            Options are: 
+                # FROM LESSONS
+                - 'heroes_info'
+                - 'heroes_powers'
+                - 'titanic'
+                - 'mod1_kc_housing'
+                - 'population'
                 
-    #             ## FROM SKLEARN.DATASETS
-    #             - 'boston'
-    #             - 'iris'
-    #     verbose (bool): If true, print url or dataset description (sklearn)
-    #     read_csv_kwds(dict): Keywords to pass into pandas when reading csvs.
+                ## FROM SKLEARN.DATASETS
+                - 'boston'
+                - 'iris'
+        verbose (bool): If true, print url or dataset description (sklearn)
+        read_csv_kwds(dict): Keywords to pass into pandas when reading csvs.
         
-    # Returns:
-    #     df
-    # """
+    Returns:
+        df
+    """
     # import pandas as pd
     # from sklearn import datasets
     
