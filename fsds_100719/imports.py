@@ -110,6 +110,8 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
         # create and return styled dataframe
         columns=['Package','Handle','Description']
         df_imported= pd.DataFrame(import_list, columns=columns)
+        
+        df_imported=pd.concat([df_imported['Handle'],df_imported['Package','Description']],axis=1)
         dfs = df_imported.sort_values('Package').style.hide_index().set_caption('Loaded Packages and Handles')
         display(dfs)
 
