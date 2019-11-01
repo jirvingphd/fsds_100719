@@ -123,11 +123,11 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
 try:
     from IPython.display import clear_output
     clear_output()
+except:
+    pass
+finally:
     import_packages()
     
-
-except:
-    import_packages()
 
 try:
     import cufflinks as cf

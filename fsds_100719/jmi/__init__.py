@@ -1927,20 +1927,22 @@ def print_array_info(X, name='Array'):
     print(f'\nX[0].shape = {Xt[0].shape}')
     print(f'X[0] contains:\n\t',Xt[0])
 
+from ..ds import arr2series
+# def arr2series(array,series_index=[],series_name='predictions'):
+#     """Accepts an array, an index, and a name. If series_index is longer than array:
+#     the series_index[-len(array):] """
+#     import pandas as pd
+#     if len(series_index)==0:
+#         series_index=list(range(len(array)))
 
-def arr2series(array,series_index=[],series_name='predictions'):
-    """Accepts an array, an index, and a name. If series_index is longer than array:
-    the series_index[-len(array):] """
-    import pandas as pd
-    if len(series_index)==0:
-        series_index=list(range(len(array)))
+#     if len(series_index)>len(array):
+#         new_index= series_index[-len(array):]
+#         series_index=new_index
 
-    if len(series_index)>len(array):
-        new_index= series_index[-len(array):]
-        series_index=new_index
+#     preds_series = pd.Series(array.ravel(), index=series_index, name=series_name)
+#     return preds_series
 
-    preds_series = pd.Series(array.ravel(), index=series_index, name=series_name)
-    return preds_series
+
 
 
 
