@@ -118,10 +118,15 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
         return print('Modules successfully loaded.')
 
 
+try:
+    from IPython.display import clear_output
+    clear_output()
+    import_packages()
+    
 
+except:
+    import_packages()
 
-
-import_packages()
 try:
     import cufflinks as cf
     cf.go_offline()
