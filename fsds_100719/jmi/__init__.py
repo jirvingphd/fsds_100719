@@ -1807,83 +1807,83 @@ def create_required_folders(full_filenamepath,folder_delim='/',verbose=1):
         
         
 
-def dict_dropdown(dict_to_display,title='Dictionary Contents'):
-    """Display the model_params dictionary as a dropdown menu."""
-    from ipywidgets import interact
-    from IPython.display import display
-    from pprint import pprint
+# def dict_dropdown(dict_to_display,title='Dictionary Contents'):
+#     """Display the model_params dictionary as a dropdown menu."""
+#     from ipywidgets import interact
+#     from IPython.display import display
+#     from pprint import pprint
 
-    dash='---'
-    print(f'{dash*4} {title} {dash*4}')
+#     dash='---'
+#     print(f'{dash*4} {title} {dash*4}')
 
-    @interact(dict_to_display=dict_to_display)
-    def display_params(dict_to_display=dict_to_display):
+#     @interact(dict_to_display=dict_to_display)
+#     def display_params(dict_to_display=dict_to_display):
 
-        # # if the contents of the first level of keys is dicts:, display another dropdown
-        # if dict_to_display.values()
-        display(pprint(dict_to_display))
-        return #params.values();
-
-
-def dict_of_df_dropdown(dict_to_display, selected_key=None):
-    import ipywidgets as widgets
-    from IPython.display import display
-    from ipywidgets import interact, interactive
-    import pandas as pd
-
-    key_list = list(dict_to_display.keys())
-    key_list.append('_All_')
-
-    if selected_key is not None:
-        selected_key = selected_key
-
-    def view(eval_dict=dict_to_display,selected_key=''):
-
-        from IPython.display import display
-        from pprint import pprint
-
-        if selected_key=='_All_':
-
-            key_list = list(eval_dict.keys())
-            outputs=[]
-
-            for k in key_list:
-
-                if type(eval_dict[k]) == pd.DataFrame:
-                    outputs.append(eval_dict[k])
-                    display(eval_dict[k].style.set_caption(k).hide_index())
-                else:
-                    outputs.append(f"{k}:\n{eval_dict[k]}\n\n")
-                    pprint('\n',eval_dict[k])
-
-            return outputs#pprint(outputs)
-
-        else:
-                k = selected_key
-#                 if type(eval_dict(k)) == pd.DataFrame:
-                if type(eval_dict[k]) == pd.DataFrame:
-                     display(eval_dict[k].style.set_caption(k))
-                else:
-                    pprint(eval_dict[k])
-                return [eval_dict[k]]
-
-    w= widgets.Dropdown(options=key_list,value='_All_', description='Key Word')
-
-    # old, simple
-    out = widgets.interactive_output(view, {'selected_key':w})
+#         # # if the contents of the first level of keys is dicts:, display another dropdown
+#         # if dict_to_display.values()
+#         display(pprint(dict_to_display))
+#         return #params.values();
 
 
-    # new, flashier
-    output = widgets.Output(layout={'border': '1px solid black'})
-    if type(out)==list:
-        output.append_display_data(out)
-#         out =widgets.HBox([x for x in out])
-    else:
-        output = out
-#     widgets.HBox([])
-    final_out =  widgets.VBox([widgets.HBox([w]),output])
-    display(final_out)
-    return final_out#widgets.VBox([widgets.HBox([w]),output])#out])
+# def dict_of_df_dropdown(dict_to_display, selected_key=None):
+#     import ipywidgets as widgets
+#     from IPython.display import display
+#     from ipywidgets import interact, interactive
+#     import pandas as pd
+
+#     key_list = list(dict_to_display.keys())
+#     key_list.append('_All_')
+
+#     if selected_key is not None:
+#         selected_key = selected_key
+
+#     def view(eval_dict=dict_to_display,selected_key=''):
+
+#         from IPython.display import display
+#         from pprint import pprint
+
+#         if selected_key=='_All_':
+
+#             key_list = list(eval_dict.keys())
+#             outputs=[]
+
+#             for k in key_list:
+
+#                 if type(eval_dict[k]) == pd.DataFrame:
+#                     outputs.append(eval_dict[k])
+#                     display(eval_dict[k].style.set_caption(k).hide_index())
+#                 else:
+#                     outputs.append(f"{k}:\n{eval_dict[k]}\n\n")
+#                     pprint('\n',eval_dict[k])
+
+#             return outputs#pprint(outputs)
+
+#         else:
+#                 k = selected_key
+# #                 if type(eval_dict(k)) == pd.DataFrame:
+#                 if type(eval_dict[k]) == pd.DataFrame:
+#                      display(eval_dict[k].style.set_caption(k))
+#                 else:
+#                     pprint(eval_dict[k])
+#                 return [eval_dict[k]]
+
+#     w= widgets.Dropdown(options=key_list,value='_All_', description='Key Word')
+
+#     # old, simple
+#     out = widgets.interactive_output(view, {'selected_key':w})
+
+
+#     # new, flashier
+#     output = widgets.Output(layout={'border': '1px solid black'})
+#     if type(out)==list:
+#         output.append_display_data(out)
+# #         out =widgets.HBox([x for x in out])
+#     else:
+#         output = out
+# #     widgets.HBox([])
+#     final_out =  widgets.VBox([widgets.HBox([w]),output])
+#     display(final_out)
+#     return final_out#widgets.VBox([widgets.HBox([w]),output])#out])
 
 
 def display_dict_dropdown(dict_to_display ):
