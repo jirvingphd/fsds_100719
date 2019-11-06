@@ -1424,6 +1424,16 @@ def plot_hist_scat(df, target=None, figsize=(12,9),fig_style='dark_background',f
 def big_pandas(user_options=None,verbose=0):
     """Changes the default pandas display setttings to show all columns and all rows.
     User may replace settings with a kwd dictionary matching available options.
+    
+    Args:
+        user_options(dict) :  Pandas size parameters for pd.set_options = {
+            'display' : {
+                'max_columns' : None,
+                'expand_frame_repr':False,
+                'max_rows':None,
+                'max_info_columns':500,
+                'precision' : 4,
+            }
     """
     import pandas as pd
     if user_options==None:

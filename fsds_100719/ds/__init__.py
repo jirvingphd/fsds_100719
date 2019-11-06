@@ -478,7 +478,7 @@ def reload(mod):
     else:
         return  reload(mod)
     
-    
+from ..jmi import dict_dropdown, print_array_info,print_docstring_template
 def save_ihelp_to_file(function,save_help=False,save_code=True, 
                         as_md=False,as_txt=True,
                         folder='readme_resources/ihelp_outputs/',
