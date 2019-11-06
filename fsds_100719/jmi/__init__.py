@@ -1807,22 +1807,22 @@ def create_required_folders(full_filenamepath,folder_delim='/',verbose=1):
         
         
 
-# def dict_dropdown(dict_to_display,title='Dictionary Contents'):
-#     """Display the model_params dictionary as a dropdown menu."""
-#     from ipywidgets import interact
-#     from IPython.display import display
-#     from pprint import pprint
+def dict_dropdown(dict_to_display,title='Dictionary Contents'):
+    """Display the model_params dictionary as a dropdown menu."""
+    from ipywidgets import interact
+    from IPython.display import display
+    from pprint import pprint
 
-#     dash='---'
-#     print(f'{dash*4} {title} {dash*4}')
+    dash='---'
+    print(f'{dash*4} {title} {dash*4}')
 
-#     @interact(dict_to_display=dict_to_display)
-#     def display_params(dict_to_display=dict_to_display):
+    @interact(dict_to_display=dict_to_display)
+    def display_params(dict_to_display=dict_to_display):
 
-#         # # if the contents of the first level of keys is dicts:, display another dropdown
-#         # if dict_to_display.values()
-#         display(pprint(dict_to_display))
-#         return #params.values();
+        # # if the contents of the first level of keys is dicts:, display another dropdown
+        # if dict_to_display.values()
+        display(pprint(dict_to_display))
+        return #params.values();
 
 
 # def dict_of_df_dropdown(dict_to_display, selected_key=None):

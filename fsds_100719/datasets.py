@@ -101,29 +101,29 @@ def load_iris(verbose=False):
 
 
 # def load_data(dataset, verbose=False, read_csv_kwds=None):
-    """
-    Loads a DataFrame of the requested dataset from Learn.co lessons
-    or from sklearn.datasets. (see args for options) 
+    # """
+    # Loads a DataFrame of the requested dataset from Learn.co lessons
+    # or from sklearn.datasets. (see args for options) 
     
-    Args:
-        dataset (str): Name of dataset to load.
-            Options are: 
-                # FROM LESSONS
-                - 'heroes_info'
-                - 'heroes_powers'
-                - 'titanic'
-                - 'mod1_kc_housing'
-                - 'population'
+    # Args:
+    #     dataset (str): Name of dataset to load.
+    #         Options are: 
+    #             # FROM LESSONS
+    #             - 'heroes_info'
+    #             - 'heroes_powers'
+    #             - 'titanic'
+    #             - 'mod1_kc_housing'
+    #             - 'population'
                 
-                ## FROM SKLEARN.DATASETS
-                - 'boston'
-                - 'iris'
-        verbose (bool): If true, print url or dataset description (sklearn)
-        read_csv_kwds(dict): Keywords to pass into pandas when reading csvs.
+    #             ## FROM SKLEARN.DATASETS
+    #             - 'boston'
+    #             - 'iris'
+    #     verbose (bool): If true, print url or dataset description (sklearn)
+    #     read_csv_kwds(dict): Keywords to pass into pandas when reading csvs.
         
-    Returns:
-        df
-    """
+    # Returns:
+    #     df
+    # """
     # import pandas as pd
     # from sklearn import datasets
     
