@@ -1,6 +1,11 @@
 fsds\_100719 package
 ====================
 
+.. automodule:: fsds_100719
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Subpackages
 -----------
 
@@ -39,10 +44,3 @@ fsds\_100719.quick\_refs module
     :show-inheritance:
 
 
-Module contents
----------------
-
-.. automodule:: fsds_100719
-    :members:
-    :undoc-members:
-    :show-inheritance:

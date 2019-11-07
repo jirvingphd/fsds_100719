@@ -1,10 +1,8 @@
 fsds\_100719.jmi package
 ========================
 
-Module contents
----------------
-
 .. automodule:: fsds_100719.jmi
     :members:
     :undoc-members:
     :show-inheritance:
+
