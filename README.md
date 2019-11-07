@@ -18,4 +18,5 @@ A collection of functions and tools for Flatiron students in the 10-07-19 cohort
 - Learning about why functions are pickier when imported vs. defined in the notebook. (i.e."closures")
 - Critical Code Testing Functions
     - `fs.reload`,`fs.ihelp`
-- 
+- Using `fs.datasets` to test your code 
+    - i.e. `df = fs.datasets.load_mod1_proj()`
