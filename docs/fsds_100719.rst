@@ -1,43 +1,48 @@
+fsds\_100719 package
+====================
 
-fsds_100719 package
-===================
+Subpackages
+-----------
 
-main module (fsds_100719/*)
----------------------------
+.. toctree::
 
-.. automodule:: fsds_100719
+    fsds_100719.ds
+    fsds_100719.ft
+    fsds_100719.jmi
+    fsds_100719.pt
+
+Submodules
+----------
+
+fsds\_100719.datasets module
+----------------------------
+
+.. automodule:: fsds_100719.datasets
     :members:
     :undoc-members:
     :show-inheritance:
 
-imports module
---------------------
+fsds\_100719.imports module
+---------------------------
+
 .. automodule:: fsds_100719.imports
     :members:
     :undoc-members:
     :show-inheritance:
 
+fsds\_100719.quick\_refs module
+-------------------------------
 
-cohort-sub-packages
-===================
-.. automodule:: fsds_100719/ft
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: fsds_100719/pt
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: fsds_100719/jmi
+.. automodule:: fsds_100719.quick_refs
     :members:
     :undoc-members:
     :show-inheritance:
 
 
+Module contents
+---------------
 
-
-
-
-
+.. automodule:: fsds_100719
+    :members:
+    :undoc-members:
+    :show-inheritance:

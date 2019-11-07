@@ -1,0 +1,10 @@
+fsds\_100719.ds package
+=======================
+
+Module contents
+---------------
+
+.. automodule:: fsds_100719.ds
+    :members:
+    :undoc-members:
+    :show-inheritance:

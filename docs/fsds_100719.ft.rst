@@ -1,0 +1,22 @@
+fsds\_100719.ft package
+=======================
+
+Submodules
+----------
+
+fsds\_100719.ft.jirving module
+------------------------------
+
+.. automodule:: fsds_100719.ft.jirving
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: fsds_100719.ft
+    :members:
+    :undoc-members:
+    :show-inheritance:
