@@ -1,6 +1,5 @@
 Welcome to fsds_100719's documentation!
 ======================================
-
 .. include:: ./installation.rst
 .. include:: ./usage.rst
 
