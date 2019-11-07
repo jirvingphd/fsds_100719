@@ -3,14 +3,28 @@ Welcome to fsds_100719's documentation!
 .. include:: ./installation.rst
 .. include:: ./usage.rst
 
-.. toctree::
-    :maxdepth: 3
-    :caption: Contents:
+fsds\_100719.ft package
+=======================
 
-fsds_100719
-contributing
-authors
-history
+Submodules
+----------
+
+fsds\_100719.ft.jirving module
+------------------------------
+
+.. automodule:: fsds_100719.ft.jirving
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: fsds_100719.ft
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
 Indices and tables
 ==================
