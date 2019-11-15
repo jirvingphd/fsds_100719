@@ -11,11 +11,11 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['numpy', 'pandas', 'seaborn', 'matplotlib', 'scikit-learn', 
+requirements = ['numpy','missingno', 'pandas', 'seaborn', 'matplotlib', 'scikit-learn', 
 'scipy','IPython','ipywidgets','pprint','tzlocal'] #'plotly==3.10.0', 'cufflinks==0.16','pyperclip']
 
 #'pytz','tzlocal','gensim','openpyxl','beautifulsoup4',
-setup_requirements = [ 'IPython']
+setup_requirements = [ 'IPython','missingno']
 
 test_requirements = ['IPython' ,'ipywidgets']
 test_requirements.extend(requirements)
