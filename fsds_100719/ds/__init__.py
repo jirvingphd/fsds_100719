@@ -126,7 +126,7 @@ def arr2series(array,series_index=None, series_name='array'):
 
 
 
-def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False, json_file='ihelp_output.txt' ):
+def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False):#, json_file='ihelp_output.txt' ):
     """
     Creates a widget menu of the source code and and help documentation of the functions in function_list.
     
@@ -148,11 +148,11 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False,
     import pandas as pd
     import sys
     import inspect
-    from io import StringIO
+    # from io import StringIO
     
-    notebook_output = sys.stdout
-    result = StringIO()
-    sys.stdout=result
+    # notebook_output = sys.stdout
+    # result = StringIO()
+    # sys.stdout=result
     
     ## Turn single input into a list
     if isinstance(function_list,list)==False:
@@ -215,13 +215,13 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False,
         result.truncate(0)        
                 
         
-    ## Reset display back to notebook
-    sys.stdout = notebook_output    
+    # ## Reset display back to notebook
+    # sys.stdout = notebook_output    
 
-    if to_file==True:    
-        with open(json_file,'w') as f:
-            import json
-            json.dump(output_dict,f)
+    # if to_file==True:    
+    #     with open(json_file,'w') as f:
+    #         import json
+    #         json.dump(output_dict,f)
 
     
     ## CREATE INTERACTIVE MENU

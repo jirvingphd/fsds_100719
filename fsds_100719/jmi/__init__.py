@@ -1883,72 +1883,72 @@ def drop_cols(df, list_of_strings_or_regexp,verbose=0):#,axis=1):
 
 
     ## DataFrame Creation, Inspection, and Exporting
-def inspect_df(df, n_rows=3, verbose=True):
-    """ EDA:
-    Show all pandas inspection tables.
-    Displays df.head(), df.info(), df.describe().
-    By default also runs check_null and check_numeric to inspect
-    columns for null values and to check string columns to detect
-    numeric values. (If verbose==True)
-    Parameters:
-        df(dataframe):
-            dataframe to inspect
-        n_rows:
-            number of header rows to show (Default=3).
-        verbose:
-            If verbose==True (default), check_null and check_numeric.
-    Ex: inspect_df(df,n_rows=4)
-    """
-    # from ..
-    # from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
-    # from bs_ds.prettypandas import display_side_by_side
-    import pandas as pd
-    from IPython.display import display
-    with pd.option_context("display.max_columns", None ,'display.precision',4):
-        display(df.info()) #, display(df.describe())
+# def inspect_df(df, n_rows=3, verbose=True):
+#     """ EDA:
+#     Show all pandas inspection tables.
+#     Displays df.head(), df.info(), df.describe().
+#     By default also runs check_null and check_numeric to inspect
+#     columns for null values and to check string columns to detect
+#     numeric values. (If verbose==True)
+#     Parameters:
+#         df(dataframe):
+#             dataframe to inspect
+#         n_rows:
+#             number of header rows to show (Default=3).
+#         verbose:
+#             If verbose==True (default), check_null and check_numeric.
+#     Ex: inspect_df(df,n_rows=4)
+#     """
+#     # from ..
+#     # from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
+#     # from bs_ds.prettypandas import display_side_by_side
+#     import pandas as pd
+#     from IPython.display import display
+#     with pd.option_context("display.max_columns", None ,'display.precision',4):
+#         display(df.info()) #, display(df.describe())
 
-        if verbose == True:
+#         if verbose == True:
 
-            df_num = check_numeric(df,unique_check=False, show_df=False)
-            # sdf_num = df_num.style.set_caption('Detected Numeric Values')
+#             df_num = check_numeric(df,unique_check=False, show_df=False)
+#             # sdf_num = df_num.style.set_caption('Detected Numeric Values')
 
-            df_null = check_null(df, show_df=False)
-            # sdf_null = df_null.style.set_caption('Detected Null values')
+#             df_null = check_null(df, show_df=False)
+#             # sdf_null = df_null.style.set_caption('Detected Null values')
 
-            display_side_by_side(df_null, df_num,df.describe())
-        else:
-            display(df.describe())
+#             display_side_by_side(df_null, df_num,df.describe())
+#         else:
+#             display(df.describe())
 
-        display(df.head(n_rows))
-
-
+#         display(df.head(n_rows))
 
 
 
-def drop_cols(df, list_of_strings_or_regexp,verbose=0):#,axis=1):
-    """EDA: Take a df, a list of strings or regular expression and recursively
-    removes all matching column names containing those strings or expressions.
-    # Example: if the df_in columns are ['price','sqft','sqft_living','sqft15','sqft_living15','floors','bedrooms']
-    df_out = drop_cols(df_in, ['sqft','bedroom'])
-    df_out.columns # will output: ['price','floors']
 
-    Parameters:
-        DF --
-            Input dataframe to remove columns from.
-        regex_list --
-            list of string patterns or regexp to remove.
 
-    Returns:
-        df_dropped -- input df without the dropped columns.
-    """
-    regex_list=list_of_strings_or_regexp
-    df_cut = df.copy()
-    for r in regex_list:
-        df_cut = df_cut[df_cut.columns.drop(list(df_cut.filter(regex=r)))]
-        if verbose>0:
-            print(f'Removed {r}.')
-    df_dropped = df_cut
-    return df_dropped
+# def drop_cols(df, list_of_strings_or_regexp,verbose=0):#,axis=1):
+#     """EDA: Take a df, a list of strings or regular expression and recursively
+#     removes all matching column names containing those strings or expressions.
+#     # Example: if the df_in columns are ['price','sqft','sqft_living','sqft15','sqft_living15','floors','bedrooms']
+#     df_out = drop_cols(df_in, ['sqft','bedroom'])
+#     df_out.columns # will output: ['price','floors']
+
+#     Parameters:
+#         DF --
+#             Input dataframe to remove columns from.
+#         regex_list --
+#             list of string patterns or regexp to remove.
+
+#     Returns:
+#         df_dropped -- input df without the dropped columns.
+#     """
+#     regex_list=list_of_strings_or_regexp
+#     df_cut = df.copy()
+#     for r in regex_list:
+#         df_cut = df_cut[df_cut.columns.drop(list(df_cut.filter(regex=r)))]
+#         if verbose>0:
+#             print(f'Removed {r}.')
+#     df_dropped = df_cut
+#     return df_dropped
 
 
 def add_filtered_col_to_df(df_source, df_to_add_to, list_of_exps, return_filtered_col_names =False):
