@@ -149,13 +149,6 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
     import inspect
     from io import StringIO
     from IPython.display import display,Markdown
-    
-    import sys
-    if "google.colab" in sys.modules:
-        markdown=False
-    else:
-        markdown=True
-    
     notebook_output = sys.stdout
     result = StringIO()
     sys.stdout=result
@@ -195,26 +188,30 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
         
         ## Clear contents of io stream
         result.truncate(0)
-        
+                
         try:
             ## Next save source
             source_DF = inspect.getsource(real_func)
-            if markdown == True:
+            # # if markdown == True:
                 
-                output = "```python" +'\n'+source_DF+'\n'+"```"
-                display(Markdown(output))
-            else:
-                output=source_DF
-                print(output)
+            #     output = "```python" +'\n'+source_DF+'\n'+"```"
+            #     display(Markdown(output))
+            # else:
+            #     output=source_DF
+            print(source_DF)
+            # output_dict[fun_name]['source'] = source_DF
 
-            print(inspect.getsource(real_func)) #eval(fun)))###f"{eval(fun)}"))
+            # print(inspect.getsource(real_func)) #eval(fun)))###f"{eval(fun)}"))
         except:
+            # print("Source code for object was not found")
             print("Source code for object was not found")
+
+
+        # finally:
         output_dict[fun_name]['source'] = result.getvalue()
-        
         ## clear contents of io stream
         result.truncate(0)
-        
+    
         
         ## Get file location
         try:
@@ -228,7 +225,6 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
         
         ## clear contents of io stream
         result.truncate(0)        
-                
         
     ## Reset display back to notebook
     sys.stdout = notebook_output    
@@ -238,7 +234,6 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
     #         import json
     #         json.dump(output_dict,f)
 
-    
     ## CREATE INTERACTIVE MENU
     from ipywidgets import interact, interactive, interactive_output
     import ipywidgets as widgets
@@ -263,8 +258,7 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
     titled_menu = widgets.VBox(children=[title,menu])
     full_layout = widgets.GridBox(children=[titled_menu,check_boxes],box_style=box_style)
     
-    
-    
+
     ## Define output manager
     # show_output = widgets.Output()
 
@@ -275,8 +269,8 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
 
     
     def show_ihelp(display_help=button.value,function=dropdown.value,
-                   show_help=check_help.value,show_code=check_source.value, show_file=check_fileloc.value):#,
-                   #ouput_dict=output_dict):
+                   show_help=check_help.value,show_code=check_source.value, 
+                   show_file=check_fileloc.value,ouput_dict=output_dict):
 
         from IPython.display import Markdown
         # import functions_combined_BEST as ji
@@ -285,9 +279,8 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
         # import json
         # with open(json_file,'r') as f:
         #     output_dict = json.load(f)
-        
-        
         func_dict = output_dict[function]
+        source_code=None
 
         if display_help:
             if show_help:
@@ -302,10 +295,17 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
 
                 banner = ''.join(["---"*2,' SOURCE -',"---"*23])
                 print(banner)
-                source_code = "```python\n"
-                source_code += func_dict['source']
-                source_code += "```"
-                display(Markdown(source_code))
+
+                source_code = func_dict['source']#.encode('utf-8')
+                if source_code.startswith('`'):
+                    source_code = source_code.replace('`',"").encode('utf-8')
+
+                if 'google.colab' in sys.modules:
+                    print(source_code)
+                else:
+                    md_source = "```python\n"+source_code
+                    md_source += "```"
+                    display(Markdown(md_source))
             
             
             if show_file:
@@ -328,13 +328,11 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
                                                    'show_help':check_help,
                                                    'show_code':check_source,
                                                    'show_file':check_fileloc})
-
     if to_embed:
         return full_layout, output
     else:
         display(full_layout, output)
-        
-        
+              
         
 def inspect_variables(local_vars = None,sort_col='size',exclude_funcs_mods=True, top_n=10,return_df=False,always_display=True,
 show_how_to_delete=False,print_names=False):
