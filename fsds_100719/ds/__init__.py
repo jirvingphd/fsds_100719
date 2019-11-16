@@ -63,7 +63,7 @@ def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,mark
 
 
 
-def list2df(list, index_col=None, caption=None, return_df=True,df_kwds=None): #, sort_values='index'):  
+def list2df(list, index_col=None, caption=None, return_df=True,df_kwds={}): #, sort_values='index'):  
     """ Quick turn an appened list with a header (row[0]) into a pretty dataframe.
         
         Args
@@ -82,8 +82,6 @@ def list2df(list, index_col=None, caption=None, return_df=True,df_kwds=None): #,
     ## Displays styled dataframe if caption:
     >> df = list2df(list_results, index_col="Test",
                      set_caption="Stat Test for Significance")
-    
-
     """
     from IPython.display import display
     import pandas as pd
@@ -694,7 +692,6 @@ def check_unique(df, columns=None):
 
 
 def check_numeric(df, columns=None, unique_check=False, return_list=False, show_df=False):
-
     """
     Iterates through columns and checks for possible numeric features labeled as objects.
     Params:
@@ -718,7 +715,7 @@ def check_numeric(df, columns=None, unique_check=False, return_list=False, show_
 
     # Check for user column list
     columns_to_check = []
-    if columns == None:
+    if columns is None:
         columns_to_check = df.columns
     else:
         columns_to_check = columns
@@ -948,7 +945,7 @@ def inspect_df(df, n_rows=3, verbose=True):
     import pandas as pd
     from IPython.display import display
 
-    with pd.option_context("display.max_columns", None ,'display.precision',4):
+    with pd.option_context("display.max_columns", None ,'display.precision',3):
         display(df.info()) #, display(df.describe())
 
         if verbose == True:
