@@ -126,7 +126,7 @@ def arr2series(array,series_index=None, series_name='array'):
 
 
 
-def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False):#, json_file='ihelp_output.txt' ):
+def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=False):#, json_file='ihelp_output.txt' ):
     """
     Creates a widget menu of the source code and and help documentation of the functions in function_list.
     
@@ -141,18 +141,17 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False)
         output ()
     """
     
-    
     # Accepts a list of string names for loaded modules/functions to save the `help` output and 
     # inspect.getsource() outputs to dictionary for later reference and display
     ## One way using sys to write txt file
     import pandas as pd
     import sys
     import inspect
-    # from io import StringIO
+    from io import StringIO
     
-    # notebook_output = sys.stdout
-    # result = StringIO()
-    # sys.stdout=result
+    notebook_output = sys.stdout
+    result = StringIO()
+    sys.stdout=result
     
     ## Turn single input into a list
     if isinstance(function_list,list)==False:
@@ -215,8 +214,8 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False)
         result.truncate(0)        
                 
         
-    # ## Reset display back to notebook
-    # sys.stdout = notebook_output    
+    ## Reset display back to notebook
+    sys.stdout = notebook_output    
 
     # if to_file==True:    
     #     with open(json_file,'w') as f:
@@ -267,9 +266,9 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False, to_file=False)
         # import functions_combined_BEST as ji
         from IPython.display import display        
         page_header = '---'*28
-        import json
-        with open(json_file,'r') as f:
-            output_dict = json.load(f)
+        # import json
+        # with open(json_file,'r') as f:
+        #     output_dict = json.load(f)
         
         
         func_dict = output_dict[function]
