@@ -1520,44 +1520,406 @@ def check_column(panda_obj, columns=None,nlargest='all'):
 
 
 
-#     ## DataFrame Creation, Inspection, and Exporting
-# def inspect_df(df, n_rows=3, verbose=True):
-#     """ EDA:
-#     Show all pandas inspection tables.
-#     Displays df.head(), df.info(), df.describe().
-#     By default also runs check_null and check_numeric to inspect
-#     columns for null values and to check string columns to detect
-#     numeric values. (If verbose==True)
-#     Parameters:
-#         df(dataframe):
-#             dataframe to inspect
-#         n_rows:
-#             number of header rows to show (Default=3).
-#         verbose:
-#             If verbose==True (default), check_null and check_numeric.
-#     Ex: inspect_df(df,n_rows=4)
+def check_df_for_columns(df, columns=None):
+
+    """
+    Checks df for presence of columns.
+
+    args:
+    **********
+    df: pd.DataFrame to find columns in
+    columns: str or list of str. column names
+    """
+    if not columns:
+        print('check_df_for_columns expected to be passed a list of column names.')
+    else:
+        for column in columns:
+            if not column in df.columns:
+                continue
+            else:
+                print(f'{column} is a valid column name')
+    pass
+
+
+def check_unique(df, columns=None):
+    """
+    Prints unique values for all columns in dataframe. If passed list of columns,
+    it will only print results for those columns
+    8************  >
+    Params:
+    df: pandas DataFrame, or pd.Series
+    columns: list containing names of columns (strings)
+
+    Returns: None
+        prints values only
+    """
+    from IPython.display import display
+    import pandas as pd
+    # check for columns
+#     if columns is None:
+        # Check if series, even though this is unnecesary because you could simply
+        # Call pd.series.sort_values()
+    if isinstance(df, pd.Series):
+        # display all the value counts
+        nunique = df.nunique()
+        print(f'\n---------------------------\n')
+        print(f"{df.name} Type: {df.dtype}\nNumber unique values: {nunique}")
+        return pd.DataFrame(df.value_counts())
+
+    else:
+        if columns is None:
+            columns = df.columns
+
+        for col in columns:
+            nunique = df[col].nunique()
+            unique_df = pd.DataFrame(df[col].value_counts())
+            print(f'\n---------------------------')
+            print(f"\n{col} Type: {df[col].dtype}\nNumber unique values: {nunique}.")
+            display(unique_df)
+        pass
+
+
+def check_numeric(df, columns=None, unique_check=False, return_list=False, show_df=False):
+
+    """
+    Iterates through columns and checks for possible numeric features labeled as objects.
+    Params:
+    ******************
+    df: pandas DataFrame
+
+    unique_check: bool. (default=True)
+        If true, distplays interactive interface for checking unique values in columns.
+
+    return_list: bool, (default=False)
+        If True, returns a list of column names with possible numeric types.
+    **********>
+    Returns: dataframe displayed (always), list of column names if return_list=True
+    """
+    # from .bs_ds import list2df
+    from IPython.display import display
+    display_list = [['Column', 'Numeric values','Total Values', 'Percent']]
+    outlist = []
+    # print(f'\n---------------------------------------------------\n')
+    # print(f'# of Identified Numeric Values in "Object" columns:')
+
+    # Check for user column list
+    columns_to_check = []
+    if columns == None:
+        columns_to_check = df.columns
+    else:
+        columns_to_check = columns
+    # Iterate through columns
+
+    for col in columns_to_check:
+
+        # Check for object dtype,
+        if df[col].dtype == 'object':
+
+            # If object, check for numeric
+            if df[col].str.isnumeric().any():
+
+                # If numeric, get counts
+                vals = df[col].str.isnumeric().sum()
+                percent = round((df[col].str.isnumeric().sum()/len(df[col]))*100, 2)
+                display_list.append([col, vals,len(df[col]), percent])
+                outlist.append(col)
+
+    list2show = list2df(display_list)
+    list2show.set_index('Column',inplace=True)
+
+    styled_list2show = list2show.style.set_caption('# of Detected Numeric Values in "Object" columns:')
+    if show_df==True:
+        display(styled_list2show)
+
+    if unique_check:
+        unique = input("display unique values? (Enter 'y' for all columns, a column name, or 'n' to quit):")
+
+        while unique != 'n':
+
+            if unique == 'y':
+                check_unique(df, outlist)
+                break
+
+            elif unique in outlist:
+                name = [unique]
+                check_unique(df, name)
+
+            unique = input('Enter column name or n to quit:')
+
+    if return_list==True:
+        return styled_list2show, outlist
+    else:
+        return styled_list2show
+
+
+def check_null(df, columns=None,show_df=False):
+    """
+    Iterates through columns and checks for null values and displays # and % of column.
+    Params:
+    ******************
+    df: pandas DataFrame
+
+    columns: list of columns to check
+    **********>
+    Returns: displayed dataframe
+    """
+    from IPython.display import display
+    # from .bs_ds import list2df
+    display_list = [['Column', 'Null values', 'Total Values','Percent']]
+    outlist = []
+    # print(f'\n----------------------------\n')
+    # print(f'# of Identified Null Values:')
+
+    # Check for user column list
+    columns_to_check = []
+    if columns==None:
+        columns_to_check = df.columns
+    else:
+        columns_to_check = columns
+    # Iterate through columns
+
+    for col in columns_to_check:
+
+        # Check for object dtype,
+        # if df[col].dtype == 'object':
+
+        # If object, check for numeric
+
+
+        # If numeric, get counts
+        vals = df[col].isna().sum()
+        percent = round((vals/len(df[col]))*100, 3)
+        display_list.append([col, vals, len(df[col]), percent])
+        outlist.append(col)
+
+    list2show=list2df(display_list)
+    list2show.set_index('Column',inplace=True)
+
+    styled_list2show = list2show.style.set_caption('# of Identified Null Values:')
+    if show_df==True:
+        display(styled_list2show)
+
+    return styled_list2show
+
+
+
+
+
+
+def compare_duplicates(df1, df2, to_drop=True, verbose=True, return_names_list=False):
+    """
+    Compare two dfs for duplicate columns, drop if to_drop=True, useful
+    to us before concatenating when dtypes are different between matching column names
+    and df.drop_duplicates is not an option.
+    Params:
+    --------------------
+    df1, df2 : pandas dataframe suspected of having matching columns
+    to_drop : bool, (default=True)
+        If True will give the option of dropping columns one at a time from either column.
+    verbose: bool (default=True)
+        If True prints column names and types, set to false and return_names list=True
+        if only desire a list of column names and no interactive interface.
+    return_names_list: bool (default=False),
+        If True, will return a list of all duplicate column names.
+    --------------------
+    Returns: List of column names if return_names_list=True, else nothing.
+    """
+    catch = []
+    dropped1 = []
+    dropped2 = []
+    if verbose:
+        print("Column |   df1   |   df2   ")
+        print("*----------------------*")
+
+    # Loop through columns, inspect for duplicates
+    for col in df1.columns:
+        if col in df2.columns:
+            catch.append(col)
+
+            if verbose:
+                print(f"{col}   {df1[col].dtype}   {df2[col].dtype}")
+
+            # Accept user input and drop columns one by one
+            if to_drop:
+                choice = input("\nDrop this column? Enter 1. df1, 2. df2 or n for neither")
+
+                if choice ==  "1":
+                    df1.drop(columns=col, axis=1, inplace=True)
+                    dropped1.append(col)
+
+                elif choice == "2":
+                    df2.drop(columns=col, axis=1, inplace=True)
+                    dropped2.append(col)
+                else:
+
+                    continue
+    # Display dropped columns and orignating df
+    if to_drop:
+        if len(dropped1) >= 1:
+            print(f"\nDropped from df1:\n{dropped1}")
+        if len(dropped2) >= 1:
+            print(f"\nDropped from df1:\n{dropped2}")
+
+    if return_names_list:
+        return catch
+    else:
+        pass
+
+
+# ## Dataframes styling
+# def check_column(panda_obj, columns=None,nlargest='all'):
 #     """
-#     from ..
-#     # from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
-#     # from bs_ds.prettypandas import display_side_by_side
+#     Prints column name, dataype, # and % of null values, and unique values for the nlargest # of rows (by valuecount_.
+#     it will only print results for those columns
+#     ************
+#     Params:
+#     panda_object: pandas DataFrame or Series
+#     columns: list containing names of columns (strings)
+
+#     Returns: None
+#         prints values only
+#     """
 #     import pandas as pd
-#     from IPython.display import display
-#     with pd.option_context("display.max_columns", None ,'display.precision',4):
-#         display(df.info()) #, display(df.describe())
+#     # Check for DF vs Series
+#     if type(panda_obj)==pd.core.series.Series:
+#         series=panda_obj
+#         print(f'\n----------------------------\n')
+#         print(f"Column: df['{series.name}']':")
+#         print(f"dtype: {series.dtype}")
+#         print(f"isna: {series.isna().sum()} out of {len(series)} - {round(series.isna().sum()/len(series)*100,3)}%")
 
-#         if verbose == True:
-
-#             df_num = check_numeric(df,unique_check=False, show_df=False)
-#             # sdf_num = df_num.style.set_caption('Detected Numeric Values')
-
-#             df_null = check_null(df, show_df=False)
-#             # sdf_null = df_null.style.set_caption('Detected Null values')
-
-#             display_side_by_side(df_null, df_num,df.describe())
+#         print(f'\nUnique non-na values:')
+#         if nlargest =='all':
+#             print(series.value_counts())
 #         else:
-#             display(df.describe())
+#             print(series.value_counts().nlargest(nlargest))
 
-#         display(df.head(n_rows))
+
+#     elif type(panda_obj)==pd.core.frame.DataFrame:
+#         df = panda_obj
+#         for col_name in df.columns:
+#             col = df[col_name]
+#             print("\n-----------------------------------------------")
+#             print(f"Column: df['{col_name}']':")
+#             print(f"dtype: {col.dtypes}")
+#             print(f"isna: {col.isna().sum()} out of {len(col)} - {round(col.isna().sum()/len(col)*100,3)}%")
+
+#             print(f'\nUnique non-na values:\nnlargest={nlargest}\n-----------------')
+#             if nlargest =='all':
+#                 print(col.value_counts())
+#             else:
+#                 print(col.value_counts().nlargest(nlargest))
+
+
+
+    ## DataFrame Creation, Inspection, and Exporting
+def inspect_df(df, n_rows=3, verbose=True):
+    """ EDA:
+    Show all pandas inspection tables.
+    Displays df.head(), df.info(), df.describe().
+    By default also runs check_null and check_numeric to inspect
+    columns for null values and to check string columns to detect
+    numeric values. (If verbose==True)
+    Parameters:
+        df(dataframe):
+            dataframe to inspect
+        n_rows:
+            number of header rows to show (Default=3).
+        verbose:
+            If verbose==True (default), check_null and check_numeric.
+    Ex: inspect_df(df,n_rows=4)
+    """
+    # from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
+    # from bs_ds.prettypandas import display_side_by_side
+    import pandas as pd
+    from IPython.display import display
+
+    with pd.option_context("display.max_columns", None ,'display.precision',4):
+        display(df.info()) #, display(df.describe())
+
+        if verbose == True:
+
+            df_num = check_numeric(df,unique_check=False, show_df=False)
+            # sdf_num = df_num.style.set_caption('Detected Numeric Values')
+
+            df_null = check_null(df, show_df=False)
+            # sdf_null = df_null.style.set_caption('Detected Null values')
+
+            display_side_by_side(df_null, df_num,df.describe())
+        else:
+            display(df.describe())
+
+        display(df.head(n_rows))
+
+
+
+
+
+def drop_cols(df, list_of_strings_or_regexp,verbose=0):#,axis=1):
+    """EDA: Take a df, a list of strings or regular expression and recursively
+    removes all matching column names containing those strings or expressions.
+    # Example: if the df_in columns are ['price','sqft','sqft_living','sqft15','sqft_living15','floors','bedrooms']
+    df_out = drop_cols(df_in, ['sqft','bedroom'])
+    df_out.columns # will output: ['price','floors']
+
+    Parameters:
+        DF --
+            Input dataframe to remove columns from.
+        regex_list --
+            list of string patterns or regexp to remove.
+
+    Returns:
+        df_dropped -- input df without the dropped columns.
+    """
+    regex_list=list_of_strings_or_regexp
+    df_cut = df.copy()
+    for r in regex_list:
+        df_cut = df_cut[df_cut.columns.drop(list(df_cut.filter(regex=r)))]
+        if verbose>0:
+            print(f'Removed {r}.')
+    df_dropped = df_cut
+    return df_dropped
+
+
+
+    ## DataFrame Creation, Inspection, and Exporting
+def inspect_df(df, n_rows=3, verbose=True):
+    """ EDA:
+    Show all pandas inspection tables.
+    Displays df.head(), df.info(), df.describe().
+    By default also runs check_null and check_numeric to inspect
+    columns for null values and to check string columns to detect
+    numeric values. (If verbose==True)
+    Parameters:
+        df(dataframe):
+            dataframe to inspect
+        n_rows:
+            number of header rows to show (Default=3).
+        verbose:
+            If verbose==True (default), check_null and check_numeric.
+    Ex: inspect_df(df,n_rows=4)
+    """
+    # from ..
+    # from bs_ds.bamboo import check_column, check_null, check_numeric, check_unique
+    # from bs_ds.prettypandas import display_side_by_side
+    import pandas as pd
+    from IPython.display import display
+    with pd.option_context("display.max_columns", None ,'display.precision',4):
+        display(df.info()) #, display(df.describe())
+
+        if verbose == True:
+
+            df_num = check_numeric(df,unique_check=False, show_df=False)
+            # sdf_num = df_num.style.set_caption('Detected Numeric Values')
+
+            df_null = check_null(df, show_df=False)
+            # sdf_null = df_null.style.set_caption('Detected Null values')
+
+            display_side_by_side(df_null, df_num,df.describe())
+        else:
+            display(df.describe())
+
+        display(df.head(n_rows))
 
 
 
@@ -2011,7 +2373,7 @@ class Clock(object):
     def mark_lap_list(self, label=None):
         """Used internally, appends the current laps' information when called by .lap()
         self._lap_times_list_ = [['Lap #' , 'Start Time','Stop Time', 'Stop Label', 'Duration']]"""
-        import bs_ds as bs
+        # import bs_ds as bs
 #         print(self._prior_start_time_, self._lap_end_time_)
 
         if label is None:

@@ -12,7 +12,7 @@ with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
 requirements = ['numpy','missingno', 'pandas', 'seaborn', 'matplotlib', 'scikit-learn', 
-'scipy','IPython','ipywidgets','pprint','tzlocal'] #'plotly==3.10.0', 'cufflinks==0.16','pyperclip']
+'scipy','IPython','ipywidgets','pprint','tzlocal','pyperclip'] #'plotly==3.10.0', 'cufflinks==0.16','pyperclip']
 
 #'pytz','tzlocal','gensim','openpyxl','beautifulsoup4',
 setup_requirements = [ 'IPython','missingno']
