@@ -36,6 +36,17 @@
 
 # df_imported= pd.DataFrame(imports_list,columns=['Package','Handle','Description'])
 # display(df_imported.sort_values('Package').style.hide_index().set_caption('Loaded Packages and Handles'))
+try:
+    from IPython.display import clear_output
+    clear_output()
+except:
+    pass
+finally:
+    fs = None
+    import_packages()
+    print(f"fsds_1007219  v{fs.__version__} loaded.  Read the docs: https://fsds.readthedocs.io/en/latest/ ")
+
+    
 
 def clear():
     """Helper function to clear notebook display"""
@@ -120,22 +131,14 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
         return print('Modules successfully loaded.')
 
 
-try:
-    from IPython.display import clear_output
-    clear_output()
-except:
-    pass
-finally:
-    import_packages()
-    
 
-try:
-    import cufflinks as cf
-    cf.go_offline()
-    # '>> `df.iplot()` is enabled.'
-    # print('[i] df.iplot() should be available.')
-except:
-    pass
+# try:
+#     import cufflinks as cf
+#     cf.go_offline()
+#     # '>> `df.iplot()` is enabled.'
+#     # print('[i] df.iplot() should be available.')
+# except:
+#     pass
 # print('To disable styled DataFrames run html_off() at the bottom of any cell.\n To re-enable use html_on() at the bottom of any cell.')
 # def sidebar():
 #     side_jss = function(){let e=document.querySelector(%E2%80%9C.site-sidebar%E2%80%9D),t=document.querySelector(%E2%80%9C.site-main .module%E2%80%9D),l=document.querySelector(%E2%80%9C.site-main%E2%80%9D),s=document.querySelector(%E2%80%9C.site-widget%E2%80%9D);%E2%80%9Cnone%E2%80%9D==e.style.display?(e.style.display=%E2%80%9Cflex%E2%80%9D,t.style.display=%E2%80%9Cblock%E2%80%9D,l.style.right=%E2%80%9C263px%E2%80%9D,s.style.display=%E2%80%9Cblock%E2%80%9D):(e.style.display=%E2%80%9Cnone%E2%80%9D,t.style.display=%E2%80%9Cnone%E2%80%9D,l.style.right=%E2%80%9C0px%E2%80%9D,s.style.display=%E2%80%9Cnone%E2%80%9D)})();
