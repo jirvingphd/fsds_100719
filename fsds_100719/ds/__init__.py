@@ -148,6 +148,13 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
     import sys
     import inspect
     from io import StringIO
+    from IPython.display import display,Markdown
+    
+    import sys
+    if "google.colab" in sys.modules:
+        markdown=False
+    else:
+        markdown=True
     
     notebook_output = sys.stdout
     result = StringIO()
@@ -191,6 +198,15 @@ def ihelp_menu(function_list,box_style='warning', to_embed=False):#, to_file=Fal
         
         try:
             ## Next save source
+            source_DF = inspect.getsource(real_func)
+            if markdown == True:
+                
+                output = "```python" +'\n'+source_DF+'\n'+"```"
+                display(Markdown(output))
+            else:
+                output=source_DF
+                print(output)
+
             print(inspect.getsource(real_func)) #eval(fun)))###f"{eval(fun)}"))
         except:
             print("Source code for object was not found")
