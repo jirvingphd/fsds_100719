@@ -36,17 +36,7 @@
 
 # df_imported= pd.DataFrame(imports_list,columns=['Package','Handle','Description'])
 # display(df_imported.sort_values('Package').style.hide_index().set_caption('Loaded Packages and Handles'))
-try:
-    from IPython.display import clear_output
-    clear_output()
-except:
-    pass
-finally:
-    fs = None
-    import_packages()
-    print(f"fsds_1007219  v{fs.__version__} loaded.  Read the docs: https://fsds.readthedocs.io/en/latest/ ")
 
-    
 
 def clear():
     """Helper function to clear notebook display"""
@@ -154,3 +144,14 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
 #         #"<script>{bundle_data}</script>".format(bundle_data=bundle_data)
 #     #))
 # html_on()
+try:
+    from IPython.display import clear_output
+    clear_output()
+except:
+    pass
+finally:
+    fs = None
+    import_packages()
+    print(f"fsds_1007219  v{fs.__version__} loaded.  Read the docs: https://fsds.readthedocs.io/en/latest/ ")
+
+    
