@@ -1,6 +1,6 @@
 """A collection of convenient csv urls and sklearn datasets as dataframes."""
-def load_data(package="DEPRECATED"):
-    raise Exception('load_data() has been replaced by seprate load functions. i.e. fs.datasets.load_boston()')
+def load_data(*args,**kwargs):
+    raise Exception('load_data() has been replaced by individual load functions. i.e. fs.datasets.load_boston()')
 def read_csv_from_url(url,verbose=False,read_csv_kwds=None):
     """Loading function to load all .csv datasets.
     Args:

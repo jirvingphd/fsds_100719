@@ -981,9 +981,92 @@ def display_side_by_side(*args):
 
 
 
+def column_report(df,index_col=None, sort_column='iloc', ascending=True,
+                  interactive=False, return_df=False):
+    """
+    Displays a DataFrame summary of each column's: 
+    - name, iloc, dtypes, null value count & %, # of 0's, min, max,med,mean, etc
+    
+    Args:
+        df (DataFrame): df to report 
+        index_col (column to set as index, str): Defaults to None.
+        sort_column (str, optional): [description]. Defaults to 'iloc'.
+        ascending (bool, optional): [description]. Defaults to True.
+        as_df (bool, optional): [description]. Defaults to False.
+        interactive (bool, optional): [description]. Defaults to False.
+        return_df (bool, optional): [description]. Defaults to False.
+
+    Returns:
+        column_report (df): Non-styled version of displayed df report
+    """
+    from ipywidgets import interact
+    import pandas as pd
+    from IPython.display import display
+
+    def count_col_zeros(df, columns=None):
+        import pandas as pd
+        import numpy as np
+        # Make a list of keys for every column  (for series index)
+        zeros = pd.Series(index=df.columns)
+        # use all cols by default
+        if columns is None:
+            columns=df.columns
+
+        # get sum of zero values for each column
+        for col in columns:
+            zeros[col] = np.sum( df[col].values == 0)
+        return zeros
 
 
-def column_report(df,index_col=None, sort_column='iloc', ascending=True, format_dict=None,
+    ##
+    df_report = pd.DataFrame({'.iloc[:,i]': range(len(df.columns)),
+                            'column name':df.columns,
+                            'dtypes':df.dtypes.astype('str'),
+                            '.isna()': df.isna().sum().round(),
+                            '% na':df.isna().sum().divide(df.shape[0]).mul(100).round(2),
+                            '# zeros': count_col_zeros(df),
+                            '# unique':df.nunique(),
+                            'min':df.min(),
+                            'max':df.max(),
+                            'med':df.describe().loc['50%'],
+                            'mean':df.mean().round(2)})#
+    ## Sort by index_col
+    if index_col is not None:
+        hide_index=False
+        if 'iloc' in index_col:
+            index_col = '.iloc[:,i]'
+
+        df_report.set_index(index_col ,inplace=True)
+    else:
+        hide_index=True
+
+
+    ##  Sort column
+    if sort_column is None:
+        sort_column = '.iloc[:,i]'
+
+
+    if 'iloc' in sort_column:
+        sort_column = '.iloc[:,i]'
+
+    df_report.sort_values(by =sort_column,ascending=ascending, axis=0, inplace=True)
+
+    dfs = df_report.style.set_caption('Column Report')
+    
+    if hide_index:
+        display(dfs.hide_index())
+    else:
+        display(dfs)   
+
+    if interactive:
+        @interact(column= df_report.columns,direction={'ascending':True,'descending':False})
+        def sort_df(column, direction):
+            return df_report.sort_values(by=column,axis=0,ascending=direction)
+    if return_df:
+        return df_report
+
+
+def column_report_qgrid(df,index_col=None, sort_column='iloc', ascending=True, format_dict=None,
                   as_df = False, as_interactive_df=False, show_and_return=True,
                   as_qgrid=True, qgrid_options=None, qgrid_column_options=None,
                   qgrid_col_defs=None, qgrid_callback=None):
@@ -1153,7 +1236,6 @@ def column_report(df,index_col=None, sort_column='iloc', ascending=True, format_
             return df_report.sort_values(by=column,axis=0,ascending=direction)
     else:
         raise Exception('One of the output options must be true: `as_qgrid`,`as_df`,`as_interactive_df`')
-
 
 #################### GENERAL HELPER FUNCTIONS #####################
 def is_var(name):
