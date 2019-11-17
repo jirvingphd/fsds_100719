@@ -535,7 +535,7 @@ def save_ihelp_to_file(function,save_help=False,save_code=True,
 
         ## Find the name of the function
         import re
-        func_names_exp = re.compile('def (\w*)\(')
+        func_names_exp = re.compile(r'def (\w*)\(')
         func_name = func_names_exp.findall(text_to_save)[0]    
         print(f'Found code for {func_name}')
 
@@ -978,3 +978,193 @@ def display_side_by_side(*args):
         else:
             html_str+=df.to_html()
     display_html(html_str.replace('table','table style="display:inline"'),raw=True)
+
+
+
+
+
+def column_report(df,index_col=None, sort_column='iloc', ascending=True, format_dict=None,
+                  as_df = False, as_interactive_df=False, show_and_return=True,
+                  as_qgrid=True, qgrid_options=None, qgrid_column_options=None,
+                  qgrid_col_defs=None, qgrid_callback=None):
+    """
+    Returns a datafarme summary of the columns, their dtype,  a summary dataframe with the column name, column dtypes, and a `decision_map` dictionary of
+    datatype.
+    [!] Please note if qgrid does not display properly, enter this into your terminal and restart your temrinal.
+        'jupyter nbextension enable --py --sys-prefix qgrid'# required for qgrid
+        'jupyter nbextension enable --py --sys-prefix widgetsnbextension' # only required if you have not enabled the ipywidgets nbextension yet
+    
+    Default qgrid options:
+       default_grid_options={
+        # SlickGrid options
+        'fullWidthRows': True,
+        'syncColumnCellResize': True,
+        'forceFitColumns': True,
+        'defaultColumnWidth': 50,
+        'rowHeight': 25,
+        'enableColumnReorder': True,
+        'enableTextSelectionOnCells': True,
+        'editable': True,
+        'autoEdit': False,
+        'explicitInitialization': True,
+
+        # Qgrid options
+        'maxVisibleRows': 30,
+        'minVisibleRows': 8,
+        'sortable': True,
+        'filterable': True,
+        'highlightSelectedCell': True,
+        'highlightSelectedRow': True
+    }
+    """
+    from ipywidgets import interact
+    import pandas as pd
+    from IPython.display import display
+    import qgrid
+    small_col_width = 20
+
+    # default_col_options={'width':20}
+
+    default_column_definitions={'column name':{'width':60}, 
+                                '.iloc[:,i]':{'width':small_col_width}, 
+                                'dtypes':{'width':30}, 
+                                '# zeros':{'width':small_col_width},
+                                '# null':{'width':small_col_width},
+                                '% null':{'width':small_col_width}}#,
+                                # name_for_notes_col:{'width':100}}
+
+    default_grid_options={
+        # SlickGrid options
+        'fullWidthRows': True,
+        'syncColumnCellResize': True,
+        'forceFitColumns': True,
+        'defaultColumnWidth': 50,
+        'rowHeight': 25,
+        'enableColumnReorder': True,
+        'enableTextSelectionOnCells': True,
+        'editable': True,
+        'autoEdit': False,
+        'explicitInitialization': True,
+
+        # Qgrid options
+        'maxVisibleRows': 30,
+        'minVisibleRows': 8,
+        'sortable': True,
+        'filterable': True,
+        'highlightSelectedCell': True,
+        'highlightSelectedRow': True
+    }
+
+    ## Set the params to defaults, to then be overriden
+    column_definitions = default_column_definitions
+    grid_options=default_grid_options
+    # column_options = default_col_options
+
+    if qgrid_options is not None:
+        for k,v in qgrid_options.items():
+            grid_options[k]=v
+
+    if qgrid_col_defs is not None:
+        for k,v in qgrid_col_defs.items():
+            column_definitions[k]=v
+    else:
+        column_definitions = default_column_definitions
+
+
+    # format_dict = {'sum':'${0:,.0f}', 'date': '{:%m-%Y}', 'pct_of_total': '{:.2%}'}
+    # monthly_sales.style.format(format_dict).hide_index()
+    def count_col_zeros(df, columns=None):
+        import pandas as pd
+        import numpy as np
+        # Make a list of keys for every column  (for series index)
+        zeros = pd.Series(index=df.columns)
+        # use all cols by default
+        if columns is None:
+            columns=df.columns
+
+        # get sum of zero values for each column
+        for col in columns:
+            zeros[col] = np.sum( df[col].values == 0)
+        return zeros
+
+
+    ##
+    df_report = pd.DataFrame({'.iloc[:,i]': range(len(df.columns)),
+                            'column name':df.columns,
+                            'dtypes':df.dtypes.astype('str'),
+                            '.isna()': df.isna().sum().round(),
+                            '% na':df.isna().sum().divide(df.shape[0]).mul(100).round(2),
+                            '# zeros': count_col_zeros(df),
+                            '# unique':df.nunique(),
+                            'min':df.min(),
+                            'max':df.max(),
+                            'med':df.describe().loc['50%'],
+                            'mean':df.mean().round(2)})#
+    ## Sort by index_col
+    if index_col is not None:
+        hide_index=False
+        if 'iloc' in index_col:
+            index_col = '.iloc[:,i]'
+
+        df_report.set_index(index_col ,inplace=True)
+    else:
+        hide_index=True
+
+
+    ##  Sort column
+    if sort_column is None:
+        sort_column = '.iloc[:,i]'
+
+
+    if 'iloc' in sort_column:
+        sort_column = '.iloc[:,i]'
+
+    df_report.sort_values(by =sort_column,ascending=ascending, axis=0, inplace=True)
+    
+    
+    ##If running from colab, override qgrid
+    import sys
+    if ('google.colab' in sys.modules )& (as_qgrid==True) :
+        as_df=True
+        as_qgrid=False
+
+    if as_df:
+        if show_and_return:
+            dfs = df_report.style.set_caption('Column Report')
+
+            if hide_index:
+                display(dfs.hide_index())
+            else:
+                display(dfs)
+        
+        return df_report
+
+    elif as_qgrid:
+        print('[i] qgrid returned. Use gqrid.get_changed_df() to get edited df back.')
+        qdf = qgrid.show_grid(df_report,grid_options=grid_options, column_options=qgrid_column_options, column_definitions=column_definitions,row_edit_callback=qgrid_callback  )
+        if show_and_return:
+            display(qdf)
+        return qdf
+
+    elif as_interactive_df:
+
+        @interact(column= df_report.columns,direction={'ascending':True,'descending':False})
+        def sort_df(column, direction):
+            return df_report.sort_values(by=column,axis=0,ascending=direction)
+    else:
+        raise Exception('One of the output options must be true: `as_qgrid`,`as_df`,`as_interactive_df`')
+
+
+#################### GENERAL HELPER FUNCTIONS #####################
+def is_var(name):
+    x=[]
+    try: eval(name)
+    except NameError: x = None
+
+    if x is None:
+        return False
+    else:
+        return True
+
+
+

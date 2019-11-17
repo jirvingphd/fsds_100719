@@ -595,7 +595,7 @@ def print_docstring_template(style='google',object_type='function',show_url=Fals
 
     '''
 
-    template_dict['google']['module_function'] = '''
+    template_dict['google']['module_function'] = r'''
     def module_level_function(param1, param2=None, *args, **kwargs):
     """This is an example of a module level function.
 
@@ -2182,7 +2182,6 @@ def dict_dropdown(dict_to_display,title='Dictionary Contents'):
 
     @interact(dict_to_display=dict_to_display)
     def display_params(dict_to_display=dict_to_display):
-
         # # if the contents of the first level of keys is dicts:, display another dropdown
         # if dict_to_display.values()
         display(pprint(dict_to_display))
