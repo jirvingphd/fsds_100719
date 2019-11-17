@@ -47,6 +47,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/jirvingphd/fsds_100719',
-    version='0.4.31',
+    version='0.4.32',
     zip_safe=False,
 )
