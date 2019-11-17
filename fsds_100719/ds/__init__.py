@@ -1167,4 +1167,22 @@ def is_var(name):
         return True
 
 
+def capture_text(txt):
+    """Uses StringIO and sys.stdout to capture print statements.
+    
+    Args:
+        txt (str): pass string or command to display a string to capture
+    
+    Returns:
+        txt_out (str): captured print statement"""
+    import sys
+    from io import StringIO
+    notebook_output = sys.stdout
+    result = StringIO()
+    sys.stdout=result
+    
 
+    print(txt)
+    txt_out = result.getvalue()
+    sys.stdout=notebook_output
+    return txt_out
