@@ -1186,3 +1186,23 @@ def capture_text(txt):
     txt_out = result.getvalue()
     sys.stdout=notebook_output
     return txt_out
+
+def find_outliers(col):
+    """Use scipy to calcualte absoliute Z-scores 
+    and return boolean series where True indicates it is an outlier
+    Args:
+        col (Series): a series/column from your DataFrame
+    Returns:
+        idx_outliers (Series): series of  True/False for each row in col
+        
+    Ex:
+    >> idx_outs = find_outliers(df['bedrooms'])
+    >> df_clean = df.loc[idx_outs==False]"""
+    from scipy import stats
+    import numpy as np
+    import pandas as pd
+    z = np.abs(stats.zscore(col))
+    idx_outliers = np.where(z>3,True,False)
+    return pd.Series(idx_outliers,index=col.index)
+
+

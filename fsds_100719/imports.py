@@ -36,7 +36,18 @@
 
 # df_imported= pd.DataFrame(imports_list,columns=['Package','Handle','Description'])
 # display(df_imported.sort_values('Package').style.hide_index().set_caption('Loaded Packages and Handles'))
+def global_imports(modulename,shortname = None, asfunction = False):
+        """from stackoverflow: https://stackoverflow.com/questions/11990556/how-to-make-global-imports-from-a-function,
+        https://stackoverflow.com/a/46878490"""
+        from importlib import import_module
 
+        if shortname is None:
+            shortname = modulename
+
+        if asfunction is False:
+            globals()[shortname] = import_module(modulename) #__import__(modulename)
+        else:
+            globals()[shortname] = eval(modulename + "." + shortname)
 
 def clear():
     """Helper function to clear notebook display"""
@@ -78,18 +89,18 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
     #     [import_list.append(mod) for mod in import_list_of_tuples]
 
 
-    def global_imports(modulename,shortname = None, asfunction = False):
-        """from stackoverflow: https://stackoverflow.com/questions/11990556/how-to-make-global-imports-from-a-function,
-        https://stackoverflow.com/a/46878490"""
-        from importlib import import_module
+    # def global_imports(modulename,shortname = None, asfunction = False):
+    #     """from stackoverflow: https://stackoverflow.com/questions/11990556/how-to-make-global-imports-from-a-function,
+    #     https://stackoverflow.com/a/46878490"""
+    #     from importlib import import_module
 
-        if shortname is None:
-            shortname = modulename
+    #     if shortname is None:
+    #         shortname = modulename
 
-        if asfunction is False:
-            globals()[shortname] = import_module(modulename) #__import__(modulename)
-        else:
-            globals()[shortname] = eval(modulename + "." + shortname)
+    #     if asfunction is False:
+    #         globals()[shortname] = import_module(modulename) #__import__(modulename)
+    #     else:
+    #         globals()[shortname] = eval(modulename + "." + shortname)
 
 
     # Use exec command to create global handle variables and then load in package as that handle
@@ -114,6 +125,8 @@ def import_packages(import_list_of_tuples = None,  display_table=True): #append_
         
         df_imported=pd.concat([df_imported['Handle'],df_imported[['Package','Description']]],axis=1)
         dfs = df_imported.sort_values('Package').style.hide_index().set_caption('Loaded Packages and Handles')
+        import fsds_100719 as fs
+        print(f"fsds_1007219  v{fs.__version__} loaded.  Read the docs: https://fsds.readthedocs.io/en/latest/ ")
         display(dfs)
 
     # or just print statement
@@ -153,6 +166,5 @@ except:
 finally:
     fs = None
     import_packages()
-    print(f"fsds_1007219  v{fs.__version__} loaded.  Read the docs: https://fsds.readthedocs.io/en/latest/ ")
 
     
