@@ -118,3 +118,12 @@ def load_iowa_prisoners(verbose=False,vers='raw',read_csv_kwds=None):
     #pd.set_option('display.precision',3)
     return df
 
+def load_height_by_country(verbose=False,read_csv_kwds=None):
+    url='https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/height_by_country_age18.csv'
+    df = read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)#pd.read_csv(url_iowa_raw,index_col=0)
+
+    if verbose:
+        source="http://ncdrisc.org/data-downloads-height.html"
+        print(f'Source of dataset: {source}')
+        
+    return df
