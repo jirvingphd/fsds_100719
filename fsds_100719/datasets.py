@@ -106,3 +106,15 @@ def load_height_weight(verbose=False,read_csv_kwds=None):
     """Loads height vs weight dataset"""
     url='https://raw.githubusercontent.com/jirvingphd/dsc-probability-density-function-online-ds-ft-100719/master/weight-height.csv'
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
+
+
+def load_iowa_prisoners(verbose=False,vers='raw',read_csv_kwds=None):
+    import pandas as pd
+    if 'raw' in vers:
+        url ='https://raw.githubusercontent.com/jirvingphd/dsc-3-final-project-online-ds-ft-021119/master/datasets/FULL_3-Year_Recidivism_for_Offenders_Released_from_Prison_in_Iowa.csv'
+    else:
+        url = 'https://raw.githubusercontent.com/jirvingphd/dsc-3-final-project-online-ds-ft-021119/master/datasets/Iowa_Prisoners_Renamed_Columns_fsds_100719.csv'
+    df = read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)#pd.read_csv(url_iowa_raw,index_col=0)
+    #pd.set_option('display.precision',3)
+    return df
+
