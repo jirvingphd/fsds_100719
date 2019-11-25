@@ -2720,3 +2720,634 @@ def thiels_U(ys_true=None, ys_pred=None,display_equation=True,display_table=True
         denom_list.append([denom_exp**2])
     U = np.sqrt( np.sum(num_list) / np.sum(denom_list))
     return U
+
+
+
+
+def apply_stopwords(stopwords_list,  text, tokenize=True,return_tokens=False, pattern = "([a-zA-Z]+(?:'[a-z]+)?)"):
+    """EX: df['text_stopped'] = df['content'].apply(lambda x: apply_stopwords(stopwords_list,x))"""
+    from nltk import regexp_tokenize
+    pattern = "([a-zA-Z]+(?:'[a-z]+)?)"
+    if tokenize==True:
+        from nltk import regexp_tokenize
+
+        text = regexp_tokenize(text,pattern)
+
+    stopped = [x.lower() for x in text if x.lower() not in stopwords_list]
+
+    if return_tokens==True:
+        return regexp_tokenize(' '.join(stopped),pattern)
+    else:
+        return ' '.join(stopped)
+    
+    
+
+from sklearn.model_selection._split import _BaseKFold
+class BlockTimeSeriesSplit(_BaseKFold): #sklearn.model_selection.TimeSeriesSplit):
+    """A variant of sklearn.model_selection.TimeSeriesSplit that keeps train_size and test_size
+    constant across folds.
+    Requires n_splits,train_size,test_size. train_size/test_size can be integer indices or float ratios """
+    def __init__(self, n_splits=5,train_size=None, test_size=None, step_size=None, method='sliding'):
+        super().__init__(n_splits, shuffle=False, random_state=None)
+        self.train_size = train_size
+        self.test_size = test_size
+        self.step_size = step_size
+        if 'sliding' in method or 'normal' in method:
+            self.method = method
+        else:
+            raise  Exception("Method may only be 'normal' or 'sliding'")
+
+    def split(self,X,y=None, groups=None):
+        import numpy as np
+        import math
+        method = self.method
+        ## Get n_samples, trian_size, test_size, step_size
+        n_samples = len(X)
+        test_size = self.test_size
+        train_size =self.train_size
+
+
+        ## If train size and test sze are ratios, calculate number of indices
+        if train_size<1.0:
+            train_size = math.floor(n_samples*train_size)
+
+        if test_size <1.0:
+            test_size = math.floor(n_samples*test_size)
+
+        ## Save the sizes (all in integer form)
+        self._train_size = train_size
+        self._test_size = test_size
+
+        ## calcualte and save k_fold_size
+        k_fold_size = self._test_size + self._train_size
+        self._k_fold_size = k_fold_size
+
+
+
+        indices = np.arange(n_samples)
+
+        ## Verify there is enough data to have non-overlapping k_folds
+        if method=='normal':
+            import warnings
+            if n_samples // self._k_fold_size <self.n_splits:
+                warnings.warn('The train and test sizes are too big for n_splits using method="normal"\n\
+                switching to method="sliding"')
+                method='sliding'
+                self.method='sliding'
+
+
+
+        if method=='normal':
+
+            margin = 0
+            for i in range(self.n_splits):
+
+                start = i * k_fold_size
+                stop = start+k_fold_size
+
+                ## change mid to match my own needs
+                mid = int(start+self._train_size)
+                yield indices[start: mid], indices[mid + margin: stop]
+
+
+        elif method=='sliding':
+
+            step_size = self.step_size
+            if step_size is None: ## if no step_size, calculate one
+                ## DETERMINE STEP_SIZE
+                last_possible_start = n_samples-self._k_fold_size #index[-1]-k_fold_size)\
+                step_range =  range(last_possible_start)
+                step_size = len(step_range)//self.n_splits
+            self._step_size = step_size
+
+
+            for i in range(self.n_splits):
+                if i==0:
+                    start = 0
+                else:
+                    start = prior_start+self._step_size #(i * step_size)
+
+                stop =  start+k_fold_size
+                ## change mid to match my own needs
+                mid = int(start+self._train_size)
+                prior_start = start
+                yield indices[start: mid], indices[mid: stop]
+
+
+
+
+def adf_test(series,title=''):
+    """
+    Pass in a time series and an optional title, returns an ADF report
+    # UDEMY COURSE ALTERNATIVE TO STATIONARITY CHECK
+    """
+    from statsmodels.tsa.stattools import adfuller
+    import pandas as pd
+    print(f'Augmented Dickey-Fuller Test: {title}')
+    result = adfuller(series.dropna(),autolag='AIC') # .dropna() handles differenced data
+
+    labels = ['ADF test statistic','p-value','# lags used','# observations']
+    out = pd.Series(result[0:4],index=labels)
+
+    for key,val in result[4].items():
+        out[f'critical value ({key})']=val
+
+    print(out.to_string())          # .to_string() removes the line "dtype: float64"
+
+    if result[1] <= 0.05:
+        print("Strong evidence against the null hypothesis")
+        print("Reject the null hypothesis")
+        print("Data has no unit root and is stationary")
+    else:
+        print("Weak evidence against the null hypothesis")
+        print("Fail to reject the null hypothesis")
+        print("Data has a unit root and is non-stationary")
+
+######## SEASONAL DECOMPOSITION
+def plot_decomposition(TS, decomposition, figsize=(12,8),window_used=None):
+    """ Plot the original data and output decomposed components"""
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    import numpy as np
+
+    # Gather the trend, seasonality and noise of decomposed object
+    trend = decomposition.trend
+    seasonal = decomposition.seasonal
+    residual = decomposition.resid
+
+    fontdict_axlabels = {'fontsize':12}#,'fontweight':'bold'}
+
+    # Plot gathered statistics
+    fig, ax = plt.subplots(nrows=4, ncols=1,figsize=figsize)
+
+    ylabel = 'Original'
+    ax[0].plot(np.log(TS), color="blue")
+    ax[0].set_ylabel(ylabel, fontdict=fontdict_axlabels)
+
+    ylabel = label='Trend'
+    ax[1].plot(trend, color="blue")
+    ax[1].set_ylabel(ylabel, fontdict=fontdict_axlabels)
+
+    ylabel='Seasonality'
+    ax[2].plot(seasonal, color="blue")
+    ax[2].set_ylabel(ylabel, fontdict=fontdict_axlabels)
+
+    ylabel='Residuals'
+    ax[3].plot(residual, color="blue")
+    ax[3].set_ylabel(ylabel, fontdict=fontdict_axlabels)
+    ax[3].set_xlabel('Time', fontdict=fontdict_axlabels)
+
+    # Add title with window
+    if window_used == None:
+        plt.suptitle('Seasonal Decomposition', y=1.02)
+    else:
+        plt.suptitle(f'Seasonal Decomposition - Window={window_used}', y=1.02)
+
+    # Adjust aesthetics
+    plt.tight_layout()
+
+    return ax
+
+
+def seasonal_decompose_and_plot(ive_df,col='BidClose',freq='H',
+                          fill_method='ffill',window=144,
+                         model='multiplicative', two_sided=False,
+                               plot_components=True):##WIP:
+    """Perform seasonal_decompose from statsmodels.tsa.seasonal.
+    Plot Output Decomposed Components"""
+    import pandas as pd
+    import numpy as np
+    from statsmodels.tsa.seasonal import seasonal_decompose
+
+
+    # TS = ive_df['BidClose'].asfreq('BH')
+    TS = pd.DataFrame(ive_df[col])
+    TS = TS.asfreq(freq)
+    TS[TS==0]=np.nan
+    TS.fillna(method='ffill',inplace=True)
+
+    # Perform decomposition
+    decomposition = seasonal_decompose(np.log(TS),freq=window, model=model, two_sided=two_sided)
+
+    if plot_components==True:
+        ax = plot_decomposition(TS, decomposition, window_used=window)
+
+    return decomposition
+
+
+### WIP FUNCTIONS
+def make_date_range_slider(start_date,end_date,freq='D'):
+
+    from ipywidgets import interact, interactive, Label, Box, Layout
+    import ipywidgets as iw
+    from datetime import datetime
+    import pandas as pd
+    # specify the date range from user input
+    dates = pd.date_range(start_date, end_date,freq=freq)
+
+    # specify formatting based on frequency code
+    date_format_lib={'D':'%m/%d/%Y','H':'%m/%d/%Y: %T'}
+    freq_format = date_format_lib[freq]
+
+
+    # creat options list and index for SelectionRangeSlider
+    options = [(date.strftime(date_format_lib[freq]),date) for date in dates]
+    index = (0, len(options)-1)
+
+    #     # Create out function to display outputs (not needed?)
+    #     out = iw.Output(layout={'border': '1px solid black'})
+    #     #     @out.capture()
+
+    # Instantiate the date_range_slider
+    date_range_slider = iw.SelectionRangeSlider(
+        options=options, index=index, description = 'Date Range',
+        orientation = 'horizontal',layout={'width':'500px','grid_area':'main'},#layout=Layout(grid_area='main'),
+        readout=True)
+
+    # Save the labels for the date_range_slider as separate items
+    date_list = [date_range_slider.label[0], date_range_slider.label[-1]]
+    date_label = iw.Label(f'{date_list[0]} -- {date_list[1]}',
+                            layout=Layout(grid_area='header'))
+
+
+
+
+
+def make_scaler_library(df,transform=False,columns=[]):
+    """Takes a df and fits a MinMax scaler to the columns specified (default is to use all columns).
+    Returns a dictionary (scaler_library) with keys = columns, and values = its corresponding fit's MinMax Scaler
+
+    Example Usage:
+    scale_lib, df_scaled = make_scaler_library(df, transform=True)
+
+    # to get the inverse_transform of a column with a different name:
+    # use `inverse_transform_series`
+    scaler = scale_lib['price'] # get scaler fit to original column  of interest
+    price_column =  inverse_transform_series(df['price_labels'], scaler) #get the inverse_transformed series back
+    """
+    from sklearn.preprocessing import MinMaxScaler
+    scaler_dict = {}
+    scaler_dict['index'] = df.index
+    if len(columns)==0:
+        user_cols = []
+        columns = df.columns
+    for col in columns:
+        user_cols=columns
+        scaler = MinMaxScaler()
+        scaler.fit(df[col].values.reshape(-1,1))
+        scaler_dict[col] = scaler
+
+    if transform==False:
+        return scaler_dict
+
+    elif transform==True:
+        df_out = transform_cols_from_library(df, scaler_dict,columns=user_cols)
+        return scaler_dict, df_out
+
+
+def transform_cols_from_library(df,scaler_library,inverse=False,columns=[]):
+    """Accepts a df and a scaler_library that was transformed using make_scaler_library.
+    Inverse tansforms listed columns (if columns =[] then all columns)
+    Returns a dataframe with all columns of original df."""
+    df_out = df.copy()
+
+    if len(columns)==0:
+        columns = df.columns
+
+    for col in columns:
+
+        scaler = scaler_library[col]
+        if hasattr(scaler, 'data_range_')==False:
+            raise Exception(f'The scaler for {col} is not fitted.')
+
+
+        if inverse==False:
+            scaled_col = scaler.transform(df[col].values.reshape(-1,1))
+        elif inverse==True:
+            scaled_col = scaler.inverse_transform(df[col].values.reshape(-1,1))
+        df_out[col] = scaled_col.ravel()
+    return df_out
+
+def inverse_transform_series(series, scaler):
+    """Takes a series of df column and a fit scaler. Intended for use with make_scaler_library's dictionary
+    Example Usage:
+    scaler_lib, df_scaled = make_scaler_library(df, transform = True)
+    series_inverse_transformed = inverse_transform_series(df['price_data'],scaler_lib['price'])
+    """
+    import pandas as pd
+
+    series_tf = scaler.inverse_transform(series.values.reshape(-1,1))
+    series_tf = pd.Series(series_tf.ravel(), index = series.index, name=series.name)
+    return series_tf
+
+
+def make_X_y_timeseries_data(data,x_window = 35, verbose=2,as_array=True):
+    """Creates an X and Y time sequence trianing set from a pandas Series.
+    - X_train is a an array with x_window # of samples for each row in X_train
+    - y_train is one value per X_train window: the next time point after the X_window.
+    Verbose determines details printed about the contents and shapes of the data.
+
+    # Example Usage:
+    X_train, y_train = make_X_y_timeseries(df['price'], x_window= 35)
+    print( X_train[0]]):
+    # returns: arr[X1,X2...X35]
+    print(y_train[0])
+    # returns  X36
+    """
+
+    import numpy as np
+    import pandas as pd
+
+    # Raise warning if null valoues
+    if any(data.isna()):
+        raise Exception('Function does not accept null values')
+
+    # Optional display of input data shape and range
+    if verbose>0:
+        print(f'Input Range: {np.min(data)} - {np.max(data)}')
+        print(f'Input Shape: {np.shape(data)}\n')
+
+
+    # Save the index from the input data
+    time_index_in = data.index
+    time_index = data.index[x_window:]
+
+
+    # Create Empty lists to receive binned X_train and y_train data
+    X_train, y_train = [], []
+    check_time_index = []
+
+    # For every possible bin of x_window # of samples
+    # create an X_train row with the X_window # of previous samples
+    # create a y-train row with just one values - the next sample after the X_train window
+    for i in range(x_window, data.shape[0]):
+        check_time_index.append([data.index[i-x_window], data.index[i]])
+        # Append a list of the past x_window # of timepoints
+        X_train.append(data.iloc[i-x_window:i])#.values)
+
+        # Append the next single timepoint's data
+        y_train.append(data.iloc[i])#.values)
+
+    if as_array == True:
+        # Make X_train, y_train into arrays
+        X_train, y_train = np.array(X_train), np.array(y_train)
+
+
+    if verbose>0:
+        print(f'\nOutput Shape - X: {X_train.shape}')
+        print(f'Output Shape - y: {y_train.shape}')
+        print(f'\nTimeindex Shape: {np.shape(time_index)}\n\tRange: {time_index[0]}-{time_index[-1]}')
+        print(f'\tFrequency:',time_index.freq)
+#     print(time_index)
+#     print(check_time_index)
+    return X_train, y_train, time_index
+
+
+
+# def print_array_info(X, name='Array'):
+#     """Test function for verifying shapes and data ranges of input arrays"""
+#     Xt=X
+#     print('X type:',type(Xt))
+#     print(f'X.shape = {Xt.shape}')
+#     print(f'\nX[0].shape = {Xt[0].shape}')
+#     print(f'X[0] contains:\n\t',Xt[0])
+    
+    
+
+
+def train_test_val_split(X,y,test_size=0.20,val_size=0.1):
+    """Performs 2 successive train_test_splits to produce a training, testing, and validation dataset"""
+    from sklearn.model_selection import train_test_split
+
+    if val_size==0:
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=test_size)
+        return X_train, X_test, y_train, y_test
+    else:
+
+        first_split_size = test_size + val_size
+        second_split_size = val_size/(test_size + val_size)
+
+        X_train, X_test_val, y_train, y_test_val = train_test_split(X, y, test_size=first_split_size)
+
+        X_test, X_val, y_test, y_val = train_test_split(X_test_val, y_test_val, test_size=second_split_size)
+
+        return X_train, X_test, X_val, y_train, y_test, y_val
+    
+    
+    
+
+
+
+def compare_word_cloud(text1,label1,text2,label2):
+    """Compares the wordclouds from 2 sets of texts"""
+    from wordcloud import WordCloud
+    import matplotlib.pyplot as plt
+
+    wordcloud1 = WordCloud(max_font_size=80, max_words=200, background_color='white').generate(' '.join(text1))
+    wordcloud2 = WordCloud(max_font_size=80, max_words=200, background_color='white').generate(' '.join(text2))
+
+
+    fig,ax = plt.subplots(nrows=1,ncols=2,figsize=(20,15))
+    ax[0].imshow(wordcloud1, interpolation='bilinear')
+    ax[0].set_aspect(1.5)
+    ax[0].axis("off")
+    ax[0].set_title(label1, fontsize=20)
+
+    ax[1].imshow(wordcloud2, interpolation='bilinear')
+    ax[1].set_aspect(1.5)
+    ax[1].axis("off")
+    ax[1].set_title(label2, fontsize=20)
+
+    fig.tight_layout()
+    return fig,ax
+
+def transform_image_mask_white(val):
+    """Will convert any pixel value of 0 (white) to 255 for wordcloud mask."""
+    if val==0:
+        return 255
+    else:
+        return val
+
+def open_image_mask(filename):
+    import numpy as np
+    from PIL import Image
+    from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
+    mask=[]
+    mask = np.array(Image.open(filename))
+    return mask
+
+
+
+class W2vVectorizer(object):
+    """From Learn.co Text Classification with Word Embeddings Lab.
+    An sklearn-comaptible class containing the vectors for the fit Word2Vec."""
+
+    def __init__(self, w2v, glove):
+        # takes in a dictionary of words and vectors as input
+        import numpy as np
+
+        self.w2v = w2v
+        if len(w2v) == 0:
+            self.dimensions = 0
+        else:
+            self.dimensions = len(w2v[next(iter(glove))])
+
+    # Note from Mike: Even though it doesn't do anything, it's required that this object implement a fit method or else
+    # It can't be used in a sklearn Pipeline.
+    def fit(self, X, y):
+        return self
+
+    def transform(self, X):
+        import numpy as np
+        return np.array([
+            np.mean([self.w2v[w] for w in words if w in self.w2v]
+                   or [np.zeros(self.dimensions)], axis=0) for words in X])
+
+
+
+def plot_wide_kde_thin_mean_sem_bars(series1,sname1, series2, sname2):
+    '''EDA / Hypothesis Testing:
+    Two subplot EDA figure that plots series1 vs. series 2 against with sns.displot
+    Large  wide kde plot with small thing mean +- standard error of the mean (sem)
+    Overlapping sem error bars is an excellent visual indicator of significant difference.
+    .'''
+
+    ## ADDING add_gridspec usage
+    import pandas as pd
+    import numpy as np
+    from scipy.stats import sem
+
+    import matplotlib.pyplot as plt
+    import matplotlib as mpl
+    import matplotlib.ticker as ticker
+
+    import seaborn as sns
+
+    from matplotlib import rcParams
+    from matplotlib import rc
+    rcParams['font.family'] = 'serif'
+
+    # Plot distributions of discounted vs full price groups
+    plt.style.use('default')
+    # with plt.style.context(('tableau-colorblind10')):
+    with plt.style.context(('seaborn-notebook')):
+
+        ## ----------- DEFINE AESTHETIC CUSTOMIZATIONS ----------- ##
+       # Axis Label fonts
+        fontSuptitle ={'fontsize': 22,
+                   'fontweight': 'bold',
+                    'fontfamily':'serif'}
+
+        fontTitle = {'fontsize': 10,
+                   'fontweight': 'medium',
+                    'fontfamily':'serif'}
+
+        fontAxis = {'fontsize': 10,
+                   'fontweight': 'medium',
+                    'fontfamily':'serif'}
+
+        fontTicks = {'fontsize': 8,
+                   'fontweight':'medium',
+                    'fontfamily':'serif'}
+
+
+        ## --------- CREATE FIG BASED ON GRIDSPEC --------- ##
+
+        plt.suptitle('Quantity of Units Sold', fontdict = fontSuptitle)
+
+        # Create fig object and declare figsize
+        fig = plt.figure(constrained_layout=True, figsize=(8,3))
+
+
+        # Define gridspec to create grid coordinates
+        gs = fig.add_gridspec(nrows=1,ncols=10)
+
+        # Assign grid space to ax with add_subplot
+        ax0 = fig.add_subplot(gs[0,0:7])
+        ax1 = fig.add_subplot(gs[0,7:10])
+
+        #Combine into 1 list
+        ax = [ax0,ax1]
+
+        ### ------------------  SUBPLOT 1  ------------------ ###
+
+        ## --------- Defining series1 and 2 for subplot 1------- ##
+        ax[0].set_title('Histogram + KDE',fontdict=fontTitle)
+
+        # Group 1: data, label, hist_kws and kde_kws
+        plotS1 = {'data': series1, 'label': sname1.title(),
+
+                   'hist_kws' :
+                    {'edgecolor': 'black', 'color':'darkgray','alpha': 0.8, 'lw':0.5},
+
+                   'kde_kws':
+                    {'color':'gray', 'linestyle': '--', 'linewidth':2,
+                     'label':'kde'}}
+
+        # Group 2: data, label, hist_kws and kde_kws
+        plotS2 = {'data': series2,
+                    'label': sname2.title(),
+
+                    'hist_kws' :
+                    {'edgecolor': 'black','color':'green','alpha':0.8 ,'lw':0.5},
+
+
+                    'kde_kws':
+                    {'color':'darkgreen','linestyle':':','linewidth':3,'label':'kde'}}
+
+        # plot group 1
+        sns.distplot(plotS1['data'], label=plotS1['label'],
+
+                     hist_kws = plotS1['hist_kws'], kde_kws = plotS1['kde_kws'],
+
+                     ax=ax[0])
+
+
+        # plot group 2
+        sns.distplot(plotS2['data'], label=plotS2['label'],
+
+                     hist_kws=plotS2['hist_kws'], kde_kws = plotS2['kde_kws'],
+
+                     ax=ax[0])
+
+
+        ax[0].set_xlabel(series1.name, fontdict=fontAxis)
+        ax[0].set_ylabel('Kernel Density Estimation',fontdict=fontAxis)
+
+        ax[0].tick_params(axis='both',labelsize=fontTicks['fontsize'])
+        ax[0].legend()
+
+
+        ### ------------------  SUBPLOT 2  ------------------ ###
+
+        # Import scipy for error bars
+        from scipy.stats import sem
+
+        # Declare x y group labels(x) and bar heights(y)
+        x = [plotS1['label'], plotS2['label']]
+        y = [np.mean(plotS1['data']), np.mean(plotS2['data'])]
+
+        yerr = [sem(plotS1['data']), sem(plotS2['data'])]
+        err_kws = {'ecolor':'black','capsize':5,'capthick':1,'elinewidth':1}
+
+        # Create the bar plot
+        ax[1].bar(x,y,align='center', edgecolor='black', yerr=yerr,error_kw=err_kws,width=0.6)
+
+
+        # Customize subplot 2
+        ax[1].set_title('Average Quantities Sold',fontdict=fontTitle)
+        ax[1].set_ylabel('Mean +/- SEM ',fontdict=fontAxis)
+        ax[1].set_xlabel('')
+
+        ax[1].tick_params(axis=y,labelsize=fontTicks['fontsize'])
+        ax[1].tick_params(axis=x,labelsize=fontTicks['fontsize'])
+
+        ax1=ax[1]
+        # test = ax1.get_xticklabels()
+        # labels = [x.get_text() for x in test]
+        ax1.set_xticklabels([plotS1['label'],plotS2['label']], rotation=45,ha='center')
+
+
+        plt.show()
+
+        return fig,ax
