@@ -2723,6 +2723,19 @@ def thiels_U(ys_true=None, ys_pred=None,display_equation=True,display_table=True
 
 
 
+def make_stopwords_list(incl_punc=True, incl_nums=True, add_custom= ['http','https','...','…','``','co','“','’','‘','”',"n't","''",'u','s',"'s",'|','\\|','amp',"i'm"]):
+    from nltk.corpus import stopwords
+    import string
+
+    stopwords_list = stopwords.words('english')
+    if incl_punc==True:
+        stopwords_list += list(string.punctuation)
+    stopwords_list += add_custom #['http','https','...','…','``','co','“','’','‘','”',"n't","''",'u','s',"'s",'|','\\|','amp',"i'm"]
+    if incl_nums==True:
+        stopwords_list += [0,1,2,3,4,5,6,7,8,9]
+
+    return  stopwords_list
+
 
 def apply_stopwords(stopwords_list,  text, tokenize=True,return_tokens=False, pattern = "([a-zA-Z]+(?:'[a-z]+)?)"):
     """EX: df['text_stopped'] = df['content'].apply(lambda x: apply_stopwords(stopwords_list,x))"""
@@ -2739,8 +2752,14 @@ def apply_stopwords(stopwords_list,  text, tokenize=True,return_tokens=False, pa
         return regexp_tokenize(' '.join(stopped),pattern)
     else:
         return ' '.join(stopped)
-    
-    
+
+def empty_lists_to_strings(x):
+    """Takes a series and replaces any empty lists with an empty string instead."""
+    if len(x)==0:
+        return ' '
+    else:
+        return ' '.join(x) #' '.join(tokens)
+
 
 from sklearn.model_selection._split import _BaseKFold
 class BlockTimeSeriesSplit(_BaseKFold): #sklearn.model_selection.TimeSeriesSplit):
@@ -3204,150 +3223,3 @@ class W2vVectorizer(object):
                    or [np.zeros(self.dimensions)], axis=0) for words in X])
 
 
-
-def plot_wide_kde_thin_mean_sem_bars(series1,sname1, series2, sname2):
-    '''EDA / Hypothesis Testing:
-    Two subplot EDA figure that plots series1 vs. series 2 against with sns.displot
-    Large  wide kde plot with small thing mean +- standard error of the mean (sem)
-    Overlapping sem error bars is an excellent visual indicator of significant difference.
-    .'''
-
-    ## ADDING add_gridspec usage
-    import pandas as pd
-    import numpy as np
-    from scipy.stats import sem
-
-    import matplotlib.pyplot as plt
-    import matplotlib as mpl
-    import matplotlib.ticker as ticker
-
-    import seaborn as sns
-
-    from matplotlib import rcParams
-    from matplotlib import rc
-    rcParams['font.family'] = 'serif'
-
-    # Plot distributions of discounted vs full price groups
-    plt.style.use('default')
-    # with plt.style.context(('tableau-colorblind10')):
-    with plt.style.context(('seaborn-notebook')):
-
-        ## ----------- DEFINE AESTHETIC CUSTOMIZATIONS ----------- ##
-       # Axis Label fonts
-        fontSuptitle ={'fontsize': 22,
-                   'fontweight': 'bold',
-                    'fontfamily':'serif'}
-
-        fontTitle = {'fontsize': 10,
-                   'fontweight': 'medium',
-                    'fontfamily':'serif'}
-
-        fontAxis = {'fontsize': 10,
-                   'fontweight': 'medium',
-                    'fontfamily':'serif'}
-
-        fontTicks = {'fontsize': 8,
-                   'fontweight':'medium',
-                    'fontfamily':'serif'}
-
-
-        ## --------- CREATE FIG BASED ON GRIDSPEC --------- ##
-
-        plt.suptitle('Quantity of Units Sold', fontdict = fontSuptitle)
-
-        # Create fig object and declare figsize
-        fig = plt.figure(constrained_layout=True, figsize=(8,3))
-
-
-        # Define gridspec to create grid coordinates
-        gs = fig.add_gridspec(nrows=1,ncols=10)
-
-        # Assign grid space to ax with add_subplot
-        ax0 = fig.add_subplot(gs[0,0:7])
-        ax1 = fig.add_subplot(gs[0,7:10])
-
-        #Combine into 1 list
-        ax = [ax0,ax1]
-
-        ### ------------------  SUBPLOT 1  ------------------ ###
-
-        ## --------- Defining series1 and 2 for subplot 1------- ##
-        ax[0].set_title('Histogram + KDE',fontdict=fontTitle)
-
-        # Group 1: data, label, hist_kws and kde_kws
-        plotS1 = {'data': series1, 'label': sname1.title(),
-
-                   'hist_kws' :
-                    {'edgecolor': 'black', 'color':'darkgray','alpha': 0.8, 'lw':0.5},
-
-                   'kde_kws':
-                    {'color':'gray', 'linestyle': '--', 'linewidth':2,
-                     'label':'kde'}}
-
-        # Group 2: data, label, hist_kws and kde_kws
-        plotS2 = {'data': series2,
-                    'label': sname2.title(),
-
-                    'hist_kws' :
-                    {'edgecolor': 'black','color':'green','alpha':0.8 ,'lw':0.5},
-
-
-                    'kde_kws':
-                    {'color':'darkgreen','linestyle':':','linewidth':3,'label':'kde'}}
-
-        # plot group 1
-        sns.distplot(plotS1['data'], label=plotS1['label'],
-
-                     hist_kws = plotS1['hist_kws'], kde_kws = plotS1['kde_kws'],
-
-                     ax=ax[0])
-
-
-        # plot group 2
-        sns.distplot(plotS2['data'], label=plotS2['label'],
-
-                     hist_kws=plotS2['hist_kws'], kde_kws = plotS2['kde_kws'],
-
-                     ax=ax[0])
-
-
-        ax[0].set_xlabel(series1.name, fontdict=fontAxis)
-        ax[0].set_ylabel('Kernel Density Estimation',fontdict=fontAxis)
-
-        ax[0].tick_params(axis='both',labelsize=fontTicks['fontsize'])
-        ax[0].legend()
-
-
-        ### ------------------  SUBPLOT 2  ------------------ ###
-
-        # Import scipy for error bars
-        from scipy.stats import sem
-
-        # Declare x y group labels(x) and bar heights(y)
-        x = [plotS1['label'], plotS2['label']]
-        y = [np.mean(plotS1['data']), np.mean(plotS2['data'])]
-
-        yerr = [sem(plotS1['data']), sem(plotS2['data'])]
-        err_kws = {'ecolor':'black','capsize':5,'capthick':1,'elinewidth':1}
-
-        # Create the bar plot
-        ax[1].bar(x,y,align='center', edgecolor='black', yerr=yerr,error_kw=err_kws,width=0.6)
-
-
-        # Customize subplot 2
-        ax[1].set_title('Average Quantities Sold',fontdict=fontTitle)
-        ax[1].set_ylabel('Mean +/- SEM ',fontdict=fontAxis)
-        ax[1].set_xlabel('')
-
-        ax[1].tick_params(axis=y,labelsize=fontTicks['fontsize'])
-        ax[1].tick_params(axis=x,labelsize=fontTicks['fontsize'])
-
-        ax1=ax[1]
-        # test = ax1.get_xticklabels()
-        # labels = [x.get_text() for x in test]
-        ax1.set_xticklabels([plotS1['label'],plotS2['label']], rotation=45,ha='center')
-
-
-        plt.show()
-
-        return fig,ax
