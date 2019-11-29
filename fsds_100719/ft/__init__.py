@@ -6,7 +6,7 @@ james.irving@flatironschool.com
 # from fsds_100719.ft import *
 
 # from ..ft import *
-import fsds_100719.ft.hakkeray
-import fsds_100719.ft.jirving
+from  fsds_100719.ft import hakkeray
+from  fsds_100719.ft import jirving
 # def placeholder():
 #     pass
