@@ -21,6 +21,11 @@ def matplotlib_links():
     else:
         display(Markdown(txt))
 
+
+def string_formatting():
+    print('[i] See link for overview table of string formatting.')
+    print('- https://mkaz.blog/code/python-string-format-cookbook/')
+    print('- Example: "${:,.2f}" adds a $, uses commas as thousands separator, and displays 2 decimal points.')
 # def mount_google_drive_shared_url(url,force=False):
 #     import sys
 #     if ("google.colab" in sys.modules) | (force==True):

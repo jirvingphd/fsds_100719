@@ -113,3 +113,6 @@ venv.bak/
 .DS_Store
 fsds_100719/.DS_Store
 .vscode/settings.json
+
+# Notebooks
+testing.ipynb
