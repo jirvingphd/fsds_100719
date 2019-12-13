@@ -63,10 +63,10 @@ def diagnose_model(model):
     """
     
     import matplotlib.pyplot as plt
-    import numpy as np
     import statsmodels.api as sms
     import statsmodels.formula.api as smf
     import scipy.stats as stats
+    
     resids = model.resid
     
     fig,ax = plt.subplots(ncols=2,figsize=(10,5))
@@ -92,6 +92,8 @@ def find_outliers_Z(df,col):
     >> idx_outs = find_outliers(df['bedrooms'])
     >> df_clean = df.loc[idx_outs==False]"""
     from scipy import stats
+    import numpy as np
+
 
     col = df[col]
     z = np.abs(stats.zscore(col))
