@@ -1,5 +1,7 @@
 """A shared collection of tools for general use."""
 
+from ..jmi import dict_dropdown
+from .regression_project import *
 
 def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,markdown=True,file_location=False):
     """Call on any module or functon to display the object's
