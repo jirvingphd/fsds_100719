@@ -3,6 +3,56 @@
 from ..jmi import dict_dropdown
 from .regression_project import *
 
+def add_dir_to_path(abs_path=None,rel_path=None,verbose=True):
+    """Adds the provided path (or current directory if None provided) to
+    sys.path.
+    
+    Args:
+        path (str): folder to add to path (May need to be absolute).
+        rel_path (str): relative folder path to be converted to absolute and added.
+        verbose (bool): Controls display of success/failure messages. Default =True"""
+    import pathlib, os, sys
+    
+    # If no path provided:
+    if abs_path is None:
+    
+        ## If no relative path provided, use current dir
+        if rel_path is not None:
+            if verbose:
+                print(f"[i] Converting relative path '{rel_path}' to absolute.")
+            import os
+            os.chdir(rel_path)
+            add_path = os.path.abspath(os.curdir)
+#             print os.path.abspath(os.)
+            
+        else:
+            add_path = os.path.abspath(os.curdir)
+        
+
+    ## Set add_path = to provided path
+    else:
+        add_path=abs_path
+        
+    ## Check if folder already in path
+    if add_path in sys.path:
+        print(f'[i] Path already in sys.path:\n\t- "{add_path}"')
+        return
+
+    ## otherwise append path
+    else:
+        sys.path.append(add_path)
+    
+    ## Check if 
+    if add_path in sys.path:
+        if verbose:
+            print(f'[Success] Successfully added to sys.path:\n\t -"{add_path}"')
+    else:
+        if verbose:        
+            print(f'[Error] Path was not added to path.')
+    return
+
+
+
 def ihelp(function_or_mod, show_help=True, show_code=True,return_code=False,markdown=True,file_location=False):
     """Call on any module or functon to display the object's
     help command printout AND/OR soruce code displayed as Markdown
