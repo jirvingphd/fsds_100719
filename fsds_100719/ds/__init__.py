@@ -637,6 +637,8 @@ def get_source_code_markdown(function):
 #     if 'fsds' in topic:
 #         print('fsds_100719 Package Documentation:')
 
+def show_off_vs_code():
+    pass
 
 def check_column(panda_obj, columns=None,nlargest='all'):
     """
