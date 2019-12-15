@@ -1,7 +1,16 @@
 """A collection of functions containing convenient links to documentation and other resources."""
-
+repo_links = {'python_package':('fsds_100719',
+                                    'https://github.com/jirvingphd/fsds_100719'),
+        'fulltime_notes':('fsds_100719_cohort_notes',
+                                    'https://github.com/jirvingphd/fsds_100719_cohort_notes'),
+            'parttime_notes':('fsds_pt_100719_cohort_notes',
+                                    "https://github.com/jirvingphd/fsds_pt_100719_cohort_notes")}      
 # def youtube_playlists():
 #     pass
+def html_colors():
+    url = "https://www.w3schools.com/colors/colors_names.asp"
+    print(url)
+
 def matplotlib_links():
     """ Display links to matplotlib documentation and references.
     """
@@ -26,37 +35,125 @@ def string_formatting():
     print('[i] See link for overview table of string formatting.')
     print('- https://mkaz.blog/code/python-string-format-cookbook/')
     print('- Example: "${:,.2f}" adds a $, uses commas as thousands separator, and displays 2 decimal points.')
-# def mount_google_drive_shared_url(url,force=False):
-#     import sys
-#     if ("google.colab" in sys.modules) | (force==True):
-#         try:
-#             from google.colab import drive
-#             drive.mount('/content/drive')
-#             print(f'\n[i] Lesson Folder URL:\n\t{url}')
-#             print('[i] Add this folder to your own Google Drive.')
-#             print('\t- Open Sidebar panel (> symmbol on left edge of screen) and click `Files` tab.\n\tFind your folder, somewhere inside of "/content/drive/My Drive/"')
-#             print('\t- Find the data file inside this folder and Right Click > "Copy Path"')
-#             print('[i] Enter that path into the next cell.')
-#         except:
-#             print('Something went wrong. Are you using Google Colab?')
-#     else:
-#         raise Exception('This function only works if using Google Colab.')        
-        
-        
+    
+    
 
-# # def cohort_resources(topic='student_resource_folder'):
-# #     """Displays quick reference url links and info.
-# #     Args:
-# #         topic (str): selects which reference info to show.
-# #             - `student_resource_folder` : data science gdrive url
-# #             - `fsds` :documentaion url"""
+class Link:
+    def __init__(self,name=None,url=None):
+        self.name = None
+        self.url = None
+        
+    def click(self):
+        import webbrowser
+        webbrowser.open_new_tab(self.url)
+        
+    def __md__(self):
+        from IPython.display import Markdown,display,HTML
+        ## Markdown clickable
+        mkdown=[]
+        [mkdown.append(f"- {k} :\n\t[{v[0]}]({v[1]})") for k,v in repo_links.items()]
+        mkdown = '\n'.join(mkdown)
+        display(Markdown(mkdown))
+        msg= mkdown
+        
+    def __str__(self):
+        msg = f"- {self.name} :\n\t:{self.url})"
+        # msg = '\n'.join(msg)
+        return msg
+    def __repr__(self):
+        # msg=[]
+        # [msg.append(f"- {k} :\n\t- Name: {v[0]}\n\t- Link: {v[1]})") for k,v in repo_links.items()]
+        # msg = '\n'.join(msg)
+        msg = f"- {self.name} :\n\t:{self.url})"
+
+        return msg
+        
+class LinkLibray:
+    def __init__(self,topic):
+        self._topic = topic
+        self._id = f"LinkLibrary for {self._topic} Links"
+        
+    def __repr___(self):
+        return self._id
+    
+    def __str__(self):
+        return self._id
+    # def __init__(self,*args):
+    #     for arg in args:
+    #         if isinstance(arg,Link):
+    #             self.__setattr__()
+  
+class Library:
+    
+    def __init__(self):
+        
+        repo_links = {'python_package':('fsds_100719',
+                                         'https://github.com/jirvingphd/fsds_100719'),
+                'fulltime_notes':('fsds_100719_cohort_notes',
+                                         'https://github.com/jirvingphd/fsds_100719_cohort_notes'),
+                  'parttime_notes':('fsds_pt_100719_cohort_notes',
+                                         "https://github.com/jirvingphd/fsds_pt_100719_cohort_notes")}
+        
+        cohort_repo_links = LinkLibray("Repo Links")
+        # links={}
+        for k,v in repo_links.items():
+            name,url= v[0],v[1]
+            link = Link(name,url)
+            setattr(cohort_repo_links,k,link)
+           
+        self.cohort_repo_links  = cohort_repo_links
             
-# #     if 'student_resource_folder' in topic:
+    
+    #  matplotlib_links = {'artist_blogpost'
+    # - [Comprehensive Matplotlib OOP vs plt Blog Post](https://dev.to/skotaro/artist-in-matplotlib---something-i-wanted-to-know-before-spending-tremendous-hours-on-googling-how-tos--31oo)
+    # - [Markers](https://matplotlib.org/3.1.1/api/markers_api.html)
+    # - [Colors](https://matplotlib.org/3.1.0/gallery/color/named_colors.html )
+    # - [Text](https://matplotlib.org/3.1.0/tutorials/text/text_intro.html )
+    # - [Text Properties](https://matplotlib.org/3.1.1/tutorials/text/text_props.html))
+        
+    
+
+def cohort_links(md=False,ret=False):
+    """Displays quick reference url links and info."""
+    
+    repo_links = {'Cohort Python Package':('fsds_100719',
+                                         'https://github.com/jirvingphd/fsds_100719'),
+                'full-time note repo':('fsds_100719_cohort_notes',
+                                         'https://github.com/jirvingphd/fsds_100719_cohort_notes'),
+                  'part-time note repo':('fsds_pt_100719_cohort_notes',
+                                         "https://github.com/jirvingphd/fsds_pt_100719_cohort_notes")}    
+    from IPython import display 
+    import math
+    print("[i] Links to cohort note repositories:")
+    print("---"*int(math.floor((80/3)-2)))
+     
+    if md:
+        ## Markdown clickable
+        mkdown=[]
+        [mkdown.append(f"- {k} :\n\t[{v[0]}]({v[1]})") for k,v in repo_links.items()]
+        mkdown = '\n'.join(mkdown)
+        display.Markdown(mkdown)  
+        msg= mkdown
+        
+    else:
+        ## optimized for print 
+        msg=[]
+        [msg.append(f"- {k} :\n\t- Name: {v[0]}\n\t- Link: {v[1]})") for k,v in repo_links.items()]
+        msg = '\n'.join(msg)
+        print(msg)
+        
+    if ret: 
+        return msg
 
         
-# #     if 'fsds' in topic:
-# #         print('fsds_100719 Package Documentation:')
-        
+    # display.display(display.Markdown(msg))
+    # return msg
+
+    
+
+
+
+
 # class Documentation():
 #     """"Keyword-sorted package documentation links/resources"""
 #     def __init__(self,name='package'):

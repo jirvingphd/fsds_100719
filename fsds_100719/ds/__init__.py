@@ -3,6 +3,7 @@
 from ..jmi import dict_dropdown
 from .regression_project import *
 
+
 def add_dir_to_path(abs_path=None,rel_path=None,verbose=True):
     """Adds the provided path (or current directory if None provided) to
     sys.path.
