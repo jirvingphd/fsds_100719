@@ -1,4 +1,3 @@
-from sklearn import datasets as sk_datasets
 
 """A collection of convenient csv urls and sklearn datasets as dataframes."""
 def load_data(*args,**kwargs):
