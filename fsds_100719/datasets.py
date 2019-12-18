@@ -1,3 +1,5 @@
+from sklearn import datasets as sk_datasets
+
 """A collection of convenient csv urls and sklearn datasets as dataframes."""
 def load_data(*args,**kwargs):
     raise Exception('load_data() has been replaced by individual load functions. i.e. fs.datasets.load_boston()')
@@ -12,7 +14,6 @@ def read_csv_from_url(url,verbose=False,read_csv_kwds=None):
     Returns:
         df (DataFrame): the dataset("""
     import pandas as pd
-    from sklearn import datasets
     from IPython.display import display
     ## Load and return dataset
     # if verbose: 
@@ -127,3 +128,22 @@ def load_height_by_country(verbose=False,read_csv_kwds=None):
         print(f'Source of dataset: {source}')
         
     return df
+
+
+
+### TIME SERIES
+
+def load_ts_mintemp(verbose=False,read_csv_kwds=None):
+    """Loads min_temp.csv from """
+    if verbose:
+        print("From Introduction to Time Series")
+    url='https://raw.githubusercontent.com/jirvingphd/dsc-introduction-to-time-series-online-ds-ft-100719/master/min_temp.csv'
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
+
+
+def load_ts_nyse_monthly(verbose=False,read_csv_kwds=None):
+    """Loads NYSE_.csv from """
+    if verbose:
+        print("From Introduction to Time Series")
+    url='https://raw.githubusercontent.com/jirvingphd/dsc-introduction-to-time-series-online-ds-ft-100719/master/NYSE_monthly.csv'
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
