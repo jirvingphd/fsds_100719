@@ -4,6 +4,7 @@ def load_data(*args,**kwargs):
     raise Exception('load_data() has been replaced by individual load functions. i.e. fs.datasets.load_boston()')
 
 
+
 def read_csv_from_url(url,verbose=False,read_csv_kwds=None):
     """Loading function to load all .csv datasets.
     Args:
@@ -146,3 +147,11 @@ def load_ts_nyse_monthly(verbose=False,read_csv_kwds=None):
         print("From Introduction to Time Series")
     url='https://raw.githubusercontent.com/jirvingphd/dsc-introduction-to-time-series-online-ds-ft-100719/master/NYSE_monthly.csv'
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
+
+
+def load_ts_exch_rates(verbose=False,read_csv_kwds=None):
+    # if verbose:
+    url="https://raw.githubusercontent.com/jirvingphd/dsc-basic-time-series-models-online-ds-ft-100719/master/exch_rates.csv"
+    return read_csv_from_url(url, verbose=verbose, read_csv_kwds=read_csv_kwds)
+
+
