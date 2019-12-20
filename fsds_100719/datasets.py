@@ -155,3 +155,17 @@ def load_ts_exch_rates(verbose=False,read_csv_kwds=None):
     return read_csv_from_url(url, verbose=verbose, read_csv_kwds=read_csv_kwds)
 
 
+def load_ts_google_trends(read_csv_kwds=None):
+    url='https://raw.githubusercontent.com/jirvingphd/dsc-corr-autocorr-in-time-series-online-ds-ft-100719/master/google_trends.csv'
+    return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
+
+
+def load_ts_winning_400m(read_csv_kwds=None):
+    url="https://raw.githubusercontent.com/jirvingphd/dsc-arma-models-lab-online-ds-ft-100719/master/winning_400m.csv"
+    return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
+
+
+# def load_ts_co2(read_csv_kwds=None):
+#     import statsmodels.api as sm
+#     df = sm.datasets.co2.load()
+#     return df
