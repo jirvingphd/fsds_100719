@@ -132,6 +132,13 @@ def load_height_by_country(verbose=False,read_csv_kwds=None):
 
 
 ### TIME SERIES
+
+# baltimore_crime ="https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/BPD_Part_1_Victim_Based_Crime_Data.csv"
+# std_rates = "https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/STD%20Cases.csv"
+# no_sex_xlsx = "https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/Americans%20Sex%20Frequency.xlsx"
+
+# learn_passengers="https://raw.githubusercontent.com/learn-co-students/dsc-removing-trends-lab-online-ds-ft-100719/master/passengers.csv"
+
 def load_ts_baltimore_crime_full(read_csv_kwds=None):
     url ="https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/BPD_Part_1_Victim_Based_Crime_Data.csv"
     return  read_csv_from_url(url, verbose=False,read_csv_kwds=read_csv_kwds)
@@ -173,6 +180,14 @@ def load_ts_winning_400m(read_csv_kwds=None):
     url="https://raw.githubusercontent.com/jirvingphd/dsc-arma-models-lab-online-ds-ft-100719/master/winning_400m.csv"
     return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
+
+def load_ts_std_cases(read_csv_kwds=None):
+    url = 'https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/STD%20Cases.csv'
+    return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
+
+def load_ts_american_sex_frequency(read_csv_kwds=None):
+    url = 'https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/Americans%20Sex%20Frequency.xlsx'
+    return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
 # def load_ts_co2(read_csv_kwds=None):
 #     import statsmodels.api as sm
