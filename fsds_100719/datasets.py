@@ -132,6 +132,12 @@ def load_height_by_country(verbose=False,read_csv_kwds=None):
 
 
 ### TIME SERIES
+def load_ts_baltimore_crime_full(read_csv_kwds=None):
+    url ="https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/BPD_Part_1_Victim_Based_Crime_Data.csv"
+    return  read_csv_from_url(url, verbose=False,read_csv_kwds=read_csv_kwds)
+
+# def 
+
 
 def load_ts_mintemp(verbose=False,read_csv_kwds=None):
     """Loads min_temp.csv from """
