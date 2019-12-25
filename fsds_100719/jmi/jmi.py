@@ -2671,28 +2671,57 @@ def empty_lists_to_strings(x):
         return ' '.join(x) #' '.join(tokens)
 
 
+
+
 from sklearn.model_selection._split import _BaseKFold
 class BlockTimeSeriesSplit(_BaseKFold): #sklearn.model_selection.TimeSeriesSplit):
     """A variant of sklearn.model_selection.TimeSeriesSplit that keeps train_size and test_size
     constant across folds.
     Requires n_splits,train_size,test_size. train_size/test_size can be integer indices or float ratios """
     def __init__(self, n_splits=5,train_size=None, test_size=None, step_size=None, method='sliding'):
+        """
+        [summary]
+        
+        Args:
+            _BaseKFold ([type]): Inherited sklearn class
+            n_splits (int, optional): Number of folds/blocks. Defaults to 5.
+            train_size ([type], optional): [description]. Defaults to None.
+            test_size ([type], optional): [description]. Defaults to None.
+            step_size ([type], optional): [description]. Defaults to None.
+            method (str, optional): method for blocking the df. Defaults to 'sliding'. Alternative is 'normal'
+        
+        Raises:
+            Exception: if method is anyhthing other than 'normal','sliding'
+        """
+        
         super().__init__(n_splits, shuffle=False, random_state=None)
         self.train_size = train_size
         self.test_size = test_size
         self.step_size = step_size
+        
         if 'sliding' in method or 'normal' in method:
             self.method = method
         else:
             raise  Exception("Method may only be 'normal' or 'sliding'")
 
     def split(self,X,y=None, groups=None):
+        """
+        [summary]
+        
+        Args:
+            X ([type]): [description]
+            y ([type], optional): [description]. Defaults to None.
+            groups ([type], optional): [description]. Defaults to None.
+        
+        Yields:
+            [type]: [description]
+        """
         import numpy as np
         import math
         method = self.method
         ## Get n_samples, trian_size, test_size, step_size
         n_samples = len(X)
-        test_size = self.test_size
+         = self.test_size
         train_size =self.train_size
 
 

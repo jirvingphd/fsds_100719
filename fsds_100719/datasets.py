@@ -50,7 +50,11 @@ def load_population(verbose=False,read_csv_kwds=None):
     url = "https://raw.githubusercontent.com/learn-co-students/dsc-subplots-and-enumeration-lab-online-ds-ft-100719/master/population.csv"
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
-def load_autompg(verbose=False,read_csv_kwds=None):
+def load_autompg(verbose=True,read_csv_kwds=None):
+    
+    if verbose:
+        print('[i] Source url with details: https://www.kaggle.com/uciml/autompg-dataset')
+    
     url = 'https://raw.githubusercontent.com/jirvingphd/dsc-dealing-with-categorical-variables-online-ds-ft-100719/master/auto-mpg.csv'
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
@@ -185,9 +189,12 @@ def load_ts_std_cases(read_csv_kwds=None):
     url = 'https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/STD%20Cases.csv'
     return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
-def load_ts_american_sex_frequency(read_csv_kwds=None):
+def load_ts_american_sex_frequency(read_csv_kwds={}):
     url = 'https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/Americans%20Sex%20Frequency.xlsx'
-    return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
+    import pandas as pd
+    
+    return pd.read_excel(url,**read_csv_kwds)
+    # return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
 # def load_ts_co2(read_csv_kwds=None):
 #     import statsmodels.api as sm
