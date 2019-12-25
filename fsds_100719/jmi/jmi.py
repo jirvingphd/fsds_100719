@@ -2721,7 +2721,7 @@ class BlockTimeSeriesSplit(_BaseKFold): #sklearn.model_selection.TimeSeriesSplit
         method = self.method
         ## Get n_samples, trian_size, test_size, step_size
         n_samples = len(X)
-         = self.test_size
+        test_size = self.test_size
         train_size =self.train_size
 
 
