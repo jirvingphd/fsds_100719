@@ -353,4 +353,93 @@ def ts_datetime_object_properties():
     
     return display(Markdown(datetime_notes))
 
+
+# def prob_formulas():
+#     """Overview of critical probability/permutation/factorial equations"""
+#     pass
+
     
+    ##
+    
+
+# def prob_combinations():
+#     pass
+    
+# def prob_laws():
+#     from IPython.display import Markdown, display, HTML
+
+#     axioms="""#### Probability axioms
+
+#     1.  Positivity : Prob is always 0 \<= P(E) \<=1
+
+#     2.  Probability of a certain event: P(S)=1
+
+#     3.  Additivity Union of 2 exclusive sets = sum prob of individual events
+#         happening <br>
+#     If $A\cap B = \emptyset $, then $P(A\cup B) = P(A) + P(B)$"""
+#     display(Markdown(axioms))
+
+
+def prob_permutations():
+    from IPython.display import display,Markdown,HTML
+
+    permutations=\
+r"""### Permutations
+- **Permutations have to do with arranging objects.**
+- Order is important
+
+### Permutations of $n$:
+> ***How many ways to arrange $n$ objects?***
+
+$$P(n) = n!$$
+- where $n$ = total number of elements
+
+### Permutations without replacement (the $k$-permutation of $n$)
+> ***How many ways to select $k$ elements out of a pool of $n$ objects?***
+
+$$ \large P_{k}^{n}= \dfrac{n!}{(n-k)!}$$ 
+<center> this is known as a $k$-permutation of $n$. </center>
+
+### Permutations with Replacement:
+
+$$ \large P_{j}^{n} = n^j $$
+- where $n$ = total number of elements
+- $j$ = number of positions to fill
+
+#### Sometimes called **Variations** with notation:
+
+$$ \large \bar{V}_{j}^{n} = n^j$$
+
+
+### Permutations with repeated elements
+- e.g. selecting random letters from the word TENNESEE
+
+$$\dfrac{n!}{n_1!n_2!\ldots n_j!}$$
+
+
+"""
+    import IPython.display as dp
+    display(dp.Markdown(permutations))
+# prob_permutations()
+
+
+def prob_combinations():
+    import IPython.display as dp
+
+    combinations=\
+r"""### Combinations
+
+> ***How many ways can we create a subset $k$ out of $n$ objects?***
+
+- Combinations are unordered.
+
+- **The # of combinations equals number of variations, over the number of permutations:**
+$$ \large C_{p}^{n}  = \frac{V_{p}^{n}}{P_p} = \frac{n!}{p!(n-p)!} $$
+
+
+- Also represented as:
+$$\displaystyle\binom{n}{k} = \dfrac{P_{k}^{n}}{k!}=\dfrac{ \dfrac{n!}{(n-k)!}}{k!} = \dfrac{n!}{(n-k)!k!}$$
+
+"""
+    dp.display(dp.Markdown(combinations))
+prob_combinations()
