@@ -2,6 +2,7 @@
 
 from ..jmi import dict_dropdown
 from .regression_project import *
+from .tsa import *
 
 
 def add_dir_to_path(abs_path=None,rel_path=None,verbose=True):
