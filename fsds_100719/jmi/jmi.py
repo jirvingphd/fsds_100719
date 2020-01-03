@@ -3162,3 +3162,84 @@ class W2vVectorizer(object):
                    or [np.zeros(self.dimensions)], axis=0) for words in X])
 
 
+
+
+
+def get_methods(obj,private=False):
+    """
+    Retrieves a list of all non-private methods (default) from inside of obj.
+    - If private==False: only returns methods whose names do NOT start with a '_'
+    
+    Args:
+        obj (object): Object to retrieve methods from.
+        private (bool): Whether to retrieve private methods or public.
+
+    Returns:
+        list: the names of all of the retrieved methods.
+    """
+    method_list = [func for func in dir(obj) if callable(getattr(obj, func))]
+    if private:
+        filt_methods = list(filter(lambda x: '_' in x[0] ,method_list))
+    else:
+        filt_methods = list(filter(lambda x: '_' not in x[0] ,method_list))
+    return  filt_methods
+
+def get_attributes(obj,private=False):
+    """
+    Retrieves a list of all non-private attributes (default) from inside of obj.
+    - If private==False: only returns methods whose names do NOT start with a '_'
+    
+    Args:
+        obj (object): Object to retrieve attributes from.
+        private (bool): Whether to retrieve private attributes or public.
+    
+    Returns:
+        list: the names of all of the retrieved attributes.
+    """
+    method_list = [func for func in dir(obj) if not callable(getattr(obj, func))]
+    if private:
+        filt_methods = list(filter(lambda x: '_' in x[0] ,method_list))
+    else:
+        filt_methods = list(filter(lambda x: '_' not in x[0] ,method_list))
+    return  filt_methods
+
+def get_methods_attributes_df(obj,include_private=False):
+    """
+    Retrieves all attributes and methods (with docstrings)
+    and returns them in a DataFrame. By default only retrieves
+    non-private methods, unless include_privates==True
+    Args:
+        obj (object): object to retrieve methods/attributes from
+        include_privates (bool): Whether to include private methods/attributes
+    
+    Returns:
+        Frame: DataFrame with results.
+    """
+    import pandas as pd
+    methods = get_methods(obj,private=False)
+    method_types = ['Method' for item in methods]
+
+    attrs = get_attributes(obj,private=False)
+    att_types =['Attribute' for item in attrs]
+    
+    if include_private:
+        private_methods = get_methods(obj,private=True)
+        methods.extend(private_methods)
+        method_types.extend(['Private Method' for item in private_methods])
+        
+        private_attrs = get_attributes(obj,private=True)
+        attrs.extend(private_attrs)
+        att_types.extend(['Private Attribute' for item in private_attrs])
+    
+    
+    docs=[]
+    for m in methods:
+        att = getattr(obj,m)
+        docs.append(att.__doc__)
+
+    all_res = [*methods,*attrs]
+    res_type = [*method_types,*att_types]#['Method' for item in methods]+['Attribute' for item in attrs]
+    docstrings= docs + ['na' for i in attrs]
+
+    df_obj = pd.DataFrame({'Object':all_res,'Type':res_type,'Doc':docstrings})
+    return df_obj
