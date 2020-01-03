@@ -1,6 +1,6 @@
 """A shared collection of tools for general use."""
 
-from ..jmi import dict_dropdown
+from ..jmi import dict_dropdown,get_attributes,get_methods,get_methods_attributes_df    
 from .regression_project import *
 from .tsa import *
 
