@@ -443,3 +443,14 @@ $$\displaystyle\binom{n}{k} = \dfrac{P_{k}^{n}}{k!}=\dfrac{ \dfrac{n!}{(n-k)!}}{
 """
     dp.display(dp.Markdown(combinations))
 prob_combinations()
+
+
+def evaluation_metrics(markdown=True):
+    from IPython.display import Markdown,display,HTML
+    if markdown:
+        formula = r'''$$ \text{Precision} = \frac{\text{Number of True Positives}}{\text{Number of Predicted Positives}} $$    
+        $$ \text{Recall} = \frac{\text{Number of True Positives}}{\text{Number of Actual Total Positives}} $$  
+$$ \text{Accuracy} = \frac{\text{Number of True Positives + True Negatives}}{\text{Total Observations}} $$
+
+$$ \text{F1 score} = 2 * \frac{\text{Precision * Recall}}{\text{Precision + Recall}} $$'''        
+        display(Markdown(formula))
