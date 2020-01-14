@@ -3243,3 +3243,132 @@ def get_methods_attributes_df(obj,include_private=False):
 
     df_obj = pd.DataFrame({'Object':all_res,'Type':res_type,'Doc':docstrings})
     return df_obj
+
+
+
+def evaluate_classification_model(model,  X_train,X_test,y_train,y_test, history=None,binary_classes=True,
+                            conf_matrix_classes= ['Decrease','Increase'],
+                            normalize_conf_matrix=True,conf_matrix_figsize=(8,4),save_history=False,
+                            history_filename ='results/keras_history.png', save_conf_matrix_png=False,
+                            conf_mat_filename= 'results/confusion_matrix.png',save_summary=False,
+                            summary_filename = 'results/model_summary.txt',auto_unique_filenames=True):
+
+    """Evaluates kera's model's performance, plots model's history,displays classification report,
+    and plots a confusion matrix.
+    conf_matrix_classes are the labels for the matrix. [negative, positive]
+    Returns df of classification report and fig object for  confusion matrix's plot."""
+
+    from sklearn.metrics import roc_auc_score, roc_curve, classification_report,confusion_matrix
+
+    from IPython.display import display
+    import pandas as pd
+    import matplotlib as mpl
+    numFmt = '.4f'
+    num_dashes = 30
+
+    # results_list=[['Metric','Value']]
+    # metric_list = ['accuracy','precision','recall','f1']
+    print('---'*num_dashes)
+    print('\tTRAINING HISTORY:')
+    print('---'*num_dashes)
+
+    if auto_unique_filenames:
+        ## Get same time suffix for all files
+        time_suffix = auto_filename_time(fname_friendly=True)
+
+        filename_dict= {'history':history_filename,'conf_mat':conf_mat_filename,'summary':summary_filename}
+        ## update filenames
+        for filetype,filename in filename_dict.items():
+            if '.' in filename:
+                filename_dict[filetype] = filename.split('.')[0]+time_suffix + '.'+filename.split('.')[-1]
+            else:
+                if filetype =='summary':
+                    ext='.txt'
+                else:
+                    ext='.png'
+                filename_dict[filetype] = filename+time_suffix + ext
+
+
+        history_filename = filename_dict['history']
+        conf_mat_filename = filename_dict['conf_mat']
+        summary_filename = filename_dict['summary']
+
+
+    ## PLOT HISTORY
+    if history is not None:
+        plot_keras_history( history,filename_base=history_filename, save_fig=save_history,title_text='')
+
+    print('\n')
+    print('---'*num_dashes)
+    print('\tEVALUATE MODEL:')
+    print('---'*num_dashes)
+
+    print('\n- Evaluating Training Data:')
+    loss_train, accuracy_train = model.evaluate(X_train, y_train, verbose=True)
+    print(f'    - Accuracy:{accuracy_train:{numFmt}}')
+    print(f'    - Loss:{loss_train:{numFmt}}')
+
+    print('\n- Evaluating Test Data:')
+    loss_test, accuracy_test = model.evaluate(X_test, y_test, verbose=True)
+    print(f'    - Accuracy:{accuracy_test:{numFmt}}')
+    print(f'    - Loss:{loss_test:{numFmt}}\n')
+
+
+    ## Get model predictions
+    y_hat_train = model.predict_classes(X_train)
+    y_hat_test = model.predict_classes(X_test)
+
+    if y_test.ndim>1 or binary_classes==False:
+        if binary_classes==False: 
+            pass
+        else:
+            binary_classes = False
+            print(f"[!] y_test was >1 dim, setting binary_classes to False")
+        
+        ## reduce dimensions of y_train and y_test
+        y_train = y_train.argmax(axis=1)
+        y_test = y_test.argmax(axis=1)
+
+
+    print('---'*num_dashes)
+    print('\tCLASSIFICATION REPORT:')
+    print('---'*num_dashes)
+
+    ## Get sklearn classification report 
+    report_str = classification_report(y_test,y_hat_test)
+    report_dict = classification_report(y_test,y_hat_test,output_dict=True)
+    
+    
+    try:
+        ## Create and display classification report
+        # df_report =pd.DataFrame.from_dict(report_dict,orient='columns')#'index')#class_rows,orient='index')
+        df_report_temp = pd.DataFrame(report_dict)
+        df_report_temp = df_report_temp.T#reset_index(inplace=True)
+
+        df_report = df_report_temp[['precision','recall','f1-score','support']]
+        display(df_report.round(4).style.set_caption('Classification Report'))
+        print('\n')
+    
+    except:
+        print(report_str)
+        # print(report_dict)
+        df_report = pd.DataFrame()
+
+    ## if saving the model.summary() printout 
+    if save_summary:
+        with open(summary_filename,'w') as f:
+            model.summary(print_fn=lambda x: f.write(x+"\n"))
+            f.write(f"\nSaved at {time_suffix}\n")
+            f.write(report_str)
+
+    ## Create and plot confusion_matrix
+    import matplotlib.pyplot as plt
+    conf_mat = confusion_matrix(y_test, y_hat_test)
+    with plt.rc_context(rc={'figure.figsize':conf_matrix_figsize}): # rcParams['figure.figsize']
+        fig = plot_confusion_matrix(conf_mat,classes=conf_matrix_classes,
+                                    normalize=normalize_conf_matrix, fig_size=conf_matrix_figsize)
+    if save_conf_matrix_png:
+        fig.savefig(conf_mat_filename,facecolor='white', format='png', frameon=True)
+        
+    
+    return df_report, fig
