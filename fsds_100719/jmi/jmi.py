@@ -1044,46 +1044,148 @@ def plot_auc_roc_curve(y_test, y_test_pred):
     plt.show()
 
 
-def plot_confusion_matrix(cm, classes,
-                          normalize=False,
-                          title='Confusion matrix',
-                          cmap=None,
-                          print_matrix=True):
-    """Check if Normalization Option is Set to True. If so, normalize the raw confusion matrix before visualizing
-    #Other code should be equivalent to your previous function."""
+# def plot_confusion_matrix(cm, classes=None,
+#                           normalize=False,
+#                           title='Confusion matrix',
+#                           cmap=None,
+#                           print_matrix=True):
+#     """Check if Normalization Option is Set to True. If so, normalize the raw confusion matrix before visualizing
+#     #Other code should be equivalent to your previous function."""
+#     import itertools
+#     import numpy as np
+#     import matplotlib.pyplot as plt
+    
+#     if classes is None:
+#         classes = list(range(len(cm)))
+#     if cmap is None:
+#         cmap = plt.get_cmap("Blues")
+
+#     if normalize:
+#         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+#         # print("Normalized confusion matrix")
+#     # else:
+#         # print('Confusion matrix, without normalization')
+
+#     print(cm)
+
+#     plt.imshow(cm, interpolation='nearest', cmap=cmap)
+#     plt.title(title)
+#     plt.colorbar()
+#     tick_marks = np.arange(len(classes))
+#     plt.xticks(tick_marks, classes, rotation=45)
+#     plt.yticks(tick_marks, classes)
+
+#     fmt = '.2f' if normalize else 'd'
+#     thresh = cm.max() / 2.
+#     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+#         plt.text(j, i, format(cm[i, j], fmt),
+#                  horizontalalignment="center",
+#                  color="white" if cm[i, j] > thresh else "black")
+
+#     plt.tight_layout()
+#     plt.ylabel('True label')
+#     plt.xlabel('Predicted label')
+#     plt.show()
+
+def plot_confusion_matrix(cm, classes=None, normalize=False,cmap=None,
+                          title='Confusion Matrix',title_font={'size':14},
+                          annot_kws={'size':10,'weight':50}, 
+                          axislabel_font={'size':14,'weight':70}, 
+                          tick_font={'size':12,'weight':50},x_rot =45, y_rot=0,
+                         fig_kws={'figsize':(5,5)}):
+    """ Plots a confusion matrix of either a pre-calculated cm or a tuple of (y_true,y_pred) as cm.
+    
+    Args:
+        cm (array or tuple): Either a confusion amtrix from sklearn or (y_true,y_pred) tuple
+        classes (list, optional): Names of classes to use. Defaults to integers 0 to len(cm).
+        normalize (bool, optional): Annotate class-percentages instead of counts. Defaults to False.
+        cmap (cmap, optional): colormap to use Defaults to plt.get_cmap("Blues").
+        title (str, optional): Plot title. Defaults to 'Confusion Matrix'.
+        title_font (dict, optional): fontdict for set_title. Defaults to {'size':14}.
+        annot_kws (dict, optional): kws for ax.Text annotations. Defaults to {'size':10,'weight':50}.
+        axislabel_font (dict, optional): fontdict for ylabel,xlabel. Defaults to {'size':14,'weight':70}.
+        tick_font (dict, optional): kws for plt.xticks/yticks. Defaults to {'size':12,'weight':50}.
+        x_rot (int, optional): Rotation of x-axis tick labels. Defaults to 45.
+        y_rot (int, optional): Rotation of y-axis tick labels.Defaults to 0.
+        fig_kws (dict, optional): kws for plt.subplots. Defaults to {}.
+    
+    Returns:
+        [type]: [description]
+    """
+    import sklearn.metrics as metrics
+    if isinstance(cm, tuple):
+        cm = metrics.confusion_matrix(*cm)
+        
+    # Check if Normalization Option is Set to True. If so, normalize the raw confusion matrix before visualizing
     import itertools
     import numpy as np
     import matplotlib.pyplot as plt
-    if cmap==None:
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
+    
+    ## Setting & updating default kws
+    subplots_kws = {}
+    subplots_kws.update(fig_kws)
+    
+    ## Annotation kws
+    text_kws = dict(horizontalalignment="center")
+    text_kws.update(annot_kws)    
+    
+    ## Axis Labels
+    axlabel_kws = dict(size=12, weight='bold')
+    axlabel_kws.update(axislabel_font)
+    
+    ## Tick Labels
+    ticklabel_kws = dict(size=10)
+    ticklabel_kws.update(tick_font)
+    
+
+    ## Define classes if not 
+    if classes is None:
+        classes = list(range(len(cm)))
+        
+    ## Default cmap
+    if cmap is None:
         cmap = plt.get_cmap("Blues")
 
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        print("Normalized confusion matrix")
-    else:
-        print('Confusion matrix, without normalization')
 
-    print(cm)
+    ## Create fig,ax and plot iamge
+    fig, ax = plt.subplots(**subplots_kws)
+    
+    im = ax.imshow(cm, interpolation='nearest', cmap=cmap)
+    ax.set_title(title,fontdict=title_font)
 
-    plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
+    
+    ## Create Ticks
     tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
+    
+    plt.xticks(tick_marks, classes, rotation=x_rot,**ticklabel_kws)
+    plt.yticks(tick_marks, classes, rotation=y_rot,**ticklabel_kws)
 
+    ## Set annotation fmt and color threshold
     fmt = '.2f' if normalize else 'd'
     thresh = cm.max() / 2.
+    
+    ## Add cm labels
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        plt.text(j, i, format(cm[i, j], fmt),
-                 horizontalalignment="center",
-                 color="white" if cm[i, j] > thresh else "black")
+        color="white" if cm[i, j] > thresh else "black"
+        text_kws.update(color=color)
+        ax.text(j, i, format(cm[i, j], fmt),fontdict=text_kws)
+                
+    ## Set axis labels
+    ax.set_ylabel('True Label',fontdict=axislabel_font)
+    ax.set_xlabel('Predicted Label',fontdict=axislabel_font)
+     
+    ## Add colorbar
+    divider = make_axes_locatable(ax)
+    cax = divider.append_axes("right", size="5%", pad=0.1)
+    fig.colorbar(im,cax=cax)     
 
+    
     plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
-    plt.show()
 
+    return fig,ax
 
 
 ## Finding outliers and statistics
@@ -3365,8 +3467,8 @@ def evaluate_classification_model(model,  X_train,X_test,y_train,y_test, history
     import matplotlib.pyplot as plt
     conf_mat = confusion_matrix(y_test, y_hat_test)
     with plt.rc_context(rc={'figure.figsize':conf_matrix_figsize}): # rcParams['figure.figsize']
-        fig = plot_confusion_matrix(conf_mat,classes=conf_matrix_classes,
-                                    normalize=normalize_conf_matrix, fig_size=conf_matrix_figsize)
+        fig,ax = plot_confusion_matrix(conf_mat,classes=conf_matrix_classes,
+                                    normalize=normalize_conf_matrix, fig_kws={'figsize':conf_matrix_figsize})
     if save_conf_matrix_png:
         fig.savefig(conf_mat_filename,facecolor='white', format='png', frameon=True)
         
