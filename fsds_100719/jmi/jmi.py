@@ -1110,7 +1110,7 @@ def plot_confusion_matrix(cm, classes=None, normalize=False,cmap=None,
         fig_kws (dict, optional): kws for plt.subplots. Defaults to {}.
     
     Returns:
-        [type]: [description]
+        fig,ax: matplotlib Figure & Axes
     """
     import sklearn.metrics as metrics
     if isinstance(cm, tuple):
@@ -1169,9 +1169,8 @@ def plot_confusion_matrix(cm, classes=None, normalize=False,cmap=None,
     
     ## Add cm labels
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-        color="white" if cm[i, j] > thresh else "black"
-        text_kws.update(color=color)
-        ax.text(j, i, format(cm[i, j], fmt),fontdict=text_kws)
+        # text_kws.update(color=color)
+        ax.text(j, i, format(cm[i, j], fmt),color="white" if cm[i, j] > thresh else "black",fontdict=text_kws)
                 
     ## Set axis labels
     ax.set_ylabel('True Label',fontdict=axislabel_font)
