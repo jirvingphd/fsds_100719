@@ -1,4 +1,4 @@
-__version__ = '0.6.7'
+__version__ = '0.6.8'
 # from .imports import *
 # from .ft import *
 # from .pt import * 
