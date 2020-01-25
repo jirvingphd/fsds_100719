@@ -166,5 +166,12 @@ except:
 finally:
     fs = None
     import_packages()
+    
+try:
+    import cufflinks as cf 
+    cf.go_offline()
+    print(['[i] Pandas .iplot() method activated.'])
+except:
+    pass
 
     
