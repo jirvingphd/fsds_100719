@@ -104,6 +104,8 @@ def Cohen_d(group1, group2, correction = False):
         group1 (Series or NumPy array): group 1 for calculating d
         group2 (Series or NumPy array): group 2 for calculating d
         correction (bool): Apply equation correction if N<50. Default is False. 
+            - Url with small ncorrection equation: 
+                - https://www.statisticshowto.datasciencecentral.com/cohens-d/ 
     Returns:
         d (float): calculated d value
          
@@ -111,6 +113,7 @@ def Cohen_d(group1, group2, correction = False):
     > Small effect = 0.2
     > Medium Effect = 0.5
     > Large Effect = 0.8
+    
     """
     import numpy as np
     N = len(group1)+len(group2)
