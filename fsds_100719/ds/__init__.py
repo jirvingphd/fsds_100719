@@ -3,7 +3,8 @@
 from ..jmi import dict_dropdown,get_attributes,get_methods,get_methods_attributes_df    
 from .regression_project import *
 from .tsa import *
-import fsds_100719.ds.flatiron_stats as flatiron_stats
+import flatiron_stats 
+# import fsds_100719.ds.flatiron_stats as flatiron_stats
 
 def add_dir_to_path(abs_path=None,rel_path=None,verbose=True):
     """Adds the provided path (or current directory if None provided) to

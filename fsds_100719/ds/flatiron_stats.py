@@ -1,9 +1,10 @@
 #flatiron_stats
-import numpy as np
-import scipy.stats as stats
-import scipy
+
+
 def welch_t(a, b):
-    
+    import numpy as np
+    import scipy.stats as stats
+    import scipy   
     """ Calculate Welch's t statistic for two samples. """
 
     numerator = a.mean() - b.mean()
@@ -16,7 +17,9 @@ def welch_t(a, b):
     return np.abs(numerator/denominator)
 
 def welch_df(a, b):
-    
+    import numpy as np
+    import scipy.stats as stats
+    import scipy   
     """ Calculate the effective degrees of freedom for two samples. This function returns the degrees of freedom """
     
     s1 = a.var(ddof=1) 
@@ -35,6 +38,10 @@ def p_value_welch_ttest(a, b, two_sided=False):
     By default, the returned p-value is for a one-sided t-test. 
     Set the two-sided parameter to True if you wish to perform a two-sided t-test instead.
     """
+    import numpy as np
+    import scipy.stats as stats
+    import scipy   
+    
     t = welch_t(a, b)
     df = welch_df(a, b)
     
@@ -52,7 +59,9 @@ def evaluate_PDF(rv, x=4):
     '''Input: a random variable object, standard deviation
     output : x and y values for the normal distribution
     '''
-    
+    import numpy as np
+    import scipy.stats as stats
+    import scipy       
     # Identify the mean and standard deviation of random variable 
     mean = rv.mean()
     std = rv.std()
@@ -73,7 +82,9 @@ def overlap_superiority(group1, group2, n=1000):
     group2: scipy.stats rv object
     n: sample size
     """
-
+    import numpy as np
+    import scipy.stats as stats
+    import scipy   
     # Get a sample of size n from both groups
     group1_sample = group1.rvs(n)
     group2_sample = group2.rvs(n)
@@ -115,6 +126,8 @@ def Cohen_d(group1, group2, correction = False):
     > Large Effect = 0.8
     
     """
+    import scipy.stats as stats
+    import scipy   
     import numpy as np
     N = len(group1)+len(group2)
     diff = group1.mean() - group2.mean()
@@ -141,6 +154,9 @@ def plot_pdfs(cohen_d=2):
     
     cohen_d: number of standard deviations between the means
     """
+    import numpy as np
+    import scipy.stats as stats
+    import scipy   
     import scipy
     import matplotlib.pyplot as plt
     group1 = scipy.stats.norm(0, 1)
@@ -171,6 +187,8 @@ def find_outliers(df,col=None,report=True):
     >> idx_outs = find_outliers_df(df,col='AdjustedCompensation')
     >> good_data = data[~idx_outs].copy()
     """
+    import numpy as np
+    import scipy.stats as stats
     import pandas as pd
     if isinstance(df,pd.DataFrame) & (col is None):
         raise Exception('Must provide a column name if passing a DataFrame.')
