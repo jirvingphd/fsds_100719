@@ -1,7 +1,7 @@
 #flatiron_stats
 import numpy as np
 import scipy.stats as stats
-
+import scipy
 def welch_t(a, b):
     
     """ Calculate Welch's t statistic for two samples. """
@@ -138,6 +138,8 @@ def plot_pdfs(cohen_d=2):
     
     cohen_d: number of standard deviations between the means
     """
+    import scipy
+    import matplotlib.pyplot as plt
     group1 = scipy.stats.norm(0, 1)
     group2 = scipy.stats.norm(cohen_d, 1)
     xs, ys = evaluate_PDF(group1)
@@ -149,3 +151,44 @@ def plot_pdfs(cohen_d=2):
     o, s = overlap_superiority(group1, group2)
     print('overlap', o)
     print('superiority', s)
+    
+    
+def find_outliers(df,col=None,report=True):
+    """
+`    Uses Tukey's Interquartile Range Method to find outliers.
+    - threshold =  1.5 * IQR
+        - Lower threshold = [25% quartile] - threshold
+        - Upper threshold = [75% quartile] + threshold
+    - Outliers are below the lower or above the upper threshold.
+    
+    Returns a series of T/F for each row for slicing outliers: df[idx_out]
+    
+    
+    EXAMPLE USE: 
+    >> idx_outs = find_outliers_df(df,col='AdjustedCompensation')
+    >> good_data = data[~idx_outs].copy()
+    """
+    import pandas as pd
+    if isinstance(df,pd.DataFrame) & (col is None):
+        raise Exception('Must provide a column name if passing a DataFrame.')
+    elif col is not None:
+        data = df[col].copy()
+    else:
+        data = df.copy()
+
+    res = data.describe()
+    iqr_thresh = 1.5 * (res['75%'] - res['25%'])
+    upper = res['75%']+iqr_thresh
+    lower = res['25%']-iqr_thresh
+
+    idx_outs = ((data>upper)|(data<lower))
+
+    def get_true_count(idx_outs):
+        if True in idx_outs.value_counts().index:
+            return idx_outs.value_counts()[True]
+        else:
+            return 0
+        
+    if report:
+        print(f'[i] outliers for {col}: {get_true_count(idx_outs)} / {len(data)} total.')
+    return idx_outs
