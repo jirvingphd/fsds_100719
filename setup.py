@@ -11,7 +11,7 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
-requirements = ['numpy','missingno', 'pandas', 'seaborn', 'matplotlib', 'scikit-learn', 
+requirements = ['numpy','missingno', 'pandas', 'seaborn', 'matplotlib', 'scikit-learn>=0.22.1', 
 'scipy','IPython','ipywidgets','pprint','tzlocal','pyperclip','pandas_profiling',
 'wordcloud','selenium','fake_useragent','lxml','cufflinks'] 
 #'pytz','tzlocal','gensim','openpyxl','beautifulsoup4',
