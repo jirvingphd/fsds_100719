@@ -454,3 +454,13 @@ $$ \text{Accuracy} = \frac{\text{Number of True Positives + True Negatives}}{\te
 
 $$ \text{F1 score} = 2 * \frac{\text{Precision * Recall}}{\text{Precision + Recall}} $$'''        
         display(Markdown(formula))
+
+
+def statistical_power(return_url = False):
+    """Displays link to interactive statistical power calculator. 
+    Returns url if return_url = True (Default is False)"""
+    url = 'https://rpsychologist.com/d3/NHST/'
+    print('[i] Interactive statistical power calculator: https://rpsychologist.com/d3/NHST/')
+    if return_url:
+        return url
+    
