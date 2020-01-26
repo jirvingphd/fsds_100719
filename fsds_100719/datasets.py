@@ -5,7 +5,7 @@ def load_data(*args,**kwargs):
 
 
 
-def read_csv_from_url(url,verbose=False,read_csv_kwds=None):
+def read_csv_from_url(url,verbose=False,read_csv_kwds={}):
     """Loading function to load all .csv datasets.
     Args:
         url (str): csv raw link
@@ -27,30 +27,30 @@ def read_csv_from_url(url,verbose=False,read_csv_kwds=None):
     return df
 
 
-def load_heroes_info(verbose=False,read_csv_kwds=None):
+def load_heroes_info(verbose=False,read_csv_kwds={}):
     url = 'https://raw.githubusercontent.com/jirvingphd/dsc-data-cleaning-project-online-ds-ft-100719/master/heroes_information.csv'
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
     
 
-def load_heroes_powers(verbose=False,read_csv_kwds=None):
+def load_heroes_powers(verbose=False,read_csv_kwds={}):
     url = "https://raw.githubusercontent.com/learn-co-students/dsc-data-cleaning-project-online-ds-ft-100719/master/super_hero_powers.csv"
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
-def load_titanic(verbose=False,read_csv_kwds=None):
+def load_titanic(verbose=False,read_csv_kwds={}):
     url ="https://raw.githubusercontent.com/jirvingphd/dsc-dealing-missing-data-lab-online-ds-ft-100719/master/titanic.csv"
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 
-def load_mod1_proj(verbose=False,read_csv_kwds=None):
+def load_mod1_proj(verbose=False,read_csv_kwds={}):
     url = "https://raw.githubusercontent.com/learn-co-students/dsc-v2-mod1-final-project-online-ds-ft-100719/master/kc_house_data.csv"
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
         
 
-def load_population(verbose=False,read_csv_kwds=None):
+def load_population(verbose=False,read_csv_kwds={}):
     url = "https://raw.githubusercontent.com/learn-co-students/dsc-subplots-and-enumeration-lab-online-ds-ft-100719/master/population.csv"
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
-def load_autompg(verbose=True,read_csv_kwds=None):
+def load_autompg(verbose=True,read_csv_kwds={}):
     
     if verbose:
         print('[i] Source url with details: https://www.kaggle.com/uciml/autompg-dataset')
@@ -107,13 +107,13 @@ def load_iris(verbose=False):
     return df
 
 
-def load_height_weight(verbose=False,read_csv_kwds=None):
+def load_height_weight(verbose=False,read_csv_kwds={}):
     """Loads height vs weight dataset"""
     url='https://raw.githubusercontent.com/jirvingphd/dsc-probability-density-function-online-ds-ft-100719/master/weight-height.csv'
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 
-def load_iowa_prisoners(verbose=False,vers='raw',read_csv_kwds=None):
+def load_iowa_prisoners(verbose=False,vers='raw',read_csv_kwds={}):
     import pandas as pd
     if 'raw' in vers:
         url ='https://raw.githubusercontent.com/jirvingphd/dsc-3-final-project-online-ds-ft-021119/master/datasets/FULL_3-Year_Recidivism_for_Offenders_Released_from_Prison_in_Iowa.csv'
@@ -123,7 +123,7 @@ def load_iowa_prisoners(verbose=False,vers='raw',read_csv_kwds=None):
     #pd.set_option('display.precision',3)
     return df
 
-def load_height_by_country(verbose=False,read_csv_kwds=None):
+def load_height_by_country(verbose=False,read_csv_kwds={}):
     url='https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/height_by_country_age18.csv'
     df = read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)#pd.read_csv(url_iowa_raw,index_col=0)
 
@@ -143,17 +143,17 @@ def load_height_by_country(verbose=False,read_csv_kwds=None):
 
 # learn_passengers="https://raw.githubusercontent.com/learn-co-students/dsc-removing-trends-lab-online-ds-ft-100719/master/passengers.csv"
 
-def load_ts_baltimore_crime_full(read_csv_kwds=None):
+def load_ts_baltimore_crime_full(read_csv_kwds={}):
     url ="https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/BPD_Part_1_Victim_Based_Crime_Data.csv"
     return  read_csv_from_url(url, verbose=False,read_csv_kwds=read_csv_kwds)
 
 ### TIME SERIES
-def load_ts_baltimore_crime_counts(read_csv_kwds=None):
+def load_ts_baltimore_crime_counts(read_csv_kwds={}):
     url="https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/baltimore_crime_counts_2014-2019.csv"
     return  read_csv_from_url(url, verbose=False,read_csv_kwds=read_csv_kwds)
 
 
-def load_ts_mintemp(verbose=False,read_csv_kwds=None):
+def load_ts_mintemp(verbose=False,read_csv_kwds={}):
     """Loads min_temp.csv from """
     if verbose:
         print("From Introduction to Time Series")
@@ -161,7 +161,7 @@ def load_ts_mintemp(verbose=False,read_csv_kwds=None):
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 
-def load_ts_nyse_monthly(verbose=False,read_csv_kwds=None):
+def load_ts_nyse_monthly(verbose=False,read_csv_kwds={}):
     """Loads NYSE_.csv from """
     if verbose:
         print("From Introduction to Time Series")
@@ -169,23 +169,23 @@ def load_ts_nyse_monthly(verbose=False,read_csv_kwds=None):
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
 
 
-def load_ts_exch_rates(verbose=False,read_csv_kwds=None):
+def load_ts_exch_rates(verbose=False,read_csv_kwds={}):
     # if verbose:
     url="https://raw.githubusercontent.com/jirvingphd/dsc-basic-time-series-models-online-ds-ft-100719/master/exch_rates.csv"
     return read_csv_from_url(url, verbose=verbose, read_csv_kwds=read_csv_kwds)
 
 
-def load_ts_google_trends(read_csv_kwds=None):
+def load_ts_google_trends(read_csv_kwds={}):
     url='https://raw.githubusercontent.com/jirvingphd/dsc-corr-autocorr-in-time-series-online-ds-ft-100719/master/google_trends.csv'
     return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
 
-def load_ts_winning_400m(read_csv_kwds=None):
+def load_ts_winning_400m(read_csv_kwds={}):
     url="https://raw.githubusercontent.com/jirvingphd/dsc-arma-models-lab-online-ds-ft-100719/master/winning_400m.csv"
     return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
 
-def load_ts_std_cases(read_csv_kwds=None):
+def load_ts_std_cases(read_csv_kwds={}):
     url = 'https://raw.githubusercontent.com/jirvingphd/fsds_100719/master/fsds_100719/data/STD%20Cases.csv'
     return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
@@ -196,7 +196,18 @@ def load_ts_american_sex_frequency(read_csv_kwds={}):
     return pd.read_excel(url,**read_csv_kwds)
     # return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
 
-# def load_ts_co2(read_csv_kwds=None):
+# def load_ts_co2(read_csv_kwds={}):
 #     import statsmodels.api as sm
 #     df = sm.datasets.co2.load()
 #     return df
+
+
+def load_AB_multiple_choice(verbose=False,read_csv_kwds={}):
+    url='https://raw.githubusercontent.com/jirvingphd/dsc-in-depth-ab-testing-lab-online-ds-pt-100719/master/multipleChoiceResponses_cleaned.csv'
+    df = read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)#pd.read_csv(url_iowa_raw,index_col=0)
+
+    if verbose:
+        from IPython.display import display
+        display(df.head())
+        
+    return df
