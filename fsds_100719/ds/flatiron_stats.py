@@ -172,44 +172,134 @@ def plot_pdfs(cohen_d=2):
     print('superiority', s)
     
     
-def find_outliers(df,col=None,report=True):
+# def find_outliers(df,col=None,report=True):
+#     """
+# `    Uses Tukey's Interquartile Range Method to find outliers.
+#     - threshold =  1.5 * IQR
+#         - Lower threshold = [25% quartile] - threshold
+#         - Upper threshold = [75% quartile] + threshold
+#     - Outliers are below the lower or above the upper threshold.
+    
+#     Returns a series of T/F for each row for slicing outliers: df[idx_out]
+    
+    
+#     EXAMPLE USE: 
+#     >> idx_outs = find_outliers_df(df,col='AdjustedCompensation')
+#     >> good_data = data[~idx_outs].copy()
+#     """
+#     import numpy as np
+#     import scipy.stats as stats
+#     import pandas as pd
+#     if isinstance(df,pd.DataFrame) & (col is None):
+#         raise Exception('Must provide a column name if passing a DataFrame.')
+#     elif col is not None:
+#         data = df[col].copy()
+#     else:
+#         data = df.copy()
+
+#     res = data.describe()
+#     iqr_thresh = 1.5 * (res['75%'] - res['25%'])
+#     upper = res['75%']+iqr_thresh
+#     lower = res['25%']-iqr_thresh
+
+#     idx_outs = ((data>upper)|(data<lower))
+
+#     def get_true_count(idx_outs):
+#         if True in idx_outs.value_counts().index:
+#             return idx_outs.value_counts()[True]
+#         else:
+#             return 0
+        
+#     if report:
+#         print(f'[i] outliers for {col}: {get_true_count(idx_outs)} / {len(data)} total.')
+#     return idx_outs
+
+def find_outliers_IQR(data,col=None):
     """
-`    Uses Tukey's Interquartile Range Method to find outliers.
-    - threshold =  1.5 * IQR
-        - Lower threshold = [25% quartile] - threshold
-        - Upper threshold = [75% quartile] + threshold
-    - Outliers are below the lower or above the upper threshold.
+    Use Tukey's Method of outlier removal AKA InterQuartile-Range Rule
+    and return boolean series where True indicates it is an outlier.
+    - Calculates the range between the 75% and 25% quartiles
+    - Outliers fall outside upper and lower limits, using a treshold of  1.5*IQR the 75% and 25% quartiles.
+
+    IQR Range Calculation:    
+        res = df.describe()
+        IQR = res['75%'] -  res['25%']
+        lower_limit = res['25%'] - 1.5*IQR
+        upper_limit = res['75%'] + 1.5*IQR
+
+    Args:
+        data (DataFrame,Series,or ndarray): data to test for outliers.
+        col (str): If passing a DataFrame, must specify column to use.
+
+    Returns:
+        [boolean Series]: A True/False for each row use to slice outliers.
+        
+    EXAMPLE USE: 
+    >> idx_outs = find_outliers_df(df,col='AdjustedCompensation')
+    >> good_data = data[~idx_outs].copy()
     
-    Returns a series of T/F for each row for slicing outliers: df[idx_out]
+    """
+    import pandas as pd
+    from scipy import stats
+    import numpy as np
+
+    if isinstance(data, pd.DataFrame):
+        if col is None:
+            raise Exception('If passing a DataFrame, must provide col=')
+        else:
+            data = data[col]
+    elif isinstance(data,np.ndarray):
+        data= pd.Series(data)
+
+    elif isinstance(data,pd.Series):
+        pass
+    else:
+        raise Exception('data must be a DataFrame, Series, or np.ndarray')
     
+    res = data.describe()
+        
     
+    IQR = res['75%'] -  res['25%']
+    lower_limit = res['25%'] - 1.5*IQR
+    upper_limit = res['75%'] + 1.5*IQR
+
+    idx_outs = (data>upper_limit) | (data<lower_limit) 
+
+    return idx_outs
+
+
+def find_outliers_Z(data,col=None):
+    """Use scipy to calcualte absoliute Z-scores 
+    and return boolean series where True indicates it is an outlier
+
+    Args:
+        data (DataFrame,Series,or ndarray): data to test for outliers.
+        col (str): If passing a DataFrame, must specify column to use.
+
+    Returns:
+        [boolean Series]: A True/False for each row use to slice outliers.
+        
     EXAMPLE USE: 
     >> idx_outs = find_outliers_df(df,col='AdjustedCompensation')
     >> good_data = data[~idx_outs].copy()
     """
-    import numpy as np
-    import scipy.stats as stats
     import pandas as pd
-    if isinstance(df,pd.DataFrame) & (col is None):
-        raise Exception('Must provide a column name if passing a DataFrame.')
-    elif col is not None:
-        data = df[col].copy()
-    else:
-        data = df.copy()
+    from scipy import stats
+    import numpy as np
 
-    res = data.describe()
-    iqr_thresh = 1.5 * (res['75%'] - res['25%'])
-    upper = res['75%']+iqr_thresh
-    lower = res['25%']-iqr_thresh
-
-    idx_outs = ((data>upper)|(data<lower))
-
-    def get_true_count(idx_outs):
-        if True in idx_outs.value_counts().index:
-            return idx_outs.value_counts()[True]
+    if isinstance(data, pd.DataFrame):
+        if col is None:
+            raise Exception('If passing a DataFrame, must provide col=')
         else:
-            return 0
-        
-    if report:
-        print(f'[i] outliers for {col}: {get_true_count(idx_outs)} / {len(data)} total.')
-    return idx_outs
+            data = data[col]
+    elif isinstance(data,np.ndarray):
+        data= pd.Series(data)
+
+    elif isinstance(data,pd.Series):
+        pass
+    else:
+        raise Exception('data must be a DataFrame, Series, or np.ndarray')
+    
+    z = np.abs(stats.zscore(data))
+    idx_outliers = np.where(z>3,True,False)
+    return idx_outliers

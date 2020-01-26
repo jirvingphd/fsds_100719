@@ -77,58 +77,58 @@ def diagnose_model(model):
     
     return fig,ax 
 
-def find_outliers_Z(df,col):
-    """Use scipy to calcualte absoliute Z-scores 
-    and return boolean series where True indicates it is an outlier
+# def find_outliers_Z(df,col):
+#     """Use scipy to calcualte absoliute Z-scores 
+#     and return boolean series where True indicates it is an outlier
     
-    Args:
-        df (Frame): DataFrame containing column to analyze
-        col (str): Name of column to test.
+#     Args:
+#         df (Frame): DataFrame containing column to analyze
+#         col (str): Name of column to test.
         
-    Returns:
-        idx_outliers (Series): series of  True/False for each row in col
+#     Returns:
+#         idx_outliers (Series): series of  True/False for each row in col
         
-    Ex:
-    >> idx_outs = find_outliers(df['bedrooms'])
-    >> df_clean = df.loc[idx_outs==False]"""
-    from scipy import stats
-    import numpy as np
+#     Ex:
+#     >> idx_outs = find_outliers(df['bedrooms'])
+#     >> df_clean = df.loc[idx_outs==False]"""
+#     from scipy import stats
+#     import numpy as np
 
 
-    col = df[col]
-    z = np.abs(stats.zscore(col))
-    idx_outliers = np.where(z>3,True,False)
-    return idx_outliers
+#     col = df[col]
+#     z = np.abs(stats.zscore(col))
+#     idx_outliers = np.where(z>3,True,False)
+#     return idx_outliers
 
 
-def find_outliers_IQR(df,col):
-    """
-    Use Tukey's Method of outlier removal AKA InterQuartile-Range Rule
-    and return boolean series where True indicates it is an outlier.
-    - Calculates the range between the 75% and 25% quartiles
-    - Outliers fall outside upper and lower limits, using a treshold of  1.5*IQR the 75% and 25% quartiles.
+# def find_outliers_IQR(df,col):
+#     """
+#     Use Tukey's Method of outlier removal AKA InterQuartile-Range Rule
+#     and return boolean series where True indicates it is an outlier.
+#     - Calculates the range between the 75% and 25% quartiles
+#     - Outliers fall outside upper and lower limits, using a treshold of  1.5*IQR the 75% and 25% quartiles.
     
-    IQR Range Calculation:    
-        res = df.describe()
-        IQR = res['75%'] -  res['25%']
-        lower_limit = res['25%'] - 1.5*IQR
-        upper_limit = res['75%'] + 1.5*IQR
+#     IQR Range Calculation:    
+#         res = df.describe()
+#         IQR = res['75%'] -  res['25%']
+#         lower_limit = res['25%'] - 1.5*IQR
+#         upper_limit = res['75%'] + 1.5*IQR
     
-    Args:
-        df ([type]): [description]
-        col ([type]): [description]
+#     Args:
+#         df ([type]): [description]
+#         col ([type]): [description]
     
-    Returns:
-        [type]: [description]
-    """
-    res = df[col].describe()
-    IQR = res['75%'] -  res['25%']
-    lower_limit = res['25%'] - 1.5*IQR
-    upper_limit = res['75%'] + 1.5*IQR
+#     Returns:
+#         [type]: [description]
+#     """
+#     res = df[col].describe()
+#     IQR = res['75%'] -  res['25%']
+#     lower_limit = res['25%'] - 1.5*IQR
+#     upper_limit = res['75%'] + 1.5*IQR
     
-    idx_goodvals = (df[col]<upper_limit) & (df[col]>lower_limit) 
+#     idx_goodvals = (df[col]<upper_limit) & (df[col]>lower_limit) 
     
-    return ~idx_goodvals
+#     return ~idx_goodvals
 
 
 def vif_ols(df,exclude_col = None, cat_cols = []):
