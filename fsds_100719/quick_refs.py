@@ -464,3 +464,33 @@ def statistical_power(return_url = False):
     if return_url:
         return url
     
+    
+def hypothesis_testing():
+    import IPython.display as dp
+    notes = """### Assumption Tests
+ 
+|Assumption test| Function |
+| --- | --- |
+| **Normality**| `scipy.stats.normaltest`|
+| **Equal Variance** | `scipy.stats.levene`|
+
+
+### Hypothesis Tests
+
+| Parametric tests (means) | Function | Nonparametric tests (medians) | Function |
+| --- | --- | --- | --- |
+| **1-sample t test** |`scipy.stats.ttest_1samp()`|  **1-sample Wilcoxon** |`scipy.stats.wilcoxon`|
+| **2-sample t test** |`scipy.stats.ttest_ind()` | **Mann-Whitney U test** |`scipy.stats.mannwhitneyu()`|
+| **One-Way ANOVA** | `scipy.stats.f_oneway()` | **Kruskal-Wallis** | `scipy.stats.kruskal` | 
+
+ 
+ ### Post-Hoc Tests/Calculations
+ 
+ | Post-Hoc Tests/Calculatons|Function|
+ |--- | --- |
+ |**Tukey's Pairwise Comparisons** | `statsmodels.stats.multicomp.pairwise_tukeyhsd`|
+ |**Effect Size**| `Cohens_d`|
+ |**Statistical Power** | `statsmodels.stats.power`:<br>  `TTestIndPower` , `TTestPower`
+ """
+    return dp.Markdown(notes)
+
