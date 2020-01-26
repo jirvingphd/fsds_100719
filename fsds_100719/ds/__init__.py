@@ -1331,7 +1331,7 @@ def capture_text(txt):
     sys.stdout=notebook_output
     return txt_out
 
-def find_outliers(col):
+def find_outliers_zscore(col):
     """Use scipy to calcualte absoliute Z-scores 
     and return boolean series where True indicates it is an outlier
     Args:
