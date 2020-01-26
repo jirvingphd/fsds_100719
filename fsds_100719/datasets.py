@@ -211,3 +211,14 @@ def load_AB_multiple_choice(verbose=False,read_csv_kwds={}):
         display(df.head())
         
     return df
+
+def load_AB_homepage_actions(verbose=False,read_csv_kwds={}):
+    url="https://raw.githubusercontent.com/jirvingphd/dsc-website-ab-testing-lab-online-ds-pt-100719/master/homepage_actions.csv"
+    df = read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)#pd.read_csv(url_iowa_raw,index_col=0)
+
+    if verbose:
+        from IPython.display import display
+        display(df.head())
+        
+    return df
+
