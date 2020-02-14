@@ -238,7 +238,8 @@ def email_notification(password_obj=None,subject='GridSearch Finished',
         Prints `Email sent!` if email successful. 
     """
     if password_obj is None:
-        gmail = get_secret_password()
+        raise Exception('You must provide the password_obj.')
+        # gmail = get_secret_password()
     else:
         assert ('username' in password_obj)&('password' in password_obj)
         gmail = password_obj
