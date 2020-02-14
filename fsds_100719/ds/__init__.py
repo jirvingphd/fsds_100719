@@ -3,7 +3,7 @@
 from ..jmi import dict_dropdown,get_attributes,get_methods,get_methods_attributes_df    
 from .regression_project import *
 from .tsa import *
-
+from .keras_gridsearch import *
 # import os, sys 
 # os.listdir('../ds')
 # sys.path.append(".")
@@ -1334,42 +1334,42 @@ def capture_text(txt):
     return txt_out
 
 
-class Timer():
+# class Timer():
     
-    def __init__(self, start=True,time_fmt='%m/%d/%y - %T'):
-        import tzlocal
-        import datetime as dt
+#     def __init__(self, start=True,time_fmt='%m/%d/%y - %T'):
+#         import tzlocal
+#         import datetime as dt
         
-        self.tz = tzlocal.get_localzone()
-        self.fmt= time_fmt
-        self._created = dt.datetime.now(tz=self.tz)
+#         self.tz = tzlocal.get_localzone()
+#         self.fmt= time_fmt
+#         self._created = dt.datetime.now(tz=self.tz)
         
-        if start:
-            self.start()
+#         if start:
+#             self.start()
             
-    def get_time(self):
-        import datetime as dt
-        return dt.datetime.now(tz=self.tz)
+#     def get_time(self):
+#         import datetime as dt
+#         return dt.datetime.now(tz=self.tz)
 
         
-    def start(self,verbose=True):
-        self._laps_completed = 0
-        self.start_ = self.get_time()
-        if verbose: 
-            print(f'\n[i] Timer started at {self.start_.strftime(self.fmt)}')
+#     def start(self,verbose=True):
+#         self._laps_completed = 0
+#         self.start_ = self.get_time()
+#         if verbose: 
+#             print(f'\n[i] Timer started at {self.start_.strftime(self.fmt)}')
     
-    def stop(self, verbose=True):
-        self._laps_completed += 1
-        self.end = self.get_time()
-        self.elapsed = self.end -  self.start_
-        if verbose: 
-            print(f'[i] Timer stopped at {self.end.strftime(self.fmt)}')
-            print(f'  - Total Time: {self.elapsed}')
+#     def stop(self, verbose=True):
+#         self._laps_completed += 1
+#         self.end = self.get_time()
+#         self.elapsed = self.end -  self.start_
+#         if verbose: 
+#             print(f'[i] Timer stopped at {self.end.strftime(self.fmt)}')
+#             print(f'  - Total Time: {self.elapsed}')
             
-    def __call__(self, verbose=True):
-        self._laps_completed += 1
-        self.end = self.get_time()
-        self.elapsed = self.end -  self.start_
-        if verbose: 
-            print(f'[i] Clock Time: {self.end.strftime(self.fmt)}')
-            print(f'  - Elapsed Time: {self.elapsed}')
+#     def __call__(self, verbose=True):
+#         self._laps_completed += 1
+#         self.end = self.get_time()
+#         self.elapsed = self.end -  self.start_
+#         if verbose: 
+#             print(f'[i] Clock Time: {self.end.strftime(self.fmt)}')
+#             print(f'  - Elapsed Time: {self.elapsed}')
