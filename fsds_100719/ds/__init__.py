@@ -19,7 +19,9 @@ def add_dir_to_path(abs_path=None,rel_path=None,verbose=True):
         path (str): folder to add to path (May need to be absolute).
         rel_path (str): relative folder path to be converted to absolute and added.
         verbose (bool): Controls display of success/failure messages. Default =True"""
-    import pathlib, os, sys
+    import pathlib
+    import os
+    import sys
     
     # If no path provided:
     if abs_path is None:
@@ -1331,3 +1333,43 @@ def capture_text(txt):
     sys.stdout=notebook_output
     return txt_out
 
+
+class Timer():
+    
+    def __init__(self, start=True,time_fmt='%m/%d/%y - %T'):
+        import tzlocal
+        import datetime as dt
+        
+        self.tz = tzlocal.get_localzone()
+        self.fmt= time_fmt
+        self._created = dt.datetime.now(tz=self.tz)
+        
+        if start:
+            self.start()
+            
+    def get_time(self):
+        import datetime as dt
+        return dt.datetime.now(tz=self.tz)
+
+        
+    def start(self,verbose=True):
+        self._laps_completed = 0
+        self.start_ = self.get_time()
+        if verbose: 
+            print(f'\n[i] Timer started at {self.start_.strftime(self.fmt)}')
+    
+    def stop(self, verbose=True):
+        self._laps_completed += 1
+        self.end = self.get_time()
+        self.elapsed = self.end -  self.start_
+        if verbose: 
+            print(f'[i] Timer stopped at {self.end.strftime(self.fmt)}')
+            print(f'  - Total Time: {self.elapsed}')
+            
+    def __call__(self, verbose=True):
+        self._laps_completed += 1
+        self.end = self.get_time()
+        self.elapsed = self.end -  self.start_
+        if verbose: 
+            print(f'[i] Clock Time: {self.end.strftime(self.fmt)}')
+            print(f'  - Elapsed Time: {self.elapsed}')
