@@ -216,16 +216,21 @@ def my_custom_scorer(y_true,y_pred,verbose=True):#,scoring='accuracy',verbose=Tr
 
 
 
-def get_secret_password(file):
-    with open(file) as file:
-        import json
-        gmail = json.loads(file.read())
-    # email_notification()
-    print(gmail.keys())
+def get_secret_password(file=None,verbose=False):
+    if file is None:
+        gmail= {'username':'fsds.notifications@gmail.com',
+                'password':'S3ndm3an3mail!'}
+    else:
+        with open(file) as file:
+            import json
+            gmail = json.loads(file.read())
+        # email_notification()
+    if verbose:
+        print(gmail.keys())
     return gmail
 
 
-def email_notification(password_obj=None,subject='GridSearch Finished',
+def email_notification(send_to, password_obj=None,subject='GridSearch Finished',
                        msg='The GridSearch is now complete.'):
     """Sends email notification from gmail account using previously encrypyted password  object (an instance
     of EncrypytedPassword). 
@@ -238,11 +243,10 @@ def email_notification(password_obj=None,subject='GridSearch Finished',
         Prints `Email sent!` if email successful. 
     """
     if password_obj is None:
-        raise Exception('You must provide the password_obj.')
-        # gmail = get_secret_password()
-    else:
-        assert ('username' in password_obj)&('password' in password_obj)
-        gmail = password_obj
+        password_obj = get_secret_password()
+        
+    assert ('username' in password_obj)&('password' in password_obj)
+    gmail = password_obj
         
     if isinstance(msg,str)==False:
         msg=str(msg)
@@ -259,7 +263,7 @@ def email_notification(password_obj=None,subject='GridSearch Finished',
     ## WRITE EMAIL
     message = MIMEMultipart()
     message['Subject'] =subject
-    message['To'] = gmail['username']
+    message['To'] = send_to
     message['From'] = gmail['username']
     message.attach(MIMEText(msg,'plain'))
     text_message = message.as_string()
@@ -270,7 +274,7 @@ def email_notification(password_obj=None,subject='GridSearch Finished',
         with  smtplib.SMTP_SSL('smtp.gmail.com',465) as server:
             
             server.login(gmail['username'],gmail['password'])
-            server.sendmail(gmail['username'],gmail['username'], text_message)#text_message)
+            server.sendmail(gmail['username'],send_to, text_message)#text_message)
             server.close()
             print(f"Email sent to {gmail['username']}!")
         

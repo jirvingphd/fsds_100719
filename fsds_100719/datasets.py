@@ -133,6 +133,13 @@ def load_height_by_country(verbose=False,read_csv_kwds={}):
         
     return df
 
+def load_yields(verbose=False,read_csv_kwds=dict(sep='\s+', index_col=0)):
+    """Loads dataset from Polynomial Regression readme"""
+    url='https://raw.githubusercontent.com/jirvingphd/dsc-polynomial-regression-online-ds-pt-100719/master/yield.csv'
+
+    df = read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)#pd.read_csv(url_iowa_raw,index_col=0)
+    
+    return df
 
 
 ### TIME SERIES
