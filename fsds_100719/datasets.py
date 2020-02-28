@@ -233,3 +233,11 @@ def load_AB_homepage_actions(verbose=False,read_csv_kwds={}):
         
     return df
 
+
+
+def load_stock_df(**kwargs):
+    import pandas as pd
+    url ='https://raw.githubusercontent.com/jirvingphd/capstone-project-using-trumps-tweets-to-predict-stock-market/master/data/SP500_1min_01_23_2020_full.xlsx'
+    stock_df = pd.read_excel(url,**kwargs)
+    return stock_df
+    
