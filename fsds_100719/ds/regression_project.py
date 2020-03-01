@@ -166,3 +166,66 @@ def vif_ols(df,exclude_col = None, cat_cols = []):
     res.sort_values('VIF',ascending=False,inplace=True)
     res['use']=res['VIF'] <5
     return res
+
+
+def scrub_df(data,drop_cols =['id','date','view'],
+                       repl_dict = {'sqft_basement':('?','0.0')},
+                       recast_dict = {'sqft_basement':'float'},
+                       fillna_dict = {'waterfront':0,'yr_renovated':0},
+                      verbose=True):
+    """Performs entire scrubbing process. Default args are for mod 1 proj housing data.
+    
+    Performs scrubbing process on the df in the following order:
+    1. Drop cols in the drop_cols list
+    2. Replace values using repl_dict
+    3. Recast dtypes using recast_dict
+    4. Fillna using fillna_dict
+    
+    Args:
+        data (Frame): df to scrub
+        drop_cols (list): list of col names to drop
+        repl_dict (dict): Key=column name, 
+                        value= tuple/list with (current value, new value)
+        recast_dict(dict): key=column name, value= dtype
+        fillna_dict (dict): key=column name, value=value to fill na
+        verbose (bool, default=True): 
+    """
+    import pandas as pd
+    from IPython.display import display
+    df = data.copy()
+    ## Drop cols
+    if len(drop_cols)>0:
+        for col in drop_cols:
+            try:
+                df.drop(col, axis=1,inplace=True)
+            except Exception as e:
+                print(f"[!] Erorr while dropping cols:")
+                print(f"\t- Error msg: {e}")
+        
+
+    ## Replacing Values
+    for col,replace in repl_dict.items():
+        df[col] = df[col].replace(replace[0], replace[1])
+
+
+    ## Recasting datatypes
+    for col,dtype in recast_dict.items():
+        df[col] = df[col].astype(dtype)
+    df.dtypes
+
+    ## Fill Null values / zeros
+    for col,val in fillna_dict.items():
+        import types
+        if isinstance(val, types.FunctionType):
+            fill_val = val(df[col])
+        else:
+            fill_val = val
+        
+        df[col].fillna(fill_val,inplace=True)
+        
+    if verbose:
+        display(df.head())
+        display(df.info())
+
+    return df
+    
