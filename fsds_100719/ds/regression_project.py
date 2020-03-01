@@ -228,4 +228,49 @@ def scrub_df(data,drop_cols =['id','date','view'],
         display(df.info())
 
     return df
-    
+
+
+def get_heatmap_mask(corr):
+    """"Gets triangle mask for df.corr() for plotting heatmap with sns."""
+    import numpy as np
+    mask = np.zeros_like(corr, dtype=np.bool)
+    mask[np.triu_indices_from(mask)]=True
+    return mask
+
+
+def plot_multicollinearity(df,annot=True,fig_size=None):
+    """EDA: Plots results from df.corr() in a correlation heat map for multicollinearity.
+    Returns fig, ax objects"""
+    import seaborn as sns
+    sns.set(style="white")
+    from string import ascii_letters
+    import numpy as np
+    import pandas as pd
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+
+    # Compute the correlation matrix
+    corr = df.corr()
+
+    # # Generate a mask for the upper triangle
+    # mask = np.zeros_like(corr, dtype=np.bool)
+    # idx = np.triu_indices_from(mask)
+    # mask[idx] = True
+    mask  = get_heatmap_mask(corr)
+    # Set up the matplotlib figure
+    if fig_size==None:
+        figsize=(16,16)
+    else:
+        figsize = fig_size
+
+    f, ax = plt.subplots(figsize=(figsize))
+
+    # Generate a custom diverging colormap
+    cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+    # Draw the heatmap with the mask and correct aspect ratio
+    sns.heatmap(corr, mask=mask, annot=annot, cmap=cmap, center=0,
+
+    square=True, linewidths=.5, cbar_kws={"shrink": .5})
+    return f, ax
