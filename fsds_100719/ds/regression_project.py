@@ -1,30 +1,51 @@
+
 """A Collection of functions from ft study group for section 25."""
 if __name__=='__main__':
     import matplotlib.pyplot as plt
     import numpy as np
     import statsmodels.api as sms
     import statsmodels.formula.api as smf
+    from IPython.display import display
 
-def make_ols_f(df,target='price',cat_cols = [],
-               col_list=None, show_summary=True,exclude_cols=[]):
+
+import scipy.stats as stats
+import statsmodels.api as sms
+import statsmodels.formula.api as smf
+
+
+def make_ols_f(df,target,col_list=None,exclude_cols=[],
+               cat_cols = [],  show_summary=True,
+               diagnose=True,
+               return_formula=False):
     """
-    Uses the formula api of Statsmodels for ordinary least squares regression.
-    
+    Makes statsmodels formula-based regression with options to make categorical columns.    
     Args:
-        df (Frame): data
-        target (str, optional): Column to predict. Defaults to 'price'.
-        cat_cols (list, optional): Columns to treat as categorical (and one-hot).
-        col_list ([type], optional): List of columns to use. Defaults to all columns besides exclude_cols.
-        show_summary (bool, optional): Display the model.summary() before returning model. Defaults to True.
-        exclude_cols (list, optional): List of column names to exclude. Defaults to []. 
-            - Note: if a column name doesn't appear in the dataframe, there will be no error nor warning message.
+        df (Frame): df with data
+        target (str): target column name
+        col_list (list, optional): List of predictor columns. Defaults to all except target.
+        exclude_cols (list, optional): Columns to remove from col_list. Defaults to [].
+        cat_cols (list, optional): Columns to process as categorical using f'C({col})". Defaults to [].
+        show_summary (bool, optional): Display model.summary(). Defaults to True.
+        diagnose (bool, optional): Plot Q-Q plot & residuals. Defaults to True.
+        return_formula (bool, optional): Return formula with model. Defaults to False.
     
     Returns:
-        model: The fit statsmodels OLS model
+        model : statsmodels ols model
+        formula : str formula from model, only if return_formula == True
+        
+
+    NOTE EXAMPLE WITH MOD 1 PROJECT HOUSING
+        model = make_ols_f(df, target='price',
+                            cat_cols = ['zipcode','grade'], 
+                            exclude_cols= ['id']))
+        
+        # If return_formula == True
+        model, formula = make_ols_f(df, target='price',
+                               cat_cols = ['zipcode','grade'],
+                               exclude_cols= ['id']))
     """
-    import statsmodels.api as sms
     import statsmodels.formula.api as smf
-    from IPython.display import display
+    import matplotlib.pyplot as plt
     
     if col_list is None:
         col_list = list(df.drop(target,axis=1).columns)
@@ -32,41 +53,46 @@ def make_ols_f(df,target='price',cat_cols = [],
     ## remove exclude cols
     [col_list.remove(ecol) for ecol in exclude_cols if ecol in col_list]
 
+    ## Make rightn side of formula eqn
     features = '+'.join(col_list)
 
-
+    # ADD C() around categorical cols
     for col in cat_cols:
         features = features.replace(col,f"C({col})")
 
-
-
+    ## MAKE FULL FORMULA
     formula = target+'~'+features #target~predictors
-
+    #print(formula)
+    
+    ## Fit model
     model = smf.ols(formula=formula, data=df).fit()
     
+    ## Display summary
     if show_summary:
         display(model.summary())
+        
+    ## Plot Q-Qplot & model residuals
+    if diagnose:
+        diagnose_model(model)
+        plt.show()
 
-    return model
+    # Returns formula or just mmodel
+    if return_formula:
+        return model,formula
+    else:
+        return model
 
-## diagnostic function
 
 def diagnose_model(model):
     """
-    Displays the QQplot and residuals of the model.    
+    Plot Q-Q plot and model residuals from statsmodels ols model.
+    
     Args:
-        model (statsmodels ols): A fit statsmodels ols model.
+        model (smf.ols model): statsmodels formula ols 
     
     Returns:
-        fig (Figure): Figure object for output figure
-        ax (list): List of axes for subplots. 
+        fig, ax: matplotlib objects
     """
-    
-    import matplotlib.pyplot as plt
-    import statsmodels.api as sms
-    import statsmodels.formula.api as smf
-    import scipy.stats as stats
-    
     resids = model.resid
     
     fig,ax = plt.subplots(ncols=2,figsize=(10,5))
@@ -168,13 +194,13 @@ def vif_ols(df,exclude_col = None, cat_cols = []):
     return res
 
 
-def scrub_df(data,drop_cols =['id','date','view'],
-                       repl_dict = {'sqft_basement':('?','0.0')},
-                       recast_dict = {'sqft_basement':'float'},
-                       fillna_dict = {'waterfront':0,'yr_renovated':0},
-                      verbose=True):
-    """Performs entire scrubbing process. Default args are for mod 1 proj housing data.
-    
+
+def scrub_df(data,drop_cols =[],#['id','date','view'],
+                       repl_dict = {},#{'sqft_basement':('?','0.0')},
+                       recast_dict = {},#{'sqft_basement':'float'},
+                       fillna_dict = {},#{'waterfront':0,'yr_renovated':0},
+                      verbose=1):
+    """
     Performs scrubbing process on the df in the following order:
     1. Drop cols in the drop_cols list
     2. Replace values using repl_dict
@@ -182,52 +208,63 @@ def scrub_df(data,drop_cols =['id','date','view'],
     4. Fillna using fillna_dict
     
     Args:
-        data (Frame): df to scrub
-        drop_cols (list): list of col names to drop
+        data (Frame):
+        drop_cols (list):
         repl_dict (dict): Key=column name, 
-                        value= tuple/list with (current value, new value)
-        recast_dict(dict): key=column name, value= dtype
-        fillna_dict (dict): key=column name, value=value to fill na
-        verbose (bool, default=True): 
+                            value= dict of {to_replace:replace_with}
+        recast_dict(dict): 
+        fillna_dict(dict): key = column name,
+                            val = value to fill with or function to apply 
+                            
+                            
+    NOTE FOR USING WITH MOD 1 PROJECT HOUSING DATA
+    scrub_df(data,drop_cols =['id','date','view'],
+                       repl_dict = {'sqft_basement':{'?':'0.0'}},
+                       recast_dict = {'sqft_basement':'float'},
+                       fillna_dict = {'waterfront':0,'yr_renovated':0},
+                       verbose=1):
+    
     """
+    import copy
     import pandas as pd
-    from IPython.display import display
-    df = data.copy()
+    import types
+    
+    df = copy.deepcopy(data)#.copy()
+    
     ## Drop cols
-    if len(drop_cols)>0:
-        for col in drop_cols:
-            try:
-                df.drop(col, axis=1,inplace=True)
-            except Exception as e:
-                print(f"[!] Erorr while dropping cols:")
-                print(f"\t- Error msg: {e}")
-        
+    drop_cols = []
+    [df.drop(col,axis=1,inplace=True) for col in drop_cols if col in df.columns]
+
 
     ## Replacing Values
-    for col,replace in repl_dict.items():
-        df[col] = df[col].replace(replace[0], replace[1])
+    for col,replace_vals in repl_dict.items():
+            df[col] = df[col].replace(replace_vals)
 
 
-    ## Recasting datatypes
-    for col,dtype in recast_dict.items():
-        df[col] = df[col].astype(dtype)
-    df.dtypes
-
+    
     ## Fill Null values / zeros
     for col,val in fillna_dict.items():
-        import types
         if isinstance(val, types.FunctionType):
             fill_val = val(df[col])
         else:
             fill_val = val
         
         df[col].fillna(fill_val,inplace=True)
-        
-    if verbose:
+ 
+    ## Recasting datatypes
+    for col,dtype in recast_dict.items():
+        df[col] = df[col].astype(dtype)
+    df.dtypes
+    
+    ## display preview
+    if verbose>0:
         display(df.head())
+    if verbose>1:
         display(df.info())
 
     return df
+    
+    
 
 
 def get_heatmap_mask(corr):
