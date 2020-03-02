@@ -93,6 +93,7 @@ def diagnose_model(model):
     Returns:
         fig, ax: matplotlib objects
     """
+    
     resids = model.resid
     
     fig,ax = plt.subplots(ncols=2,figsize=(10,5))
@@ -181,8 +182,9 @@ def vif_ols(df,exclude_col = None, cat_cols = []):
     for column in df.columns:
         columns_to_use = df.drop(columns=[column]).columns
         target = column
-        linreg = make_ols_f(df, target=target, cat_cols=cat_cols,
+        linreg,*_ = make_ols_f(df, target=target, cat_cols=cat_cols,
                             col_list=columns_to_use,show_summary=False)
+        
         R2 = linreg.rsquared
         VIF = 1 / (1 - R2)
     #     print(f"VIF for {column} = {VIF}")
