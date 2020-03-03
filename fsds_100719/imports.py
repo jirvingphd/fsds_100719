@@ -170,7 +170,7 @@ finally:
 try:
     import cufflinks as cf 
     cf.go_offline()
-    print(['[i] Pandas .iplot() method activated.'])
+    print('[i] Pandas .iplot() method activated.')
 except:
     pass
 
