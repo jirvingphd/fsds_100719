@@ -154,10 +154,6 @@ def cohort_links(md=False,ret=False):
 
     
 
-
-
-def test_function():
-    pass
 # class Documentation():
 #     """"Keyword-sorted package documentation links/resources"""
 #     def __init__(self,name='package'):
@@ -443,7 +439,7 @@ $$\displaystyle\binom{n}{k} = \dfrac{P_{k}^{n}}{k!}=\dfrac{ \dfrac{n!}{(n-k)!}}{
 
 """
     dp.display(dp.Markdown(combinations))
-prob_combinations()
+
 
 
 def evaluation_metrics(markdown=True):
