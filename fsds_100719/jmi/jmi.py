@@ -1,6 +1,6 @@
 """My Template Module 
 Name: James M. Irving
-Email: james.irving.phd@gmail.com
+Email: james.irving@flatironschool.com
 GitHub Profile: https://github.com/jirvingphd
 """
 # import fsds_100719 as fs 
