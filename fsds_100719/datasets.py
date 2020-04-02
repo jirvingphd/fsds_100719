@@ -241,3 +241,9 @@ def load_stock_df(**kwargs):
     stock_df = pd.read_excel(url,**kwargs)
     return stock_df
     
+
+def load_heart_disease(verbose=False,read_csv_kwds={}):
+    import pandas as pd
+    url = "https://raw.githubusercontent.com/jirvingphd/dsc-gaussian-naive-bayes-lab-online-ds-pt-100719/solution/heart.csv"
+    return read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
+    

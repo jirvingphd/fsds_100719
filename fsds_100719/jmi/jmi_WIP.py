@@ -23,7 +23,10 @@ def flat_list(L, result=None, print_results=True):
             result.append(i)
     return result
 
-
+see = 'example of what i was saying'
+def example():
+    print(see)
+    
 def flat_dict(D, result=None, print_results=True):
     """
     Function from Recursive Functions Section of Learn.co v2
