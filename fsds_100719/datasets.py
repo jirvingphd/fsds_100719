@@ -251,3 +251,12 @@ def load_heart_disease(verbose=False,read_csv_kwds={}):
 def load_spam(verbose=False,read_csv_kwds=dict( sep='\t', names=['label', 'text'])):
     url = "https://raw.githubusercontent.com/jirvingphd/dsc-document-classification-with-naive-bayes-lab-online-ds-pt-100719/solution/SMSSpamCollection"
     return read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
+
+
+
+
+def load_tennis(read_csv_kwds={}):
+    url="https://raw.githubusercontent.com/jirvingphd/dsc-decision-trees-with-sklearn-codealong-online-ds-pt-100719/master/tennis.csv"
+    return read_csv_from_url(url,verbose=False, read_csv_kwds=read_csv_kwds)
+
+
