@@ -28,6 +28,7 @@ def read_csv_from_url(url,verbose=False,read_csv_kwds={}):
 
 
 def load_heroes_info(verbose=False,read_csv_kwds={}):
+
     url = 'https://raw.githubusercontent.com/jirvingphd/dsc-data-cleaning-project-online-ds-ft-100719/master/heroes_information.csv'
     return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
     
@@ -105,6 +106,29 @@ def load_iris(verbose=False):
     if verbose:
         print(data_dict['DESCR'])   
     return df
+
+
+def load_ames_train(verbose=False,read_csv_kwds={}):
+    """Loads height vs weight dataset"""
+    import requests 
+    if verbose:
+        res = requests.get('https://raw.githubusercontent.com/learn-co-students/dsc-project-eda-with-pandas-onl01-dtsc-pt-041320/master/data_description.txt')
+        info = res.text
+        print(info)
+    url='https://raw.githubusercontent.com/learn-co-students/dsc-project-eda-with-pandas-onl01-dtsc-pt-041320/master/ames_train.csv'
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
+
+
+def load_ames_test(verbose=False,read_csv_kwds={}):
+    import requests 
+    if verbose:
+        res = requests.get('https://raw.githubusercontent.com/learn-co-students/dsc-project-eda-with-pandas-onl01-dtsc-pt-041320/master/data_description.txt')
+        info = res.text
+        print(info)
+    """Loads height vs weight dataset"""
+    url='https://raw.githubusercontent.com/learn-co-students/dsc-project-eda-with-pandas-onl01-dtsc-pt-041320/master/ames_test.csv'
+    return  read_csv_from_url(url, verbose=verbose,read_csv_kwds=read_csv_kwds)
+
 
 
 def load_height_weight(verbose=False,read_csv_kwds={}):
