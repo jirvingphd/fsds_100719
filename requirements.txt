@@ -28,7 +28,7 @@ catboost==0.17.5
 # colorlover==0.3.0
 cookiecutter==1.6.0
 # coverage==4.5.4
-cryptography==2.3.1
+cryptography==3.2
 cryptography-vectors==2.3.1
 cufflinks==0.16
 # cycler==0.10.0
