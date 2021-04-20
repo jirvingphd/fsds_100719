@@ -123,7 +123,7 @@ pprint==0.1
 # prompt-toolkit==1.0.15
 # protobuf==3.10.0
 # ptyprocess==0.6.0
-py==1.8.0
+py==1.10.0
 py4j==0.10.7
 pycodestyle==2.5.0
 pycparser==2.18
