@@ -50,7 +50,7 @@ gensim==3.4.0
 # graphviz==0.13
 # grpcio==1.24.1
 h5py==2.9.0
-html5lib==0.9999999
+html5lib==0.99999999
 idna==2.7
 imageio==2.6.1
 imagesize==1.1.0
